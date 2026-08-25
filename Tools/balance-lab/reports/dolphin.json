@@ -1,0 +1,515 @@
+{
+  "profileId": "dolphin",
+  "profileName": "Дельфин ($20/мес)",
+  "generatedAt": "2026-08-11T08:43:28.525Z",
+  "daysSimulated": 730,
+  "styleOpenedDay": {
+    "style-urban": 1,
+    "style-amer": 9,
+    "style-gt": 25,
+    "style-wedge": 51,
+    "style-offroad": 96
+  },
+  "allStylesOpenedDay": 96,
+  "upgradeOwnedDay": {
+    "style-urban": 30,
+    "style-amer": 60,
+    "style-gt": 90,
+    "style-wedge": 120,
+    "style-offroad": 150
+  },
+  "allUpgradesOwnedDay": 150,
+  "lineClosedDay": {
+    "Софт: Стили + S2": 97,
+    "Софт: Эскалация S3→S4": 134
+  },
+  "activeLines": [
+    "Софт: S5 навсегда",
+    "Хард: бесплатные кристаллы: Линия 1",
+    "Хард: обычные траты: Линия 1",
+    "Хард: апгрейды: Линия 1",
+    "Реал: Покупки"
+  ],
+  "totalCoinsEarned": 620500,
+  "totalGemsEarned": 4380,
+  "totalCoinsSpent": 611074.0493662441,
+  "totalGemsSpent": 12285.968423393468,
+  "totalRealUsdSpent": 166.58,
+  "avgMonthlyRealSpend": 6.85,
+  "tierPurchaseCounts": {
+    "Софт: Стили + S2 — S2": 12,
+    "Хард: бесплатные кристаллы: Линия 1 — H1": 389,
+    "Хард: обычные траты: Линия 1 — H3": 48,
+    "Хард: апгрейды: Линия 1 — upgrade": 5,
+    "Реал: Покупки — R2": 24,
+    "Софт: Эскалация S3→S4 — S3": 5,
+    "Софт: Эскалация S3→S4 — S4": 3,
+    "Софт: S5 навсегда — S5": 40
+  },
+  "finalState": {
+    "coins": 9425.95063375591,
+    "gems": 4.4073826995775
+  },
+  "trace": [
+    {
+      "day": 1,
+      "type": "styleOpened",
+      "styleId": "style-urban",
+      "line": "Софт: Стили + S2"
+    },
+    {
+      "day": 2,
+      "type": "buyTier",
+      "tier": "S2",
+      "price": 889.4818768067599,
+      "line": "Софт: Стили + S2"
+    },
+    {
+      "day": 3,
+      "type": "buyTier",
+      "tier": "S2",
+      "price": 889.4818768067599,
+      "line": "Софт: Стили + S2"
+    },
+    {
+      "day": 4,
+      "type": "buyTier",
+      "tier": "S2",
+      "price": 889.4818768067599,
+      "line": "Софт: Стили + S2"
+    },
+    {
+      "day": 9,
+      "type": "styleOpened",
+      "styleId": "style-amer",
+      "line": "Софт: Стили + S2"
+    },
+    {
+      "day": 10,
+      "type": "buyTier",
+      "tier": "S2",
+      "price": 889.4818768067599,
+      "line": "Софт: Стили + S2"
+    },
+    {
+      "day": 11,
+      "type": "buyTier",
+      "tier": "S2",
+      "price": 889.4818768067599,
+      "line": "Софт: Стили + S2"
+    },
+    {
+      "day": 12,
+      "type": "buyTier",
+      "tier": "S2",
+      "price": 889.4818768067599,
+      "line": "Софт: Стили + S2"
+    },
+    {
+      "day": 25,
+      "type": "styleOpened",
+      "styleId": "style-gt",
+      "line": "Софт: Стили + S2"
+    },
+    {
+      "day": 26,
+      "type": "buyTier",
+      "tier": "S2",
+      "price": 889.4818768067599,
+      "line": "Софт: Стили + S2"
+    },
+    {
+      "day": 27,
+      "type": "buyTier",
+      "tier": "S2",
+      "price": 889.4818768067599,
+      "line": "Софт: Стили + S2"
+    },
+    {
+      "day": 28,
+      "type": "buyTier",
+      "tier": "S2",
+      "price": 889.4818768067599,
+      "line": "Софт: Стили + S2"
+    },
+    {
+      "day": 51,
+      "type": "styleOpened",
+      "styleId": "style-wedge",
+      "line": "Софт: Стили + S2"
+    },
+    {
+      "day": 52,
+      "type": "buyTier",
+      "tier": "S2",
+      "price": 889.4818768067599,
+      "line": "Софт: Стили + S2"
+    },
+    {
+      "day": 53,
+      "type": "buyTier",
+      "tier": "S2",
+      "price": 889.4818768067599,
+      "line": "Софт: Стили + S2"
+    },
+    {
+      "day": 54,
+      "type": "buyTier",
+      "tier": "S2",
+      "price": 889.4818768067599,
+      "line": "Софт: Стили + S2"
+    },
+    {
+      "day": 96,
+      "type": "styleOpened",
+      "styleId": "style-offroad",
+      "line": "Софт: Стили + S2"
+    },
+    {
+      "day": 97,
+      "type": "lineClosed",
+      "line": "Софт: Стили + S2"
+    },
+    {
+      "day": 99,
+      "type": "buyTier",
+      "tier": "S3",
+      "price": 2668.44563042028,
+      "line": "Софт: Эскалация S3→S4"
+    },
+    {
+      "day": 102,
+      "type": "buyTier",
+      "tier": "S3",
+      "price": 2668.44563042028,
+      "line": "Софт: Эскалация S3→S4"
+    },
+    {
+      "day": 105,
+      "type": "buyTier",
+      "tier": "S3",
+      "price": 2668.44563042028,
+      "line": "Софт: Эскалация S3→S4"
+    },
+    {
+      "day": 108,
+      "type": "buyTier",
+      "tier": "S3",
+      "price": 2668.44563042028,
+      "line": "Софт: Эскалация S3→S4"
+    },
+    {
+      "day": 111,
+      "type": "buyTier",
+      "tier": "S3",
+      "price": 2668.44563042028,
+      "line": "Софт: Эскалация S3→S4"
+    },
+    {
+      "day": 119,
+      "type": "buyTier",
+      "tier": "S4",
+      "price": 6226.37313764732,
+      "line": "Софт: Эскалация S3→S4"
+    },
+    {
+      "day": 126,
+      "type": "buyTier",
+      "tier": "S4",
+      "price": 6226.37313764732,
+      "line": "Софт: Эскалация S3→S4"
+    },
+    {
+      "day": 133,
+      "type": "buyTier",
+      "tier": "S4",
+      "price": 6226.37313764732,
+      "line": "Софт: Эскалация S3→S4"
+    },
+    {
+      "day": 134,
+      "type": "lineClosed",
+      "line": "Софт: Эскалация S3→S4"
+    },
+    {
+      "day": 148,
+      "type": "buyTier",
+      "tier": "S5",
+      "price": 12452.74627529464,
+      "line": "Софт: S5 навсегда"
+    },
+    {
+      "day": 163,
+      "type": "buyTier",
+      "tier": "S5",
+      "price": 12452.74627529464,
+      "line": "Софт: S5 навсегда"
+    },
+    {
+      "day": 177,
+      "type": "buyTier",
+      "tier": "S5",
+      "price": 12452.74627529464,
+      "line": "Софт: S5 навсегда"
+    },
+    {
+      "day": 192,
+      "type": "buyTier",
+      "tier": "S5",
+      "price": 12452.74627529464,
+      "line": "Софт: S5 навсегда"
+    },
+    {
+      "day": 207,
+      "type": "buyTier",
+      "tier": "S5",
+      "price": 12452.74627529464,
+      "line": "Софт: S5 навсегда"
+    },
+    {
+      "day": 221,
+      "type": "buyTier",
+      "tier": "S5",
+      "price": 12452.74627529464,
+      "line": "Софт: S5 навсегда"
+    },
+    {
+      "day": 236,
+      "type": "buyTier",
+      "tier": "S5",
+      "price": 12452.74627529464,
+      "line": "Софт: S5 навсегда"
+    },
+    {
+      "day": 251,
+      "type": "buyTier",
+      "tier": "S5",
+      "price": 12452.74627529464,
+      "line": "Софт: S5 навсегда"
+    },
+    {
+      "day": 265,
+      "type": "buyTier",
+      "tier": "S5",
+      "price": 12452.74627529464,
+      "line": "Софт: S5 навсегда"
+    },
+    {
+      "day": 280,
+      "type": "buyTier",
+      "tier": "S5",
+      "price": 12452.74627529464,
+      "line": "Софт: S5 навсегда"
+    },
+    {
+      "day": 295,
+      "type": "buyTier",
+      "tier": "S5",
+      "price": 12452.74627529464,
+      "line": "Софт: S5 навсегда"
+    },
+    {
+      "day": 309,
+      "type": "buyTier",
+      "tier": "S5",
+      "price": 12452.74627529464,
+      "line": "Софт: S5 навсегда"
+    },
+    {
+      "day": 324,
+      "type": "buyTier",
+      "tier": "S5",
+      "price": 12452.74627529464,
+      "line": "Софт: S5 навсегда"
+    },
+    {
+      "day": 339,
+      "type": "buyTier",
+      "tier": "S5",
+      "price": 12452.74627529464,
+      "line": "Софт: S5 навсегда"
+    },
+    {
+      "day": 353,
+      "type": "buyTier",
+      "tier": "S5",
+      "price": 12452.74627529464,
+      "line": "Софт: S5 навсегда"
+    },
+    {
+      "day": 368,
+      "type": "buyTier",
+      "tier": "S5",
+      "price": 12452.74627529464,
+      "line": "Софт: S5 навсегда"
+    },
+    {
+      "day": 382,
+      "type": "buyTier",
+      "tier": "S5",
+      "price": 12452.74627529464,
+      "line": "Софт: S5 навсегда"
+    },
+    {
+      "day": 397,
+      "type": "buyTier",
+      "tier": "S5",
+      "price": 12452.74627529464,
+      "line": "Софт: S5 навсегда"
+    },
+    {
+      "day": 412,
+      "type": "buyTier",
+      "tier": "S5",
+      "price": 12452.74627529464,
+      "line": "Софт: S5 навсегда"
+    },
+    {
+      "day": 426,
+      "type": "buyTier",
+      "tier": "S5",
+      "price": 12452.74627529464,
+      "line": "Софт: S5 навсегда"
+    },
+    {
+      "day": 441,
+      "type": "buyTier",
+      "tier": "S5",
+      "price": 12452.74627529464,
+      "line": "Софт: S5 навсегда"
+    },
+    {
+      "day": 456,
+      "type": "buyTier",
+      "tier": "S5",
+      "price": 12452.74627529464,
+      "line": "Софт: S5 навсегда"
+    },
+    {
+      "day": 470,
+      "type": "buyTier",
+      "tier": "S5",
+      "price": 12452.74627529464,
+      "line": "Софт: S5 навсегда"
+    },
+    {
+      "day": 485,
+      "type": "buyTier",
+      "tier": "S5",
+      "price": 12452.74627529464,
+      "line": "Софт: S5 навсегда"
+    },
+    {
+      "day": 500,
+      "type": "buyTier",
+      "tier": "S5",
+      "price": 12452.74627529464,
+      "line": "Софт: S5 навсегда"
+    },
+    {
+      "day": 514,
+      "type": "buyTier",
+      "tier": "S5",
+      "price": 12452.74627529464,
+      "line": "Софт: S5 навсегда"
+    },
+    {
+      "day": 529,
+      "type": "buyTier",
+      "tier": "S5",
+      "price": 12452.74627529464,
+      "line": "Софт: S5 навсегда"
+    },
+    {
+      "day": 544,
+      "type": "buyTier",
+      "tier": "S5",
+      "price": 12452.74627529464,
+      "line": "Софт: S5 навсегда"
+    },
+    {
+      "day": 558,
+      "type": "buyTier",
+      "tier": "S5",
+      "price": 12452.74627529464,
+      "line": "Софт: S5 навсегда"
+    },
+    {
+      "day": 573,
+      "type": "buyTier",
+      "tier": "S5",
+      "price": 12452.74627529464,
+      "line": "Софт: S5 навсегда"
+    },
+    {
+      "day": 588,
+      "type": "buyTier",
+      "tier": "S5",
+      "price": 12452.74627529464,
+      "line": "Софт: S5 навсегда"
+    },
+    {
+      "day": 602,
+      "type": "buyTier",
+      "tier": "S5",
+      "price": 12452.74627529464,
+      "line": "Софт: S5 навсегда"
+    },
+    {
+      "day": 617,
+      "type": "buyTier",
+      "tier": "S5",
+      "price": 12452.74627529464,
+      "line": "Софт: S5 навсегда"
+    },
+    {
+      "day": 632,
+      "type": "buyTier",
+      "tier": "S5",
+      "price": 12452.74627529464,
+      "line": "Софт: S5 навсегда"
+    },
+    {
+      "day": 646,
+      "type": "buyTier",
+      "tier": "S5",
+      "price": 12452.74627529464,
+      "line": "Софт: S5 навсегда"
+    },
+    {
+      "day": 661,
+      "type": "buyTier",
+      "tier": "S5",
+      "price": 12452.74627529464,
+      "line": "Софт: S5 навсегда"
+    },
+    {
+      "day": 675,
+      "type": "buyTier",
+      "tier": "S5",
+      "price": 12452.74627529464,
+      "line": "Софт: S5 навсегда"
+    },
+    {
+      "day": 690,
+      "type": "buyTier",
+      "tier": "S5",
+      "price": 12452.74627529464,
+      "line": "Софт: S5 навсегда"
+    },
+    {
+      "day": 705,
+      "type": "buyTier",
+      "tier": "S5",
+      "price": 12452.74627529464,
+      "line": "Софт: S5 навсегда"
+    },
+    {
+      "day": 719,
+      "type": "buyTier",
+      "tier": "S5",
+      "price": 12452.74627529464,
+      "line": "Софт: S5 навсегда"
+    }
+  ]
+}

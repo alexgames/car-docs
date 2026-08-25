@@ -1,0 +1,59 @@
+{
+  "id": "casual_2",
+  "name": "КазДоПро",
+  "description": "Заходит нечасто и ненадолго, не покупает ни кристаллы, ни реал. Копит на стили, изредка тратит то, что накопал рекламой, на самый дешёвый hard-тир — не копит кристаллы бесконечно.",
+  "simulateDays": 730,
+  "income": {
+    "adsPerDay": 1
+  },
+  "sequences": [
+    {
+      "name": "Софт",
+      "lines": [
+        {
+          "name": "Стили",
+          "phases": [
+            {
+              "kind": "soft-hoardUpToStyle",
+              "styleId": "style-gt"
+            }
+          ],
+          "loop": true,
+          "until": "styleOpened:style-gt"
+        },
+        {
+          "name": "После стилей",
+          "phases": [
+            {
+              "kind": "soft-buyTier",
+              "tier": "S2",
+              "count": 100,
+              "topUp": false
+            }
+          ],
+          "loop": true,
+          "until": "never"
+        }
+      ]
+    },
+    {
+      "name": "Хард: бесплатные кристаллы",
+      "lines": [
+        {
+          "name": "Линия 1",
+          "phases": [
+            {
+              "kind": "hard-buyTier",
+              "tier": "H1",
+              "itemsPerMonth": 0,
+              "topUp": false,
+              "cadence": "daily"
+            }
+          ],
+          "loop": true,
+          "until": "never"
+        }
+      ]
+    }
+  ]
+}

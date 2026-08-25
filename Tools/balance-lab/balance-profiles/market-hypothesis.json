@@ -1,0 +1,13 @@
+{
+  "dolphinArppuUsd": 20,
+  "payerConversionPercent": 3,
+  "rewardedEcpmUsd": 10,
+  "adsPerDayAvg": 1,
+  "interstitialEnabled": false,
+  "interstitialEcpmUsd": 8,
+  "interstitialShowsPerDayAvg": 2,
+  "activeDaysPerMonth": 10,
+  "coinsPerArena": 600,
+  "coinsPerDaily": 250,
+  "gemsPerAd": 3
+}

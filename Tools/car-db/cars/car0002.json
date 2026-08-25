@@ -1,0 +1,142 @@
+{
+  "id": "car0002",
+  "name": "Cadillac Calais 1965",
+  "style": "America",
+  "substyle": "muscle",
+  "usageLinks": [],
+  "descShort": "",
+  "descHistorical": "",
+  "country": "🇺🇸",
+  "designer": "",
+  "cardWidth": 1800,
+  "views": {
+    "side": {
+      "draft": [
+        {
+          "file": "1.png",
+          "x": 32.22742301453239,
+          "y": -6.067936239811232,
+          "scale": 1.597938144329897
+        }
+      ],
+      "activeSel": {
+        "kind": "draft",
+        "index": 0
+      },
+      "final": null,
+      "lastExport": {
+        "width": 1800,
+        "at": "2026-08-25T05:27:41.016Z"
+      },
+      "guides": {
+        "vertical": {
+          "head": {
+            "offsetX": -849.19921875,
+            "visible": true
+          },
+          "cab1": {
+            "offsetX": -328.06587837837833,
+            "visible": true
+          },
+          "center": {
+            "offsetX": 29.993665540540405,
+            "visible": true
+          },
+          "cab2": {
+            "offsetX": 461.41269003378375,
+            "visible": true
+          },
+          "trunk": {
+            "offsetX": 870.8961676520271,
+            "visible": true
+          }
+        },
+        "horizontal": {
+          "ground": {
+            "offsetY": -65.88151041666674,
+            "visible": true
+          },
+          "bottom": {
+            "offsetY": -135.66015625,
+            "visible": true
+          },
+          "center": {
+            "offsetY": -388.423828125,
+            "visible": true
+          },
+          "top": {
+            "offsetY": -517.2621787524132,
+            "visible": true
+          }
+        },
+        "rulers": {
+          "horizontal": {
+            "enabled": false,
+            "startOffsetX": -849.19921875,
+            "endOffsetX": 870.8961676520271,
+            "invert": true
+          },
+          "vertical": {
+            "enabled": false,
+            "startOffsetY": -135.66015625,
+            "endOffsetY": -517.2621787524132,
+            "invert": false,
+            "ratioKey": "1x1"
+          }
+        },
+        "wheels": {
+          "front": {
+            "offsetX": -599.8828125,
+            "visible": true
+          },
+          "rear": {
+            "offsetX": 410.029296875,
+            "visible": true
+          },
+          "radius": {
+            "offsetX": -708.69140625,
+            "visible": true
+          }
+        }
+      }
+    },
+    "front": {
+      "draft": [],
+      "activeSel": null,
+      "final": null,
+      "lastExport": null
+    },
+    "34front": {
+      "draft": [],
+      "activeSel": null,
+      "final": null,
+      "lastExport": null
+    },
+    "34rear": {
+      "draft": [],
+      "activeSel": null,
+      "final": null,
+      "lastExport": null
+    },
+    "rear": {
+      "draft": [],
+      "activeSel": null,
+      "final": null,
+      "lastExport": null
+    },
+    "custom1": {
+      "draft": [],
+      "activeSel": null,
+      "final": null,
+      "lastExport": null,
+      "customLabel": "Доп. 1"
+    },
+    "custom2": {
+      "draft": [],
+      "activeSel": null,
+      "final": null,
+      "lastExport": null,
+      "customLabel": "Доп. 2"
+    }
+  }
+}

@@ -1,0 +1,5 @@
+id,type,rating,complexity,currencyIntent,acquisition,availability,styleIds,notes
+mock-extra-001,extra,2,1,soft,progression,launch,any,Заменить реальным ID
+mock-tool-001,tool,5,4,hard,progression,launch,any,Пример инструмента
+mock-body-001,body,9,8,real,premium,launch,urban,Гипотеза: новые корпуса premium или promo
+mock-promo-001,decal,6,2,promo,promo_code,weekly_promo,any,Код из ролика или челлендж

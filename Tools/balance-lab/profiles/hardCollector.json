@@ -1,0 +1,27 @@
+{
+  "id": "hardCollector",
+  "name": "Hard Collector",
+  "description": "Тестовый профиль hard-линии: хочет собрать апгрейды всех пяти стилей (цена H4 в кристаллах, недостачу топит за $, topUp:true), стабильным умеренным темпом (1/мес), не спешит и не останавливается — проверка, за сколько дней коллекционер закрывает весь набор апгрейдов.",
+  "simulateDays": 730,
+  "income": { "adsPerDay": 2 },
+  "sequences": [
+    {
+      "name": "Софт",
+      "lines": [
+        { "name": "Стили", "phases": [ { "kind": "soft-hoardForStyle" } ], "loop": true, "until": "never" }
+      ]
+    },
+    {
+      "name": "Хард: бесплатные кристаллы",
+      "lines": [
+        { "name": "Линия 1", "phases": [ { "kind": "hard-buyTier", "tier": "H1", "itemsPerMonth": 0, "topUp": false, "cadence": "daily" } ], "loop": true, "until": "never" }
+      ]
+    },
+    {
+      "name": "Хард: апгрейды",
+      "lines": [
+        { "name": "Линия 1", "phases": [ { "kind": "hard-buyUpgrade", "tier": "H4", "itemsPerMonth": 1, "topUp": true, "cadence": "monthly" } ], "loop": true, "until": "never" }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,327 @@
+{
+  "main": {
+    "id": "3a7737ad0c1e7659",
+    "type": "split",
+    "children": [
+      {
+        "id": "11037e4794859609",
+        "type": "tabs",
+        "children": [
+          {
+            "id": "7e8eda3761221673",
+            "type": "leaf",
+            "state": {
+              "type": "markdown",
+              "state": {
+                "file": "DisDocs/inspiration/02-типы-заданий-и-брифы.md",
+                "mode": "source",
+                "source": false
+              },
+              "icon": "lucide-file",
+              "title": "02-типы-заданий-и-брифы"
+            }
+          },
+          {
+            "id": "25d86aff95be2a14",
+            "type": "leaf",
+            "state": {
+              "type": "markdown",
+              "state": {
+                "file": "DisDocs/inspiration/02-типы-заданий-и-брифы.md",
+                "mode": "source",
+                "source": false
+              },
+              "icon": "lucide-file",
+              "title": "02-типы-заданий-и-брифы"
+            }
+          },
+          {
+            "id": "d544e20468e7b9ce",
+            "type": "leaf",
+            "state": {
+              "type": "markdown",
+              "state": {
+                "file": "DisDocs/sprints/0001 — Текущий (Август) Версия 2.0.md",
+                "mode": "preview",
+                "source": true
+              },
+              "icon": "lucide-file",
+              "title": "0001 — Текущий (Август) Версия 2.0"
+            }
+          },
+          {
+            "id": "8fae2f11f8d96cc2",
+            "type": "leaf",
+            "state": {
+              "type": "markdown",
+              "state": {
+                "file": "DisDocs/Сайт/Design Brief.md",
+                "mode": "source",
+                "source": false
+              },
+              "icon": "lucide-file",
+              "title": "Design Brief"
+            }
+          },
+          {
+            "id": "0e7c0f700afd1a21",
+            "type": "leaf",
+            "state": {
+              "type": "markdown",
+              "state": {
+                "file": "DisDocs/Разработка/Архитектура уровней и конфигов v2.md",
+                "mode": "source",
+                "source": false
+              },
+              "icon": "lucide-file",
+              "title": "Архитектура уровней и конфигов v2"
+            }
+          },
+          {
+            "id": "138511dce12722df",
+            "type": "leaf",
+            "state": {
+              "type": "markdown",
+              "state": {
+                "file": "DisDocs/Разработка/0052 — Идеи дизайна.md",
+                "mode": "source",
+                "source": false
+              },
+              "icon": "lucide-file",
+              "title": "0052 — Идеи дизайна"
+            }
+          },
+          {
+            "id": "41e6e8fe5bdb85a3",
+            "type": "leaf",
+            "state": {
+              "type": "markdown",
+              "state": {
+                "file": "DisDocs/hypotheses/01-убрать-историю-и-привести-к-роликам.md",
+                "mode": "source",
+                "source": false
+              },
+              "icon": "lucide-file",
+              "title": "01-убрать-историю-и-привести-к-роликам"
+            }
+          }
+        ],
+        "currentTab": 5
+      }
+    ],
+    "direction": "vertical"
+  },
+  "left": {
+    "id": "d8e319d933944b82",
+    "type": "split",
+    "children": [
+      {
+        "id": "f4a2007e8db92028",
+        "type": "tabs",
+        "children": [
+          {
+            "id": "b35ed3384afb3864",
+            "type": "leaf",
+            "state": {
+              "type": "file-explorer",
+              "state": {
+                "sortOrder": "alphabetical",
+                "autoReveal": false,
+                "showSearch": false,
+                "searchQuery": ""
+              },
+              "icon": "lucide-folder-closed",
+              "title": "Files"
+            }
+          },
+          {
+            "id": "486e90d265686903",
+            "type": "leaf",
+            "state": {
+              "type": "search",
+              "state": {
+                "query": "Дейли задания.md)",
+                "matchingCase": false,
+                "explainSearch": false,
+                "collapseAll": false,
+                "extraContext": false,
+                "sortOrder": "alphabetical"
+              },
+              "icon": "lucide-search",
+              "title": "Search"
+            }
+          },
+          {
+            "id": "84572bf77ebf129b",
+            "type": "leaf",
+            "state": {
+              "type": "bookmarks",
+              "state": {
+                "showSearch": false,
+                "searchQuery": ""
+              },
+              "icon": "lucide-bookmark",
+              "title": "Bookmarks"
+            }
+          }
+        ]
+      }
+    ],
+    "direction": "horizontal",
+    "width": 330.7109375
+  },
+  "right": {
+    "id": "43901a2bea0d586c",
+    "type": "split",
+    "children": [
+      {
+        "id": "918ad3ac2a8b1c4d",
+        "type": "tabs",
+        "children": [
+          {
+            "id": "f5a2adb5618c4040",
+            "type": "leaf",
+            "state": {
+              "type": "backlink",
+              "state": {
+                "file": "DisDocs/sprints/0001 — Текущий (Август) Версия 2.0.md",
+                "collapseAll": false,
+                "extraContext": false,
+                "sortOrder": "alphabetical",
+                "showSearch": false,
+                "searchQuery": "",
+                "backlinkCollapsed": false,
+                "unlinkedCollapsed": true
+              },
+              "icon": "links-coming-in",
+              "title": "Backlinks for 0001 — Текущий (Август) Версия 2.0"
+            }
+          },
+          {
+            "id": "be4dc62cc2823ad1",
+            "type": "leaf",
+            "state": {
+              "type": "outgoing-link",
+              "state": {
+                "file": "DisDocs/sprints/0001 — Текущий (Август) Версия 2.0.md",
+                "linksCollapsed": false,
+                "unlinkedCollapsed": true
+              },
+              "icon": "links-going-out",
+              "title": "Outgoing links from 0001 — Текущий (Август) Версия 2.0"
+            }
+          },
+          {
+            "id": "1a33b0d45d407fa1",
+            "type": "leaf",
+            "state": {
+              "type": "tag",
+              "state": {
+                "sortOrder": "frequency",
+                "useHierarchy": true,
+                "showSearch": false,
+                "searchQuery": ""
+              },
+              "icon": "lucide-tags",
+              "title": "Tags"
+            }
+          },
+          {
+            "id": "db415164f4a8bb78",
+            "type": "leaf",
+            "state": {
+              "type": "all-properties",
+              "state": {
+                "sortOrder": "frequency",
+                "showSearch": false,
+                "searchQuery": ""
+              },
+              "icon": "lucide-archive",
+              "title": "All properties"
+            }
+          },
+          {
+            "id": "d681e91fb270bf82",
+            "type": "leaf",
+            "state": {
+              "type": "outline",
+              "state": {
+                "file": "DisDocs/sprints/0001 — Текущий (Август) Версия 2.0.md",
+                "followCursor": false,
+                "showSearch": false,
+                "searchQuery": ""
+              },
+              "icon": "lucide-list",
+              "title": "Outline of 0001 — Текущий (Август) Версия 2.0"
+            }
+          }
+        ],
+        "currentTab": 4
+      }
+    ],
+    "direction": "horizontal",
+    "width": 300,
+    "collapsed": true
+  },
+  "left-ribbon": {
+    "hiddenItems": {
+      "switcher:Open quick switcher": false,
+      "graph:Open graph view": false,
+      "canvas:Create new canvas": false,
+      "daily-notes:Open today's daily note": false,
+      "templates:Insert template": false,
+      "command-palette:Open command palette": false,
+      "bases:Create new base": false
+    }
+  },
+  "active": "138511dce12722df",
+  "lastOpenFiles": [
+    "Tools/car-db/photos/car0002/side/final.png",
+    "Tools/car-db/photos/car0002/side/draft/2.png",
+    "DisDocs/Разработка/0054 — Юнити 6.md",
+    "Tools/car-db/guideDefaults.json",
+    "Tools/car-db/cars/car0002.json.crswap",
+    "DisDocs/Разработка/0001 — ШАБЛОН.md",
+    "DisDocs/Разработка/0052 — Идеи дизайна.md",
+    "Tools/car-db/photos/car0002/side/export.png",
+    "Tools/car-db/cardSizes.json",
+    "DisDocs/books/лучшие/103 Car The Definitive Visual History of the Automobile by DK (z-lib.org)/220.jpg",
+    "DisDocs/books/лучшие/103 Car The Definitive Visual History of the Automobile by DK (z-lib.org)",
+    "DisDocs/books/лучшие/103 Car The Definitive Visual History of the Automobile by DK (z-lib.org).zip",
+    "DisDocs/books/лучшие/Unconfirmed 56915.crdownload",
+    "Tools/car-db/photos/car0002/side/draft/1.png",
+    "Tools/car-db/photos/car0002/side/draft",
+    "Tools/car-db/photos/car0002/side",
+    "Tools/car-db/photos/car0002",
+    "Tools/car-db/photos",
+    "DisDocs/sprints/0001 — Текущий (Август) Версия 2.0.md",
+    "DisDocs/Разработка/0052-3 — style-lab.md",
+    "Tools/style-lab/data/images/Screenshot 2026-08-21 at 4.57.02 PM.png",
+    "Screenshot 2026-08-23 at 9.39.37 PM.png",
+    "DisDocs/Разработка/0053 — Мини-игры на дизайн.md",
+    "DisDocs/Разработка/Backlog/Инструмент своя текстура.md",
+    "BODY PROPORTIONS OF A LUXURY.jpg",
+    "f6602b12a4a227be7f6147414430fc70.jpg",
+    "dda71d7d18403805ace98724056a8b18.jpg",
+    "43654f03549cbc6da44d8efe46703697.jpg",
+    "DisDocs/Разработка/0050 — Референсы. Интересная история.md",
+    "DisDocs/Разработка/0051 — Профиль в игре.md",
+    "DisDocs/Разработка/0046 — Референсы игра-сайт-видео.md",
+    "DisDocs/Разработка/0045 — Референсы - лучшие работы.md",
+    "Tools/style-lab/README.md",
+    "DisDocs/Разработка/Архитектура уровней и конфигов v2.md",
+    "DisDocs/Разработка/0002 — Дейли задания.md",
+    "DisDocs/hypotheses/по стилям.md",
+    "DisDocs/hypotheses/15-референсы-urban-20-моделей.md",
+    "DisDocs/Разработка/0024 — Распределить контент.md",
+    "DisDocs/iCloud/Notes/Логи на андроиде logs.md",
+    "DisDocs/Разработка/0018 — Аддресаблы.md",
+    "DisDocs/00-описание-проекта.md",
+    "DisDocs/hypotheses/00-индекс.md",
+    "DisDocs/Бизнес/TODO — Надёжная архитектура резервного копирования.md",
+    "Untitled 2.md",
+    "Design/Истории для стилей.md",
+    "DisDocs/sprints/0000 — Шаблон Спринта.md",
+    "Analytics/reviews/Untitled.canvas"
+  ]
+}

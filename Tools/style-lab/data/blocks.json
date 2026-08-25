@@ -1,0 +1,42 @@
+{
+  "order": [
+    "recreate",
+    "inspire",
+    "wild",
+    "bodykit",
+    "saved",
+    "players"
+  ],
+  "items": {
+    "recreate": {
+      "title": "Recreate",
+      "hint": "Точное воссоздание референса — обычно чертёж + фото",
+      "defaultButton": "Create"
+    },
+    "inspire": {
+      "title": "Inspire",
+      "hint": "Идеи-вдохновение",
+      "defaultButton": "Create"
+    },
+    "wild": {
+      "title": "Wild Cards",
+      "hint": "Смелые нестандартные идеи",
+      "defaultButton": "Create"
+    },
+    "bodykit": {
+      "title": "Обвес",
+      "hint": "Идеи по обвесу (черновой раздел)",
+      "defaultButton": "Create"
+    },
+    "saved": {
+      "title": "Сохранённые идеи",
+      "hint": "Готовые машины, добавленные в идеи",
+      "defaultButton": "Use"
+    },
+    "players": {
+      "title": "Лучшие работы игроков",
+      "hint": "Рефы — открываются в игре как фото",
+      "defaultButton": "Смотреть"
+    }
+  }
+}

@@ -1,0 +1,45 @@
+{
+  "profileId": "earlyWeek",
+  "profileName": "Первая неделя (0-14 дней)",
+  "generatedAt": "2026-08-11T08:43:28.545Z",
+  "daysSimulated": 14,
+  "styleOpenedDay": {
+    "style-urban": 1,
+    "style-amer": 6
+  },
+  "allStylesOpenedDay": null,
+  "upgradeOwnedDay": {},
+  "allUpgradesOwnedDay": null,
+  "lineClosedDay": {},
+  "activeLines": [
+    "Софт: Стили",
+    "Хард: бесплатные кристаллы: Линия 1"
+  ],
+  "totalCoinsEarned": 11900,
+  "totalGemsEarned": 42,
+  "totalCoinsSpent": 4447.4093840338,
+  "totalGemsSpent": 33.355570380253496,
+  "totalRealUsdSpent": 0,
+  "avgMonthlyRealSpend": 0,
+  "tierPurchaseCounts": {
+    "Хард: бесплатные кристаллы: Линия 1 — H1": 3
+  },
+  "finalState": {
+    "coins": 7452.5906159662,
+    "gems": 8.6444296197465
+  },
+  "trace": [
+    {
+      "day": 1,
+      "type": "styleOpened",
+      "styleId": "style-urban",
+      "line": "Софт: Стили"
+    },
+    {
+      "day": 6,
+      "type": "styleOpened",
+      "styleId": "style-amer",
+      "line": "Софт: Стили"
+    }
+  ]
+}

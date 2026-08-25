@@ -1,0 +1,21 @@
+{
+  "id": "upgradeFirstF2P",
+  "name": "Upgrade-first F2P",
+  "description": "Тестовый профиль hard-линии: бесплатный, ничего не покупает за $. Все заработанные рекламой кристаллы копит именно на апгрейды стилей (H4), не на обычный дешёвый тир — идут прямо на апгрейды (cadence:daily, topUp:false), пока апгрейды не закончатся.",
+  "simulateDays": 730,
+  "income": { "adsPerDay": 2 },
+  "sequences": [
+    {
+      "name": "Софт",
+      "lines": [
+        { "name": "Стили", "phases": [ { "kind": "soft-hoardForStyle" } ], "loop": true, "until": "never" }
+      ]
+    },
+    {
+      "name": "Хард: апгрейды",
+      "lines": [
+        { "name": "Линия 1", "phases": [ { "kind": "hard-buyUpgrade", "tier": "H4", "itemsPerMonth": 0, "topUp": false, "cadence": "daily" } ], "loop": true, "until": "never" }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,12 @@
+rank,name,minRating,rewardCoins,rewardXp
+1,Newbie,0,3000,1000
+2,Beginner,1000,200,100
+3,Amateur,1200,200,100
+4,Senior,1400,200,100
+5,Competent,1700,200,100
+6,Talent,2000,200,100
+7,Expert,2300,200,100
+8,Master,2500,200,100
+9,Guru,2600,200,100
+10,Elite,2700,200,100
+,sameRankReward,,200,100

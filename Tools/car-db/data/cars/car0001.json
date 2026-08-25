@@ -1,0 +1,100 @@
+{
+  "id": "car0001",
+  "name": "Новая машина",
+  "style": "",
+  "substyle": "",
+  "usageLinks": [],
+  "descShort": "",
+  "descHistorical": "",
+  "country": "",
+  "designer": "",
+  "cardWidth": 160,
+  "views": {
+    "side": {
+      "draft": [],
+      "activeSel": null,
+      "final": null,
+      "lastExport": null,
+      "guides": {
+        "vertical": {
+          "head": {
+            "offsetX": -180,
+            "visible": true
+          },
+          "cab1": {
+            "offsetX": -70,
+            "visible": true
+          },
+          "center": {
+            "offsetX": 0,
+            "visible": true
+          },
+          "cab2": {
+            "offsetX": 76.6640625,
+            "visible": true
+          },
+          "trunk": {
+            "offsetX": 180,
+            "visible": true
+          }
+        },
+        "horizontal": {
+          "ground": {
+            "offsetY": 0,
+            "visible": true
+          },
+          "bottom": {
+            "offsetY": -30,
+            "visible": true
+          },
+          "center": {
+            "offsetY": -140,
+            "visible": true
+          },
+          "top": {
+            "offsetY": -280,
+            "visible": true
+          }
+        }
+      }
+    },
+    "front": {
+      "draft": [],
+      "activeSel": null,
+      "final": null,
+      "lastExport": null
+    },
+    "34front": {
+      "draft": [],
+      "activeSel": null,
+      "final": null,
+      "lastExport": null
+    },
+    "34rear": {
+      "draft": [],
+      "activeSel": null,
+      "final": null,
+      "lastExport": null
+    },
+    "rear": {
+      "draft": [],
+      "activeSel": null,
+      "final": null,
+      "lastExport": null
+    },
+    "custom1": {
+      "draft": [],
+      "activeSel": null,
+      "final": null,
+      "lastExport": null,
+      "customLabel": "Доп. 1"
+    },
+    "custom2": {
+      "draft": [],
+      "activeSel": null,
+      "final": null,
+      "lastExport": null,
+      "customLabel": "Доп. 2"
+    }
+  }
+}

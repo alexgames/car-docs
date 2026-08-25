@@ -1,0 +1,8 @@
+{
+	"nodes":[
+		{"id":"2818d0e1fa874d75","x":488,"y":117,"width":250,"height":60,"type":"text","text":""},
+		{"id":"8504bf33d083b8d6","x":-417,"y":-480,"width":317,"height":120,"color":"2","type":"file","file":"DisDocs/hypotheses/01-убрать-историю-и-привести-к-роликам.md"},
+		{"id":"eab2de86d6e5107d","x":-80,"y":-480,"width":314,"height":120,"color":"3","type":"file","file":"DisDocs/hypotheses/02-смягчить-пейвол.md"}
+	],
+	"edges":[]
+}

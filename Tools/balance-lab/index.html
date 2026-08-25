@@ -1,0 +1,2378 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<title>Balance Lab</title>
+<style>
+  :root{
+    --bg:#12151a; --panel:#1b1f27; --panel2:#20242e; --border:#2c3140;
+    --text:#e7e9ee; --muted:#8b93a7; --accent:#4f8cff; --good:#3ecf8e; --bad:#ff6b6b; --warn:#ffb454;
+  }
+  *{box-sizing:border-box;}
+  body{margin:0;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;background:var(--bg);color:var(--text);}
+  header{display:flex;align-items:center;gap:16px;padding:10px 16px;background:var(--panel);border-bottom:1px solid var(--border);position:sticky;top:0;z-index:10;flex-wrap:wrap;}
+  header h1{font-size:15px;margin:0;font-weight:600;color:var(--muted);letter-spacing:.02em;}
+  nav{display:flex;gap:4px;}
+  nav button{background:none;border:none;color:var(--muted);padding:8px 14px;border-radius:8px;cursor:pointer;font-size:14px;}
+  nav button.active{background:var(--panel2);color:var(--text);}
+  main{padding:16px;max-width:1200px;margin:0 auto;}
+  .tab{display:none;}
+  .tab.active{display:block;}
+  .row{display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-bottom:12px;}
+  button.btn{background:var(--panel2);border:1px solid var(--border);color:var(--text);padding:7px 14px;border-radius:8px;cursor:pointer;font-size:13px;}
+  button.btn:hover{border-color:var(--accent);}
+  button.btn.primary{background:var(--accent);border-color:var(--accent);color:#fff;}
+  button.btn.danger{border-color:var(--bad);color:var(--bad);}
+  button.btn:disabled{opacity:.4;cursor:default;}
+  .pill{font-size:12px;color:var(--muted);background:var(--panel2);padding:4px 10px;border-radius:999px;border:1px solid var(--border);}
+  .pill.dirty{color:var(--warn);border-color:var(--warn);}
+  table{border-collapse:collapse;width:100%;font-size:13px;background:var(--panel);border-radius:10px;overflow:hidden;}
+  th,td{border:1px solid var(--border);padding:0;}
+  th{background:var(--panel2);color:var(--muted);font-weight:600;text-align:left;padding:8px 10px;font-size:12px;}
+  /* было position:sticky;top:49px — но шапка сайта переносится на 2 строки на узких экранах, из-за чего заголовок таблицы наезжал на 2-3 строку данных. Убрано. */
+  td{padding:0;}
+  td[contenteditable]{padding:7px 10px;outline:none;min-width:60px;}
+  td[contenteditable]:focus{background:#26314a;}
+  tr.blank-row td{color:var(--muted);}
+  tr:hover{background:#1e2330;}
+  .row-actions{width:1%;white-space:nowrap;padding:4px !important;text-align:center;}
+  .row-actions button{background:none;border:none;color:var(--muted);cursor:pointer;font-size:14px;padding:4px 6px;}
+  .row-actions button:hover{color:var(--bad);}
+  .empty-state{color:var(--muted);text-align:center;padding:60px 20px;border:1px dashed var(--border);border-radius:12px;}
+  .card{background:var(--panel);border:1px solid var(--border);border-radius:12px;padding:14px;margin-bottom:14px;}
+  .card h2{margin:0 0 10px;font-size:14px;color:var(--muted);text-transform:uppercase;letter-spacing:.04em;}
+  .balance-strip{display:flex;gap:20px;font-size:20px;font-weight:600;}
+  .balance-strip .coin{color:var(--warn);}
+  .balance-strip .gem{color:#8ec9ff;}
+  .balance-strip small{display:block;font-size:11px;font-weight:400;color:var(--muted);}
+  form.entry{display:flex;gap:8px;flex-wrap:wrap;align-items:end;}
+  form.entry label{display:flex;flex-direction:column;font-size:11px;color:var(--muted);gap:4px;}
+  input:not([type=checkbox]):not([type=radio]),select,textarea{background:var(--panel2);border:1px solid var(--border);color:var(--text);padding:7px 8px;border-radius:6px;font-size:13px;}
+  .log-table td{padding:6px 10px;}
+  .log-table .amt.earn{color:var(--good);}
+  .log-table .amt.spend{color:var(--bad);}
+  .shop-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(190px,1fr));gap:10px;}
+  .shop-item{background:var(--panel2);border:1px solid var(--border);border-radius:10px;padding:12px;}
+  .shop-item .title{font-size:13px;font-weight:600;margin-bottom:4px;}
+  .shop-item .id{font-size:11px;color:var(--muted);margin-bottom:8px;}
+  .shop-item .price{font-size:14px;font-weight:600;}
+  .shop-item.afford{border-color:var(--good);}
+  .shop-item.locked{opacity:.45;}
+  .group-title{font-size:12px;color:var(--muted);text-transform:uppercase;letter-spacing:.05em;margin:18px 0 8px;}
+  .split{display:grid;grid-template-columns:230px 1fr;gap:16px;align-items:start;}
+  .profile-item{display:flex;justify-content:space-between;align-items:center;padding:9px 10px;border-radius:8px;cursor:pointer;font-size:13px;margin-bottom:4px;}
+  .profile-item:hover{background:var(--panel2);}
+  .profile-item.selected{background:var(--accent);color:#fff;}
+  .profile-item small{display:block;color:var(--muted);font-size:11px;}
+  .profile-item.selected small{color:#dbe6ff;}
+  .profile-item[draggable]{cursor:grab;}
+  .profile-item.dragging{opacity:.4;}
+  .profile-item.drag-over{outline:2px dashed var(--accent);outline-offset:-2px;}
+  .event-row{display:flex;gap:8px;align-items:center;padding:7px 10px;background:var(--panel2);border-radius:8px;margin-bottom:6px;font-size:13px;}
+  .event-row .tag{background:var(--accent);color:#fff;border-radius:6px;padding:2px 8px;font-size:11px;font-weight:600;}
+  .event-row .detail{color:var(--muted);flex:1;}
+  .event-row button{background:none;border:none;color:var(--muted);cursor:pointer;}
+  .event-row button:hover{color:var(--bad);}
+  @media (max-width:760px){ .split{grid-template-columns:1fr;} }
+  .chip{display:inline-flex;align-items:center;gap:6px;background:var(--panel2);border:1px solid var(--border);border-radius:999px;padding:4px 6px 4px 12px;font-size:12px;margin:0 6px 6px 0;}
+  .chip button{background:none;border:none;color:var(--muted);cursor:pointer;font-size:13px;line-height:1;padding:2px 4px;}
+  .chip button:hover{color:var(--bad);}
+  .chip.ordered{background:var(--accent);color:#fff;border-color:var(--accent);}
+  .chip.ordered button{color:#dbe6ff;}
+  .event-row.editing{outline:2px solid var(--accent);}
+  .event-row{cursor:pointer;}
+  .hyp-card{background:var(--panel2);border:1px solid var(--border);border-radius:10px;padding:14px;margin-bottom:10px;}
+  .hyp-head{display:flex;justify-content:space-between;align-items:center;gap:10px;}
+  .hyp-badge{font-size:11px;font-weight:700;padding:3px 10px;border-radius:999px;white-space:nowrap;}
+  .hyp-badge.ok{background:rgba(62,207,142,.15);color:var(--good);border:1px solid var(--good);}
+  .hyp-badge.below{background:rgba(255,180,84,.15);color:var(--warn);border:1px solid var(--warn);}
+  .hyp-badge.above{background:rgba(255,107,107,.15);color:var(--bad);border:1px solid var(--bad);}
+  .hyp-badge.error{background:rgba(139,147,167,.15);color:var(--muted);border:1px solid var(--muted);}
+  .hyp-desc{color:var(--muted);font-size:12px;margin:6px 0;}
+  .hyp-nums{font-size:13px;margin-top:6px;}
+  .hyp-nums b{color:var(--text);}
+
+  /* --- изменяемые по ширине столбцы (таблица отчётов) --- */
+  table.resizable{table-layout:fixed;}
+  table.resizable th{position:relative;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+  table.resizable td{padding:7px 10px;white-space:pre-wrap;word-break:break-word;vertical-align:top;}
+  .col-resizer{position:absolute;top:0;right:0;width:6px;height:100%;cursor:col-resize;user-select:none;touch-action:none;}
+  .col-resizer:hover, .col-resizer.active{background:var(--accent);}
+  table.resizable.resizing{cursor:col-resize;}
+  table.resizable.resizing *{user-select:none;}
+  .btn-open-report{background:none;border:1px solid var(--border);color:var(--muted);cursor:pointer;font-size:12px;padding:4px 8px;border-radius:6px;white-space:nowrap;}
+  .btn-open-report:hover{border-color:var(--accent);color:var(--text);}
+
+  /* --- показать/скрыть столбцы таблицы отчётов --- */
+  .col-toggle-bar{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:10px;}
+  .col-toggle{background:var(--panel2);border:1px solid var(--border);color:var(--muted);padding:4px 10px;border-radius:999px;font-size:12px;cursor:pointer;}
+  .col-toggle:hover{border-color:var(--accent);}
+  .col-toggle.active{background:var(--accent);color:#fff;border-color:var(--accent);}
+
+  /* --- тёмный скроллбар (Chrome/Edge/Safari + Firefox) --- */
+  *{scrollbar-color:var(--border) var(--panel);scrollbar-width:thin;}
+  ::-webkit-scrollbar{width:12px;height:12px;}
+  ::-webkit-scrollbar-track{background:var(--panel);}
+  ::-webkit-scrollbar-thumb{background:var(--border);border-radius:8px;border:2px solid var(--panel);}
+  ::-webkit-scrollbar-thumb:hover{background:var(--muted);}
+  ::-webkit-scrollbar-corner{background:var(--panel);}
+
+  /* --- попап с полным отчётом --- */
+  .modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.55);display:flex;align-items:center;justify-content:center;z-index:100;padding:24px;}
+  .modal-box{background:var(--panel);border:1px solid var(--border);border-radius:14px;max-width:900px;width:100%;max-height:92vh;overflow-y:auto;padding:0;}
+  .modal-head{position:sticky;top:0;background:var(--panel2);border-bottom:1px solid var(--border);padding:14px 18px;display:flex;justify-content:space-between;align-items:center;border-radius:14px 14px 0 0;}
+  .modal-head h3{margin:0;font-size:15px;}
+  .modal-head button{background:none;border:none;color:var(--muted);font-size:20px;cursor:pointer;line-height:1;padding:2px 8px;}
+  .modal-head button:hover{color:var(--bad);}
+  .modal-body{padding:18px;}
+  .report-json{margin:0;font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;font-size:12.5px;line-height:1.5;color:var(--text);white-space:pre-wrap;word-break:break-word;background:var(--panel2);border:1px solid var(--border);border-radius:8px;padding:14px;}
+</style>
+</head>
+<body>
+
+<header>
+  <h1>⚙ Balance Lab</h1>
+  <nav>
+    <button data-tab="configs" class="active">Конфиги</button>
+    <button data-tab="product">Продукт</button>
+    <button data-tab="journey">Путь игрока</button>
+    <button data-tab="profiles">Профили</button>
+  </nav>
+  <div style="flex:1"></div>
+  <button class="btn" id="btnRestoreProject" style="display:none"></button>
+  <button class="btn primary" id="btnOpenProject">Открыть проект balance-lab…</button>
+  <span class="pill" id="projectLabel">проект не открыт</span>
+</header>
+
+<main>
+
+  <!-- ===================== TAB: CONFIGS ===================== -->
+  <section id="tab-configs" class="tab active">
+    <div class="row">
+      <button class="btn" id="btnSave" disabled>Сохранить</button>
+      <button class="btn" id="btnAddRow" disabled>+ строка</button>
+      <span class="pill" id="fileLabel">файл не открыт</span>
+      <span class="pill dirty" id="dirtyPill" style="display:none">не сохранено</span>
+    </div>
+    <div class="row" id="folderFiles" style="display:none"></div>
+
+    <div class="card" id="contentCostCard" style="display:none">
+      <h2>Стоимость всего контента (content_pool + static_prices)</h2>
+      <div id="contentCostArea"></div>
+      <div class="row" style="margin-top:8px"><button class="btn" id="btnRefreshCost">Пересчитать</button></div>
+    </div>
+
+    <div class="card" id="productConfigsCard" style="display:none">
+      <h2>Продуктовые конфиги (новое)</h2>
+      <p style="color:var(--muted);font-size:13px;margin:0 0 10px">Справочник коммерческих тиров и прогрессия стилей — см. <code>DisDocs/Баланс/продуктовые веса.md</code> и <code>Продуктовый баланс.md</code>. Отдельно от общей кучи CSV выше.</p>
+      <p style="color:var(--muted);font-size:13px;margin:0 0 10px">⚠️ <b>«Целевой день» — это не обещанный календарный день открытия.</b> Это множитель цены: <code>цена = targetDay × ценность_дня_дельфина</code> (см. <code>loadAllConfigs()</code>, <code>stylePrice()</code>, <code>tierPriceCoins()</code>). Ценность дня считается от ARPPU дельфина (Продукт → Шаг 2), не от дохода конкретного профиля — поэтому реальный день открытия у любого профиля (особенно F2P) обычно отличается от этого числа, часто в бо́льшую сторону. Подробнее — <code>DisDocs/Баланс/Модели поведения и проверка дыр экономики.md</code>.</p>
+      <div class="group-title">Тиры S1-S5 (soft) / H1-H5 (hard) / R1-R6 (real) — <code>product_tiers.csv</code></div>
+      <table><thead><tr><th>Тир</th><th>Канал</th><th title="Множитель цены в днях дельфин-эталона, не календарный день открытия">Цена, дни (эталон)</th><th>Цена $</th><th>Смысл</th></tr></thead><tbody id="productTiersBody"></tbody></table>
+      <div class="row" style="margin-top:8px">
+        <button class="btn primary" id="btnSaveProductTiers" disabled>Сохранить тиры</button>
+        <span class="pill" id="productTiersStatus">открой проект</span>
+      </div>
+      <div class="group-title" style="margin-top:16px">Прогрессия стилей (особая линия, не S1-S5) — <code>style_progression.csv</code></div>
+      <table><thead><tr><th>styleId</th><th>Название</th><th title="Множитель цены в днях дельфин-эталона, не календарный день открытия">Цена, дни (эталон)</th><th></th></tr></thead><tbody id="styleProgressionBody"></tbody></table>
+      <div class="row" style="margin-top:8px">
+        <button class="btn" id="btnAddStyleRow" disabled>+ стиль</button>
+        <button class="btn primary" id="btnSaveStyleProgression" disabled>Сохранить прогрессию</button>
+        <span class="pill" id="styleProgressionStatus">открой проект</span>
+      </div>
+    </div>
+
+    <div id="configArea"><div class="empty-state">Открой проект (кнопка в шапке) — увидишь список CSV из <code>data/</code>, кликаешь нужный. Сохранение пишет обратно в тот же файл на диске, без диалогов.<br>Перенос изменений обратно в игру — отдельный шаг (скрипт/кнопка), пока не сделан.</div></div>
+  </section>
+
+  <!-- ===================== TAB: PRODUCT ===================== -->
+  <section id="tab-product" class="tab">
+    <div class="card">
+      <h2>Шаг 1 — Магазин</h2>
+      <p style="color:var(--muted);font-size:13px;margin:0 0 10px">Реальные тиры валюты из <code>static_prices.csv</code> (строки с <code>productId</code> вида <code>studio.cardesign.store.*</code>) — здесь их видно и можно править, не ища среди остальных 70+ строк на вкладке «Конфиги». «Сохранить магазин» пишет обратно в тот же файл.</p>
+      <table><thead><tr><th>itemId</th><th>Название</th><th>Валюта</th><th>Количество</th><th>Цена $</th><th>Эталон</th><th></th></tr></thead><tbody id="shopTableBody"></tbody></table>
+      <div class="row" style="margin-top:10px">
+        <button class="btn" id="btnAddShopRow" disabled>+ тир</button>
+        <button class="btn primary" id="btnSaveShop" disabled>Сохранить магазин</button>
+        <span class="pill" id="shopStatus">открой проект</span>
+      </div>
+      <div class="row" style="margin-top:8px">
+        <span class="pill" id="usdPerCoinPill">$/монета (эталон): —</span>
+        <span class="pill" id="usdPerGemPill">$/кристалл (эталон): —</span>
+      </div>
+    </div>
+
+    <div class="card">
+      <h2>Шаг 2 — Продуктовая гипотеза (рыночные допущения)</h2>
+      <p style="color:var(--muted);font-size:13px;margin:0 0 10px">Сверху вниз: задаём целевые бизнес-числа как гипотезу, а не вычисляем их из симуляции. Дельфин — типичный/медианный платящий, а не среднее по рынку (среднее сильно искажено китами: топ-10% платящих дают 60-70% выручки). Кит сюда не входит — он вопрос глубины каталога, проверяется отдельно симуляцией. Сохраняется отдельным файлом, независимо от баланс-профиля.</p>
+      <form class="entry" id="marketHypothesisForm">
+        <label>ARPPU дельфина, $/мес<input name="dolphinArppuUsd" type="number" min="0" step="0.5" value="20"></label>
+        <label>% платящих<input name="payerConversionPercent" type="number" min="0" max="100" step="0.1" value="3"></label>
+        <label>Rewarded eCPM, $<input name="rewardedEcpmUsd" type="number" min="0" step="0.5" value="20"></label>
+        <label>Rewarded/день, в среднем на игрока<input name="adsPerDayAvg" type="number" min="0" step="0.1" value="2"></label>
+        <label style="flex-direction:row;align-items:center;gap:6px"><input type="checkbox" name="interstitialEnabled" id="interstitialEnabledCheckbox" style="width:auto"> Interstitial включён (для v2 — выключено)</label>
+        <label>Interstitial eCPM, $<input name="interstitialEcpmUsd" type="number" min="0" step="0.5" value="8" disabled></label>
+        <label>Interstitial/день, в среднем на игрока<input name="interstitialShowsPerDayAvg" type="number" min="0" step="0.1" value="2" disabled></label>
+        <label>Активных дней/мес на MAU, в среднем<input name="activeDaysPerMonth" type="number" min="0" max="31" step="0.5" value="10"></label>
+      </form>
+      <p style="color:var(--muted);font-size:12px;margin:6px 0 0">Монет/день бесплатному = ARPPU дельфина ÷ 30 (месяц = 30 дней) ÷ курс $/монета из Шага 1 — единая "ценность дня", тот же принцип, что и hard-день дельфина (см. <code>продуктовые веса.md</code>), просто пересчитан в монеты по курсу магазина. Позже hard получит свой отдельный расчёт (Шаг 4) — раздельный бюджет между hard и real в рамках $20.</p>
+      <div class="row" style="margin-top:10px">
+        <button class="btn primary" id="btnSaveMarketHypothesis" disabled>Сохранить гипотезу</button>
+        <span class="pill" id="marketHypothesisStatus">открой проект</span>
+      </div>
+      <div class="row" style="margin-top:8px">
+        <span class="pill" id="coinsPerDayFreePill">монет/день бесплатному: —</span>
+        <span class="pill" id="usdPerDayFreePill">$-эквивалент/день (проверка): —</span>
+      </div>
+      <div class="group-title" style="margin-top:14px">Ежедневный доход: Арена + Дейлик (руками, от рекомендованного)</div>
+      <p style="color:var(--muted);font-size:12px;margin:0 0 8px">Арена и дейлик — по 24ч кулдаун каждый (см. <code>Принцип рассчета.md</code>). Рекомендация ниже просто делит "монет/день" пополам между ними — задавай руками как считаешь нужным, это только стартовая подсказка.</p>
+      <form class="entry" id="incomeSourcesForm">
+        <label>Монет за Арену<input name="coinsPerArena" type="number" min="0" step="10" value="0"></label>
+        <label>Монет за Дейлик<input name="coinsPerDaily" type="number" min="0" step="10" value="0"></label>
+        <label>Кристаллов за rewarded<input name="gemsPerAd" type="number" min="0" step="1" value="3"></label>
+      </form>
+      <div class="row" style="margin-top:8px">
+        <span class="pill" id="incomeRecommendedPill">рекомендовано: —</span>
+        <button class="btn" id="btnApplyRecommendedIncome">Применить рекомендованное</button>
+      </div>
+      <div class="row" style="margin-top:8px">
+        <span class="pill" id="minItemCoinsPill">мин. цена айтема, монеты: —</span>
+        <span class="pill" id="minItemGemsPill">мин. цена айтема, кристаллы: —</span>
+      </div>
+      <div class="row" style="margin-top:8px">
+        <span class="pill" id="adRevPerUserDayPill">доход с рекламы/день/юзер: —</span>
+        <span class="pill" id="revPer1000MauPill">доход/1000 MAU в месяц: —</span>
+      </div>
+    </div>
+
+    <div class="card">
+      <h2>Шаг 3 — Цена soft-контента от целевого срока</h2>
+      <p style="color:var(--muted);font-size:13px;margin:0 0 10px">Только soft (монеты) — hard считается по-другому (Шаг 4, ещё не сделан): дельфин не копит кристаллы, монеты же зарабатывают игрой одинаково все сегменты, поэтому тут работает накопительная модель. База — «монет/день бесплатному» из Шага 2. Доли бюджета — как игрок делит один день дохода между целями, сумма должна быть 100%.</p>
+      <table><thead><tr><th>Класс контента</th><th>Целевой срок, дней</th><th>Доля бюджета, %</th><th>→ цена, монеты</th></tr></thead><tbody id="softPricingBody"></tbody></table>
+      <div class="row" style="margin-top:10px">
+        <button class="btn primary" id="btnSaveSoftPricing" disabled>Сохранить</button>
+        <span class="pill" id="softPricingStatus">открой проект</span>
+        <span class="pill" id="softBudgetSumPill"></span>
+      </div>
+    </div>
+
+    <div class="card" style="opacity:.55">
+      <h2>Дальше — пример, ещё не согласовано</h2>
+      <p style="color:var(--muted);font-size:13px;margin:0">Всё ниже — черновик формы шагов 2-3 из документа, чтобы было видно направление. Не трогаем, пока не разберёмся с магазином.</p>
+    </div>
+    <div class="card" style="opacity:.55">
+      <h2>Баланс-профиль (пример)</h2>
+      <form class="entry" id="balanceProfileForm">
+        <label>id баланса<input name="id" value="balance_2_0" pattern="[a-zA-Z0-9_-]+"></label>
+        <label>Название<input name="name" value="Баланс 2.0"></label>
+        <label>Seed цен<input name="seed" type="number" value="2001" min="0"></label>
+        <label>Арена, монет/день<input name="arenaCoins" type="number" placeholder="определить" min="0"></label>
+        <label>Основной дейлик, монет/день<input name="dailyCoins" type="number" placeholder="определить" min="0"></label>
+        <label>Rewarded, кристаллов/показ<input name="gemsPerAd" type="number" placeholder="определить" min="0"></label>
+        <label>Rewarded, максимум/день<input name="adsPerDay" type="number" placeholder="определить" min="0"></label>
+        <label>Монеты × рейтинг<input name="softPerRating" type="number" placeholder="определить" min="1"></label>
+        <label>Кристаллы × рейтинг<input name="hardPerRating" type="number" placeholder="определить" min="1"></label>
+        <label>Разброс цены, %<input name="jitterPercent" type="number" placeholder="0–50" min="0" max="50"></label>
+      </form>
+      <div class="group-title" style="margin-top:14px">Шаг 2 — $-стоимость одного дня дохода (пример)</div>
+      <div class="row">
+        <span class="pill" id="softDayPill">soft/день: —</span>
+        <span class="pill" id="hardDayPill">hard/день: —</span>
+      </div>
+      <div class="row" style="margin-top:12px">
+        <button class="btn" id="btnNewSeed" disabled>Новый seed</button>
+        <button class="btn" id="btnSaveBalanceProfile" disabled>Сохранить профиль</button>
+        <button class="btn primary" id="btnGenerateBalance" disabled>Сгенерировать игровые CSV</button>
+        <span class="pill" id="balanceProfileStatus">открой проект</span>
+      </div>
+    </div>
+    <div class="card" style="opacity:.55">
+      <h2>Старый черновик soft+hard вместе (устарел, заменён реальным Шагом 3 выше — оставлено для примера hard-части, пока нет Шага 4)</h2>
+      <table><thead><tr><th>Класс</th><th>Целевые дни (soft)</th><th>Доля бюджета soft, %</th><th>Целевые дни (hard)</th><th>Доля бюджета hard, %</th><th>→ цена soft</th><th>→ цена hard</th></tr></thead><tbody id="classPricingBody"></tbody></table>
+      <div class="row" style="margin-top:8px"><span class="pill" id="budgetSumPill"></span></div>
+    </div>
+    <div class="card" style="opacity:.55">
+      <h2>Цели по календарным дням (пример)</h2>
+      <p style="color:var(--muted);font-size:13px">Это целевой темп выдачи контента. Периоды и количества сохраняются внутри баланс-профиля; позже сюда добавим проверку детального отчёта симулятора.</p>
+      <table><thead><tr><th>Дни</th><th>Экстры</th><th>Инструменты</th><th>Стили</th><th>Апгрейды</th><th>Промо</th></tr></thead><tbody id="balanceBandsBody"></tbody></table>
+      <div id="productValidationArea" class="empty-state" style="padding:20px">Сначала открой проект и запусти симуляцию профилей.</div>
+    </div>
+  </section>
+
+  <!-- ===================== TAB: JOURNEY ===================== -->
+  <section id="tab-journey" class="tab">
+    <div class="card">
+      <h2>Баланс</h2>
+      <div class="balance-strip">
+        <div class="coin" id="balCoins">0<small>монеты</small></div>
+        <div class="gem" id="balGems">0<small>кристаллы</small></div>
+      </div>
+    </div>
+
+    <div class="card">
+      <h2>Добавить событие</h2>
+      <form class="entry" id="entryForm">
+        <label>Дата<input type="date" name="date" required></label>
+        <label>Тип
+          <select name="kind">
+            <option value="earn">Заработал</option>
+            <option value="spend">Потратил</option>
+          </select>
+        </label>
+        <label>Валюта
+          <select name="currency">
+            <option value="coins">Монеты</option>
+            <option value="gems">Кристаллы</option>
+          </select>
+        </label>
+        <label>Сумма<input type="number" name="amount" min="0" required style="width:100px"></label>
+        <label>Заметка<input type="text" name="note" placeholder="за что / купил что" style="width:220px"></label>
+        <button class="btn primary" type="submit">Добавить</button>
+      </form>
+    </div>
+
+    <div class="card">
+      <h2>Журнал</h2>
+      <div class="row">
+        <button class="btn" id="btnOpenJourney">Открыть журнал (json)…</button>
+        <button class="btn" id="btnSaveJourney" disabled>Сохранить журнал</button>
+        <span class="pill" id="journeyLabel">не сохраняется в файл — только в этой вкладке браузера</span>
+      </div>
+      <table class="log-table">
+        <thead><tr><th>Дата</th><th>Событие</th><th>Валюта</th><th>Сумма</th><th>Заметка</th><th></th></tr></thead>
+        <tbody id="journeyBody"></tbody>
+      </table>
+    </div>
+
+    <div class="card">
+      <h2>Магазин (из загруженного static_prices.csv)</h2>
+      <div id="shopArea" class="empty-state">Открой static_prices.csv во вкладке «Конфиги», чтобы увидеть витрину.</div>
+    </div>
+  </section>
+
+  <!-- ===================== TAB: PROFILES ===================== -->
+  <section id="tab-profiles" class="tab">
+    <div class="row">
+      <button class="btn" id="btnNewProfile" disabled>+ новый профиль</button>
+      <button class="btn primary" id="btnRunSim" disabled>▶ Запустить симуляцию всех профилей</button>
+      <span class="pill" id="simStatus"></span>
+    </div>
+
+    <div class="split">
+      <!-- LEFT: profile list -->
+      <div class="card" style="align-self:start">
+        <h2>Профили</h2>
+        <div id="profilesList"><div class="empty-state" style="padding:20px 10px">Открой проект — кнопка в шапке.</div></div>
+      </div>
+
+      <!-- RIGHT: editor for selected profile -->
+      <div id="profileEditor">
+        <div class="empty-state">Выбери профиль слева (или создай новый).</div>
+      </div>
+    </div>
+
+    <div class="card" id="reportsCard" style="display:none">
+      <h2>Отчёты</h2>
+      <div id="reportsArea"></div>
+    </div>
+
+    <div class="card" id="hypothesesCard" style="display:none">
+      <h2>Гипотезы о балансе</h2>
+      <div id="hypothesesArea"></div>
+      <div class="row" style="margin-top:10px"><button class="btn" id="btnNewHypothesis">+ новая гипотеза (json)</button></div>
+    </div>
+  </section>
+
+</main>
+
+<script>
+// ---------- tab switching ----------
+document.querySelectorAll('nav button').forEach(b=>{
+  b.onclick=()=>{
+    document.querySelectorAll('nav button').forEach(x=>x.classList.remove('active'));
+    document.querySelectorAll('.tab').forEach(x=>x.classList.remove('active'));
+    b.classList.add('active');
+    document.getElementById('tab-'+b.dataset.tab).classList.add('active');
+    if(b.dataset.tab==='journey') renderShop();
+  };
+});
+
+function escapeHtml(s){
+  return String(s??'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+}
+
+// ---------- CSV helpers ----------
+function parseCSVLine(line){
+  const out=[]; let value='', quoted=false;
+  for(let i=0;i<line.length;i++){
+    const ch=line[i];
+    if(ch==='"' && quoted && line[i+1]==='"'){ value+='"'; i++; }
+    else if(ch==='"'){ quoted=!quoted; }
+    else if(ch===',' && !quoted){ out.push(value); value=''; }
+    else value+=ch;
+  }
+  out.push(value); return out;
+}
+function parseCSV(text){
+  return text.replace(/\r/g,'').split('\n').map(parseCSVLine);
+}
+function toCSV(rows){
+  const cell=v=>{ const s=String(v??''); return /[",\n]/.test(s) ? '"'+s.replace(/"/g,'""')+'"' : s; };
+  return rows.map(r=>r.map(cell).join(',')).join('\n');
+}
+
+// ---------- CONFIG EDITOR STATE ----------
+let fileHandle=null, rows=[], dirty=false, priceRows=null; // priceRows kept for shop tab
+
+function setDirty(v){
+  dirty=v;
+  document.getElementById('dirtyPill').style.display = v ? 'inline-block':'none';
+}
+
+async function loadFileHandle(handle){
+  fileHandle = handle;
+  const file = await handle.getFile();
+  const text = await file.text();
+  rows = parseCSV(text);
+  document.getElementById('fileLabel').textContent = handle.name;
+  document.getElementById('btnSave').disabled = false;
+  document.getElementById('btnAddRow').disabled = false;
+  setDirty(false);
+  renderTable();
+  if(handle.name.includes('price')) { priceRows = rows; renderShop(); }
+}
+
+async function refreshConfigFileList(){
+  const list = document.getElementById('folderFiles');
+  const names = [];
+  for await (const [name, handle] of dataDir.entries()){
+    if(handle.kind==='file' && name.toLowerCase().endsWith('.csv')) names.push(name);
+  }
+  names.sort();
+  list.style.display='flex';
+  list.innerHTML = `<span class="pill">data/</span>` + names.map(n=>`<button class="btn" data-fname="${n}">${n}</button>`).join('');
+  list.querySelectorAll('[data-fname]').forEach(btn=>{
+    btn.onclick = async ()=>{
+      const handle = await dataDir.getFileHandle(btn.dataset.fname);
+      await loadFileHandle(handle);
+    };
+  });
+}
+
+// ---------- PROJECT ROOT (data/ + profiles/ + reports/ from one grant) ----------
+let projectRoot=null, dataDir=null, profilesDir=null, reportsDir=null, hypothesesDir=null, balanceProfilesDir=null, generatedDir=null;
+let lastReportsByFile = {}; // заполняется при "Запустить симуляцию всех профилей", используется гипотезами
+
+// ---------- запоминаем выбранную папку в IndexedDB, чтобы не выбирать её заново после перезагрузки ----------
+function idbOpen(){
+  return new Promise((resolve,reject)=>{
+    const req = indexedDB.open('balance-lab-fs', 1);
+    req.onupgradeneeded = ()=> req.result.createObjectStore('handles');
+    req.onsuccess = ()=> resolve(req.result);
+    req.onerror = ()=> reject(req.error);
+  });
+}
+async function idbSet(key, value){
+  const db = await idbOpen();
+  return new Promise((resolve,reject)=>{
+    const tx = db.transaction('handles','readwrite');
+    tx.objectStore('handles').put(value, key);
+    tx.oncomplete = ()=>resolve();
+    tx.onerror = ()=>reject(tx.error);
+  });
+}
+async function idbGet(key){
+  const db = await idbOpen();
+  return new Promise((resolve,reject)=>{
+    const tx = db.transaction('handles','readonly');
+    const req = tx.objectStore('handles').get(key);
+    req.onsuccess = ()=>resolve(req.result);
+    req.onerror = ()=>reject(req.error);
+  });
+}
+
+async function initProjectFromRoot(root){
+  projectRoot = root;
+  dataDir = await projectRoot.getDirectoryHandle('data', {create:true});
+  profilesDir = await projectRoot.getDirectoryHandle('profiles', {create:true});
+  reportsDir = await projectRoot.getDirectoryHandle('reports', {create:true});
+  hypothesesDir = await projectRoot.getDirectoryHandle('hypotheses', {create:true});
+  balanceProfilesDir = await projectRoot.getDirectoryHandle('balance-profiles', {create:true});
+  generatedDir = await projectRoot.getDirectoryHandle('generated', {create:true});
+  document.getElementById('projectLabel').textContent = 'проект: ' + projectRoot.name;
+  document.getElementById('btnNewProfile').disabled = false;
+  document.getElementById('btnRunSim').disabled = false;
+  document.getElementById('btnNewSeed').disabled = false;
+  document.getElementById('btnSaveBalanceProfile').disabled = false;
+  document.getElementById('btnGenerateBalance').disabled = false;
+  document.getElementById('btnAddShopRow').disabled = false;
+  document.getElementById('btnSaveShop').disabled = false;
+  document.getElementById('btnSaveMarketHypothesis').disabled = false;
+  document.getElementById('btnSaveSoftPricing').disabled = false;
+  document.getElementById('btnSaveProductTiers').disabled = false;
+  document.getElementById('btnAddStyleRow').disabled = false;
+  document.getElementById('btnSaveStyleProgression').disabled = false;
+  await refreshConfigFileList();
+  await loadEditorRefData();
+  await renderContentCostReport();
+  await loadProductConfigs();
+  await renderProfilesList();
+  renderBalanceBands();
+  await loadShopRows();
+  renderShopTable();
+  await loadMarketHypothesis();
+  await loadSoftPricing();
+  setShopStatus('готов к настройке');
+  setBalanceStatus('готов к настройке');
+  document.getElementById('btnRestoreProject').style.display = 'none';
+  try{ await idbSet('projectRoot', root); }catch(e){ /* IndexedDB недоступен — просто не запомним на будущее */ }
+}
+
+async function openProject(){
+  try{
+    const root = await window.showDirectoryPicker();
+    await initProjectFromRoot(root);
+  }catch(e){ if(e.name!=='AbortError') alert('Не удалось открыть проект: '+e.message); }
+}
+document.getElementById('btnOpenProject').onclick = openProject;
+
+// при загрузке страницы — попробовать открыть ту же папку, что была в прошлый раз, без диалога выбора
+(async function tryAutoOpenProject(){
+  try{
+    const root = await idbGet('projectRoot');
+    if(!root) return;
+    const perm = await root.queryPermission({mode:'readwrite'});
+    if(perm==='granted'){
+      await initProjectFromRoot(root);
+      return;
+    }
+    // доступ нужно подтвердить жестом пользователя (клик) — показываем кнопку вместо диалога выбора папки
+    const btn = document.getElementById('btnRestoreProject');
+    btn.textContent = 'Восстановить доступ: ' + root.name;
+    btn.style.display = '';
+    btn.onclick = async ()=>{
+      try{
+        const p = await root.requestPermission({mode:'readwrite'});
+        if(p==='granted') await initProjectFromRoot(root);
+      }catch(e){ alert('Не удалось получить доступ: '+e.message); }
+    };
+  }catch(e){ /* нет сохранённой папки или IndexedDB недоступен — обычный сценарий, ничего не делаем */ }
+})();
+
+// ---------- PRODUCT DASHBOARD: one editable balance profile ----------
+const DEFAULT_BANDS = [
+  {days:'1–3', extras:0, tools:0, styles:0, upgrades:0, promo:0},
+  {days:'4–10', extras:0, tools:0, styles:0, upgrades:0, promo:0},
+  {days:'11–30', extras:0, tools:0, styles:0, upgrades:0, promo:0},
+  {days:'31–90', extras:0, tools:0, styles:0, upgrades:0, promo:0},
+  {days:'91–365', extras:0, tools:0, styles:0, upgrades:0, promo:0}
+];
+let balanceBands = structuredClone(DEFAULT_BANDS);
+function setBalanceStatus(text, tone=''){
+  const el=document.getElementById('balanceProfileStatus'); el.textContent=text;
+  el.style.color=tone==='bad'?'var(--bad)':(tone==='good'?'var(--good)':'var(--muted)');
+}
+function renderBalanceBands(){
+  const body=document.getElementById('balanceBandsBody');
+  body.innerHTML=balanceBands.map((b,i)=>`<tr><td><input data-band="${i}" data-key="days" value="${b.days}" style="width:75px"></td>${['extras','tools','styles','upgrades','promo'].map(k=>`<td><input data-band="${i}" data-key="${k}" type="number" min="0" value="${b[k]}" style="width:65px"></td>`).join('')}</tr>`).join('');
+  body.querySelectorAll('input').forEach(input=>input.oninput=()=>{ const b=balanceBands[+input.dataset.band]; b[input.dataset.key]=input.dataset.key==='days'?input.value:(+input.value||0); });
+}
+// ---- Шаг 1: Магазин — реальные тиры валюты из static_prices.csv (productId содержит .store.) ----
+let shopRows = [];       // {itemId, title, coins, gems, real} — только строки магазина
+let shopOtherRows = [];  // все остальные строки static_prices.csv как есть (объекты по тому же заголовку)
+let shopHeader = ['itemId','coins','gems','real','productId','level','sale','tag','title','descr'];
+let shopAnchor = {coinPackId:'', gemPackId:''}; // эталонные тиры магазина для расчёта $/монета и $/кристалл
+function anchorKey(currency){ return currency==='gems' ? 'gemPackId' : 'coinPackId'; }
+async function loadShopRows(){
+  let all = [];
+  try{ all = await readCSVObjects(dataDir, 'static_prices.csv'); }catch(e){ all=[]; }
+  shopHeader = all.length ? Object.keys(all[0]) : shopHeader;
+  shopOtherRows = all.filter(r=>!(r.productId||'').includes('.store.'));
+  shopRows = all.filter(r=>(r.productId||'').includes('.store.')).map(r=>({
+    itemId:r.itemId, title:r.title||'', productId:r.productId,
+    currency: (+r.gems>0) ? 'gems' : 'coins',
+    amount: (+r.gems>0) ? (+r.gems) : (+r.coins||0),
+    real: +r.real||0
+  }));
+}
+function renderShopTable(){
+  ensureShopAnchorDefaults();
+  const body = document.getElementById('shopTableBody');
+  body.innerHTML = shopRows.map((r,i)=>`<tr>
+    <td><input data-row="${i}" data-key="itemId" value="${r.itemId}" style="width:130px"></td>
+    <td><input data-row="${i}" data-key="title" value="${r.title}" style="width:150px"></td>
+    <td><select data-row="${i}" data-key="currency">
+      <option value="coins" ${r.currency==='coins'?'selected':''}>монеты</option>
+      <option value="gems" ${r.currency==='gems'?'selected':''}>кристаллы</option>
+    </select></td>
+    <td><input data-row="${i}" data-key="amount" type="number" min="0" value="${r.amount}" style="width:100px"></td>
+    <td><input data-row="${i}" data-key="real" type="number" min="0" step="0.01" value="${r.real}" style="width:80px"></td>
+    <td><input type="radio" name="anchor-${r.currency}" data-anchor="${i}" ${shopAnchor[anchorKey(r.currency)]===r.itemId?'checked':''}></td>
+    <td><button class="btn" data-del="${i}" style="padding:2px 8px">✕</button></td>
+  </tr>`).join('');
+  body.querySelectorAll('input,select').forEach(el=>{
+    if(el.type==='radio') return;
+    el.oninput = el.onchange = ()=>{
+      const r = shopRows[+el.dataset.row];
+      const key = el.dataset.key;
+      r[key] = (key==='amount'||key==='real') ? (+el.value||0) : el.value;
+      if(key==='itemId') r.productId = 'studio.cardesign.store.'+el.value;
+      setShopStatus('не сохранено', 'bad');
+      if(key==='currency'||key==='amount'||key==='real'||key==='itemId') renderShopTable();
+      renderShopAnchorPills();
+    };
+  });
+  body.querySelectorAll('[data-anchor]').forEach(radio=>{
+    radio.onchange = ()=>{
+      const r = shopRows[+radio.dataset.anchor];
+      shopAnchor[anchorKey(r.currency)] = r.itemId;
+      renderShopAnchorPills();
+    };
+  });
+  body.querySelectorAll('[data-del]').forEach(btn=>{
+    btn.onclick = ()=>{ shopRows.splice(+btn.dataset.del,1); renderShopTable(); setShopStatus('не сохранено', 'bad'); renderShopAnchorPills(); };
+  });
+  renderShopAnchorPills();
+}
+function ensureShopAnchorDefaults(){
+  const coinRows = shopRows.filter(r=>r.currency==='coins' && r.amount>0);
+  const gemRows = shopRows.filter(r=>r.currency==='gems' && r.amount>0);
+  if(!coinRows.some(r=>r.itemId===shopAnchor.coinPackId) && coinRows.length) shopAnchor.coinPackId = coinRows[Math.floor(coinRows.length/2)].itemId;
+  if(!gemRows.some(r=>r.itemId===shopAnchor.gemPackId) && gemRows.length) shopAnchor.gemPackId = gemRows[Math.floor(gemRows.length/2)].itemId;
+}
+function setShopStatus(text, tone=''){
+  const el=document.getElementById('shopStatus'); if(!el) return;
+  el.textContent=text; el.style.color=tone==='bad'?'var(--bad)':(tone==='good'?'var(--good)':'var(--muted)');
+}
+document.getElementById('btnAddShopRow').onclick = ()=>{
+  const n = shopRows.length+1;
+  shopRows.push({itemId:'new-tier-'+n, title:'Новый тир', productId:'studio.cardesign.store.newtier'+n, currency:'coins', amount:0, real:0});
+  renderShopTable();
+  setShopStatus('не сохранено', 'bad');
+};
+document.getElementById('btnSaveShop').onclick = async ()=>{
+  try{
+    const merged = [...shopOtherRows, ...shopRows.map(r=>({
+      itemId:r.itemId, coins:r.currency==='coins'?String(r.amount):'', gems:r.currency==='gems'?String(r.amount):'',
+      real:String(r.real), productId:r.productId, level:'', sale:'', tag:'', title:r.title, descr:''
+    }))];
+    const rows = [shopHeader, ...merged.map(r=>shopHeader.map(h=>r[h]??''))];
+    const handle = await dataDir.getFileHandle('static_prices.csv', {create:true});
+    const w = await handle.createWritable();
+    await w.write(toCSV(rows)+'\n');
+    await w.close();
+    setShopStatus('сохранено', 'good');
+    await loadEditorRefData();
+    renderShopAnchorPills();
+  }catch(e){ setShopStatus('ошибка: '+e.message, 'bad'); }
+};
+
+function computeShopAnchorValues(){
+  const coinPack = shopRows.find(p=>p.itemId===shopAnchor.coinPackId && p.currency==='coins');
+  const gemPack = shopRows.find(p=>p.itemId===shopAnchor.gemPackId && p.currency==='gems');
+  return {
+    coinPack, gemPack,
+    usdPerCoin: coinPack ? coinPack.real/coinPack.amount : null,
+    usdPerGem: gemPack ? gemPack.real/gemPack.amount : null
+  };
+}
+function renderShopAnchorPills(){
+  const {usdPerCoin, usdPerGem} = computeShopAnchorValues();
+  document.getElementById('usdPerCoinPill').textContent = '$/монета: ' + (usdPerCoin!==null ? usdPerCoin.toFixed(6) : '—');
+  document.getElementById('usdPerGemPill').textContent = '$/кристалл: ' + (usdPerGem!==null ? usdPerGem.toFixed(6) : '—');
+  renderDayValuePills();
+  renderMarketHypothesisPills();
+}
+
+// ---- Шаг 2 (реальный): продуктовая гипотеза — рыночные допущения сверху вниз ----
+// Дельфин: медианный/типичный платящий (не среднее — среднее искажено китами).
+// Кит сюда не входит: не вопрос цены, вопрос глубины каталога — проверяется отдельно симуляцией.
+let marketHypothesis = {
+  dolphinArppuUsd:20, payerConversionPercent:3, rewardedEcpmUsd:20, adsPerDayAvg:2,
+  interstitialEnabled:false, interstitialEcpmUsd:8, interstitialShowsPerDayAvg:0,
+  activeDaysPerMonth:10, coinsPerArena:0, coinsPerDaily:0, gemsPerAd:3
+};
+function setMarketHypothesisStatus(text, tone=''){
+  const el=document.getElementById('marketHypothesisStatus'); if(!el) return;
+  el.textContent=text; el.style.color=tone==='bad'?'var(--bad)':(tone==='good'?'var(--good)':'var(--muted)');
+}
+function fillMarketHypothesisForm(){
+  const form = document.getElementById('marketHypothesisForm'); if(!form) return;
+  Object.keys(marketHypothesis).forEach(k=>{
+    const el = form.elements[k]; if(!el) return;
+    if(el.type==='checkbox') el.checked = !!marketHypothesis[k]; else el.value = marketHypothesis[k];
+  });
+  const enabled = !!marketHypothesis.interstitialEnabled;
+  form.elements['interstitialEcpmUsd'].disabled = !enabled;
+  form.elements['interstitialShowsPerDayAvg'].disabled = !enabled;
+  const incomeForm = document.getElementById('incomeSourcesForm');
+  if(incomeForm){
+    incomeForm.elements['coinsPerArena'].value = marketHypothesis.coinsPerArena;
+    incomeForm.elements['coinsPerDaily'].value = marketHypothesis.coinsPerDaily;
+    incomeForm.elements['gemsPerAd'].value = marketHypothesis.gemsPerAd;
+  }
+}
+function readMarketHypothesisForm(){
+  const form = document.getElementById('marketHypothesisForm'); if(!form) return;
+  // читаем .value напрямую (не FormData) — disabled-поля (interstitial-детали при выключенном тумблере)
+  // пропадают из FormData, но их значение не должно теряться при повторном включении
+  const val = name => +form.elements[name].value || 0;
+  const incomeForm = document.getElementById('incomeSourcesForm');
+  marketHypothesis = {
+    dolphinArppuUsd: val('dolphinArppuUsd'),
+    payerConversionPercent: val('payerConversionPercent'),
+    rewardedEcpmUsd: val('rewardedEcpmUsd'),
+    adsPerDayAvg: val('adsPerDayAvg'),
+    interstitialEnabled: form.elements['interstitialEnabled'].checked,
+    interstitialEcpmUsd: val('interstitialEcpmUsd'),
+    interstitialShowsPerDayAvg: val('interstitialShowsPerDayAvg'),
+    activeDaysPerMonth: val('activeDaysPerMonth'),
+    coinsPerArena: incomeForm ? (+incomeForm.elements['coinsPerArena'].value||0) : (marketHypothesis.coinsPerArena||0),
+    coinsPerDaily: incomeForm ? (+incomeForm.elements['coinsPerDaily'].value||0) : (marketHypothesis.coinsPerDaily||0),
+    gemsPerAd: incomeForm ? (+incomeForm.elements['gemsPerAd'].value||0) : (marketHypothesis.gemsPerAd||0),
+  };
+}
+function renderMarketHypothesisPills(){
+  if(!document.getElementById('marketHypothesisForm')) return;
+  readMarketHypothesisForm();
+  const {usdPerCoin} = computeShopAnchorValues();
+  const usdPerDay = marketHypothesis.dolphinArppuUsd/30;
+  const coinsFree = usdPerCoin ? usdPerDay/usdPerCoin : null;
+  lastCoinsPerDayFree = coinsFree;
+  document.getElementById('coinsPerDayFreePill').textContent = 'монет/день (ценность дня): ' + (coinsFree!==null ? Math.round(coinsFree).toLocaleString('ru-RU') : '—');
+  document.getElementById('usdPerDayFreePill').textContent = '$/день (дельфин ÷ 30): $' + usdPerDay.toFixed(4);
+  const recPill = document.getElementById('incomeRecommendedPill');
+  if(recPill){
+    const half = coinsFree!==null ? Math.round(coinsFree/2) : null;
+    recPill.textContent = 'рекомендовано: ' + (half!==null ? `Арена ${half.toLocaleString('ru-RU')} + Дейлик ${half.toLocaleString('ru-RU')} (пополам от ценности дня)` : '—');
+  }
+
+  const coinTiers = shopRows.filter(r=>r.currency==='coins' && r.amount>0).map(r=>r.amount);
+  const gemTiers = shopRows.filter(r=>r.currency==='gems' && r.amount>0).map(r=>r.amount);
+  const minCoins = coinTiers.length ? Math.min(...coinTiers) : null;
+  const minGems = gemTiers.length ? Math.min(...gemTiers) : null;
+  document.getElementById('minItemCoinsPill').textContent = 'мин. цена айтема, монеты: ' + (minCoins!==null ? '≤ '+minCoins.toLocaleString('ru-RU') : '—');
+  document.getElementById('minItemGemsPill').textContent = 'мин. цена айтема, кристаллы: ' + (minGems!==null ? '≤ '+minGems.toLocaleString('ru-RU') : '—');
+
+  const adRevPerDay = (marketHypothesis.adsPerDayAvg*marketHypothesis.rewardedEcpmUsd)/1000
+    + (marketHypothesis.interstitialEnabled ? (marketHypothesis.interstitialShowsPerDayAvg*marketHypothesis.interstitialEcpmUsd)/1000 : 0);
+  document.getElementById('adRevPerUserDayPill').textContent = 'доход с рекламы/день/юзер: $' + adRevPerDay.toFixed(4);
+
+  const iapPer1000Mau = 1000 * (marketHypothesis.payerConversionPercent/100) * marketHypothesis.dolphinArppuUsd;
+  const adsPer1000Mau = 1000 * adRevPerDay * marketHypothesis.activeDaysPerMonth;
+  const revPer1000Mau = iapPer1000Mau + adsPer1000Mau;
+  document.getElementById('revPer1000MauPill').textContent = `доход/1000 MAU в месяц: $${revPer1000Mau.toFixed(0)} (IAP $${iapPer1000Mau.toFixed(0)} + реклама $${adsPer1000Mau.toFixed(0)})`;
+  renderSoftPricing();
+}
+document.getElementById('marketHypothesisForm').addEventListener('input', ()=>{ renderMarketHypothesisPills(); setMarketHypothesisStatus('не сохранено', 'bad'); });
+document.getElementById('incomeSourcesForm').addEventListener('input', ()=>{ readMarketHypothesisForm(); setMarketHypothesisStatus('не сохранено', 'bad'); });
+document.getElementById('btnApplyRecommendedIncome').onclick = ()=>{
+  const {usdPerCoin} = computeShopAnchorValues();
+  readMarketHypothesisForm();
+  const usdPerDay = marketHypothesis.dolphinArppuUsd/30;
+  const coinsFree = usdPerCoin ? usdPerDay/usdPerCoin : 0;
+  const half = Math.round(coinsFree/2);
+  const incomeForm = document.getElementById('incomeSourcesForm');
+  incomeForm.elements['coinsPerArena'].value = half;
+  incomeForm.elements['coinsPerDaily'].value = half;
+  readMarketHypothesisForm();
+  setMarketHypothesisStatus('не сохранено', 'bad');
+};
+document.getElementById('interstitialEnabledCheckbox').addEventListener('change', function(){
+  const form = document.getElementById('marketHypothesisForm');
+  form.elements['interstitialEcpmUsd'].disabled = !this.checked;
+  form.elements['interstitialShowsPerDayAvg'].disabled = !this.checked;
+  renderMarketHypothesisPills();
+  setMarketHypothesisStatus('не сохранено', 'bad');
+});
+
+// ---- Шаг 3 (реальный): цена soft-контента = целевые дни × монет/день бесплатному (Шаг 2) × доля бюджета класса ----
+// Только soft — hard для дельфина считается иначе (см. Модель 2.0 §2), не накопительно. Не читает вкладку «Профили».
+let lastCoinsPerDayFree = null;
+const DEFAULT_SOFT_PRICING = [
+  {cls:'Экстра',    targetDays:2, budgetShare:40},
+  {cls:'Инструмент',targetDays:3, budgetShare:30},
+  {cls:'Стиль',     targetDays:7, budgetShare:20},
+  {cls:'Апгрейд',   targetDays:10,budgetShare:10},
+];
+let softPricing = structuredClone(DEFAULT_SOFT_PRICING);
+function setSoftPricingStatus(text, tone=''){
+  const el=document.getElementById('softPricingStatus'); if(!el) return;
+  el.textContent=text; el.style.color=tone==='bad'?'var(--bad)':(tone==='good'?'var(--good)':'var(--muted)');
+}
+function renderSoftPricing(){
+  const body = document.getElementById('softPricingBody'); if(!body) return;
+  const coinsPerDay = lastCoinsPerDayFree;
+  body.innerHTML = softPricing.map((r,i)=>{
+    const price = coinsPerDay!==null ? Math.round(r.targetDays * coinsPerDay * (r.budgetShare/100)) : null;
+    return `<tr>
+      <td>${r.cls}</td>
+      <td><input data-row="${i}" data-key="targetDays" type="number" min="0" value="${r.targetDays}" style="width:70px"></td>
+      <td><input data-row="${i}" data-key="budgetShare" type="number" min="0" max="100" value="${r.budgetShare}" style="width:70px"></td>
+      <td><b>${price!==null ? price.toLocaleString('ru-RU') : '—'}</b></td>
+    </tr>`;
+  }).join('');
+  body.querySelectorAll('input').forEach(input=>{
+    input.oninput = ()=>{
+      softPricing[+input.dataset.row][input.dataset.key] = +input.value||0;
+      setSoftPricingStatus('не сохранено', 'bad');
+      renderSoftPricing();
+    };
+  });
+  const sum = softPricing.reduce((s,r)=>s+r.budgetShare,0);
+  const pill = document.getElementById('softBudgetSumPill');
+  pill.textContent = `Сумма долей: ${sum}%` + (sum!==100 ? ' — должно быть 100%' : ' ✓');
+  pill.style.color = sum!==100 ? 'var(--warn)' : 'var(--good)';
+}
+document.getElementById('btnSaveSoftPricing').onclick = async ()=>{
+  try{
+    const handle = await balanceProfilesDir.getFileHandle('soft-pricing.json', {create:true});
+    const w = await handle.createWritable();
+    await w.write(JSON.stringify(softPricing, null, 2)+'\n');
+    await w.close();
+    setSoftPricingStatus('сохранено', 'good');
+  }catch(e){ setSoftPricingStatus('ошибка: '+e.message, 'bad'); }
+};
+async function loadSoftPricing(){
+  try{
+    const handle = await balanceProfilesDir.getFileHandle('soft-pricing.json');
+    const file = await handle.getFile();
+    softPricing = JSON.parse(await file.text());
+  }catch(e){ /* нет сохранённого — дефолты */ }
+  renderSoftPricing();
+}
+document.getElementById('btnSaveMarketHypothesis').onclick = async ()=>{
+  try{
+    readMarketHypothesisForm();
+    const handle = await balanceProfilesDir.getFileHandle('market-hypothesis.json', {create:true});
+    const w = await handle.createWritable();
+    await w.write(JSON.stringify(marketHypothesis, null, 2)+'\n');
+    await w.close();
+    setMarketHypothesisStatus('сохранено', 'good');
+  }catch(e){ setMarketHypothesisStatus('ошибка: '+e.message, 'bad'); }
+};
+async function loadMarketHypothesis(){
+  try{
+    const handle = await balanceProfilesDir.getFileHandle('market-hypothesis.json');
+    const file = await handle.getFile();
+    marketHypothesis = {...marketHypothesis, ...JSON.parse(await file.text())};
+  }catch(e){ /* нет сохранённой гипотезы — используем дефолты */ }
+  fillMarketHypothesisForm();
+  renderMarketHypothesisPills();
+}
+
+// ---- Шаг 2 (черновик, не согласован): $-стоимость одного дня дохода ----
+function computeDayValues(){
+  const form = new FormData(document.getElementById('balanceProfileForm'));
+  const num = k => +form.get(k)||0;
+  const {usdPerCoin, usdPerGem} = computeShopAnchorValues();
+  const softPerDay = num('arenaCoins') + num('dailyCoins');
+  const hardPerDay = num('gemsPerAd') * num('adsPerDay');
+  return {
+    softPerDay, hardPerDay,
+    usdSoftDay: usdPerCoin!==null ? softPerDay*usdPerCoin : null,
+    usdHardDay: usdPerGem!==null ? hardPerDay*usdPerGem : null
+  };
+}
+function renderDayValuePills(){
+  const {softPerDay, hardPerDay, usdSoftDay, usdHardDay} = computeDayValues();
+  document.getElementById('softDayPill').textContent = `soft/день: ${softPerDay} монет` + (usdSoftDay!==null ? ` ≈ $${usdSoftDay.toFixed(4)}` : '');
+  document.getElementById('hardDayPill').textContent = `hard/день: ${hardPerDay} кристаллов` + (usdHardDay!==null ? ` ≈ $${usdHardDay.toFixed(4)}` : '');
+  renderClassPricing();
+}
+document.getElementById('balanceProfileForm').addEventListener('input', renderDayValuePills);
+
+// ---- Шаг 3: цена от целевого срока = целевые_дни × доход/день × доля_бюджета_класса ----
+// Ничего не читает из вкладки «Профили» — только шаги 1-2 (продуктовые числа) выше.
+const DEFAULT_CLASS_PRICING = [
+  {cls:'extra',   softDays:2, softShare:40, hardDays:0, hardShare:0},
+  {cls:'tool',    softDays:3, softShare:30, hardDays:5, hardShare:30},
+  {cls:'style',   softDays:7, softShare:20, hardDays:0, hardShare:0},
+  {cls:'upgrade', softDays:0, softShare:0,  hardDays:10, hardShare:50},
+];
+let classPricing = structuredClone(DEFAULT_CLASS_PRICING);
+
+function renderClassPricing(){
+  const {softPerDay, hardPerDay} = computeDayValues();
+  const body = document.getElementById('classPricingBody');
+  body.innerHTML = classPricing.map((r,i)=>{
+    const priceSoft = Math.round(r.softDays * softPerDay * (r.softShare/100));
+    const priceHard = Math.round(r.hardDays * hardPerDay * (r.hardShare/100));
+    return `<tr>
+      <td>${r.cls}</td>
+      <td><input data-row="${i}" data-key="softDays" type="number" min="0" value="${r.softDays}" style="width:60px"></td>
+      <td><input data-row="${i}" data-key="softShare" type="number" min="0" max="100" value="${r.softShare}" style="width:60px"></td>
+      <td><input data-row="${i}" data-key="hardDays" type="number" min="0" value="${r.hardDays}" style="width:60px"></td>
+      <td><input data-row="${i}" data-key="hardShare" type="number" min="0" max="100" value="${r.hardShare}" style="width:60px"></td>
+      <td><b>${priceSoft || '—'}</b> монет</td>
+      <td><b>${priceHard || '—'}</b> кристаллов</td>
+    </tr>`;
+  }).join('');
+  body.querySelectorAll('input').forEach(input=>{
+    input.oninput = ()=>{
+      classPricing[+input.dataset.row][input.dataset.key] = +input.value||0;
+      renderClassPricing();
+    };
+  });
+  const softSum = classPricing.reduce((s,r)=>s+r.softShare,0);
+  const hardSum = classPricing.reduce((s,r)=>s+r.hardShare,0);
+  const pill = document.getElementById('budgetSumPill');
+  pill.textContent = `Сумма долей: soft ${softSum}% · hard ${hardSum}%` + ((softSum!==100||hardSum!==100) ? ' — по документу должно быть 100%' : ' ✓');
+  pill.style.color = (softSum!==100||hardSum!==100) ? 'var(--warn)' : 'var(--good)';
+}
+document.getElementById('balanceProfileForm').addEventListener('input', renderClassPricing);
+
+function currentBalanceProfile(){
+  const form=new FormData(document.getElementById('balanceProfileForm'));
+  const num=k=>+form.get(k)||0;
+  const {usdPerCoin, usdPerGem} = computeShopAnchorValues();
+  return {schemaVersion:1, id:form.get('id').trim(), name:form.get('name').trim(), generatedAt:new Date().toISOString(),
+    shop:{coinPackId:shopAnchor.coinPackId, gemPackId:shopAnchor.gemPackId, usdPerCoin, usdPerGem},
+    economy:{xpAndLevelsEnabled:false,seed:num('seed'),arenaCoins:num('arenaCoins'),dailyCoins:num('dailyCoins'),gemsPerAd:num('gemsPerAd'),adsPerDay:num('adsPerDay')},
+    pricing:{softPerRating:num('softPerRating'),hardPerRating:num('hardPerRating'),jitterPercent:num('jitterPercent')}, dayBands:balanceBands};
+}
+function seededRandom(seed){ let s=(seed>>>0)||1; return ()=>{s=(s*1664525+1013904223)>>>0; return s/4294967296;}; }
+function hashText(text){ let h=2166136261; for(const c of text) h=Math.imul(h^c.charCodeAt(0),16777619); return h>>>0; }
+async function saveBalanceProfile(){
+  const profile=currentBalanceProfile();
+  if(!/^[a-zA-Z0-9_-]+$/.test(profile.id)){ setBalanceStatus('id: латиница, цифры, _ или -', 'bad'); return; }
+  const h=await balanceProfilesDir.getFileHandle(profile.id+'.json',{create:true}); const w=await h.createWritable(); await w.write(JSON.stringify(profile,null,2)+'\n'); await w.close(); setBalanceStatus('профиль сохранён', 'good');
+}
+async function generateBalance(){
+  const profile=currentBalanceProfile();
+  if(!/^[a-zA-Z0-9_-]+$/.test(profile.id)){ setBalanceStatus('сначала укажи корректный id', 'bad'); return; }
+  let catalog; try{ catalog=await readCSVObjects(dataDir,'product_content.csv'); }catch(e){ setBalanceStatus('Нет data/product_content.csv', 'bad'); return; }
+  const rnd=seededRandom(profile.economy.seed);
+  const rows=[['itemId','category','currency','price']];
+  catalog.forEach(item=>{
+    const intent=(item.currencyIntent||'').trim(); if(!['soft','hard'].includes(intent)) return;
+    const rating=Math.max(1,+item.rating||1); const base=rating*(intent==='soft'?profile.pricing.softPerRating:profile.pricing.hardPerRating);
+    const jitter=1+((rnd()*2-1)*profile.pricing.jitterPercent/100); const price=Math.max(1,Math.round(base*jitter));
+    rows.push([item.id,item.type,intent==='soft'?'coins':'gems',price]);
+  });
+  const out=await generatedDir.getDirectoryHandle(profile.id,{create:true});
+  const content=await out.getFileHandle('content_pool.csv',{create:true}); const w=await content.createWritable(); await w.write(toCSV(rows)+'\n'); await w.close();
+  const ads=await out.getFileHandle('server_ads.csv',{create:true}); const aw=await ads.createWritable(); await aw.write(`key,value\ngemsPerAd,${profile.economy.gemsPerAd}\nmaxAdsPerDay,${profile.economy.adsPerDay}\n`); await aw.close();
+  const manifest=await out.getFileHandle('manifest.json',{create:true}); const mw=await manifest.createWritable(); await mw.write(JSON.stringify({...profile, generatedFiles:['content_pool.csv','server_ads.csv']},null,2)+'\n'); await mw.close();
+  setBalanceStatus(`создано generated/${profile.id}/`, 'good');
+}
+document.getElementById('btnNewSeed').onclick=()=>{ document.querySelector('#balanceProfileForm [name="seed"]').value=Math.floor(Math.random()*2147483647); setBalanceStatus('новый seed: цены изменятся только после генерации'); };
+document.getElementById('btnSaveBalanceProfile').onclick=saveBalanceProfile;
+document.getElementById('btnGenerateBalance').onclick=generateBalance;
+
+// ---------- reference data for the profile editor's dropdowns (loaded from data/) ----------
+let refCoinPacks=[], refGemPacks=[], refDailyTaskTypes=[], refPoolCategories=[];
+async function loadEditorRefData(){
+  try{
+    const staticPrices = await readCSVObjects(dataDir, 'static_prices.csv');
+    const packs = staticPrices.filter(r=>r.itemId && r.real);
+    refCoinPacks = packs.filter(r=>+r.coins>0).map(r=>({itemId:r.itemId, title:r.title||r.itemId, coins:+r.coins, real:+r.real}));
+    refGemPacks = packs.filter(r=>+r.gems>0).map(r=>({itemId:r.itemId, title:r.title||r.itemId, gems:+r.gems, real:+r.real}));
+  }catch(e){ refCoinPacks=[]; refGemPacks=[]; }
+  try{
+    const tasks = await readCSVObjects(dataDir, 'server_daily_tasks.csv');
+    refDailyTaskTypes = [...new Set(tasks.map(t=>t.taskType).filter(Boolean))];
+  }catch(e){ refDailyTaskTypes=[]; }
+  try{
+    let pool = await tryReadCSVObjects(dataDir, 'content_pool_TEST.csv');
+    if(!pool) pool = await tryReadCSVObjects(dataDir, 'content_pool.csv') || [];
+    refPoolCategories = [...new Set(pool.map(p=>p.category).filter(Boolean))];
+  }catch(e){ refPoolCategories=[]; }
+}
+
+// ---------- content cost report (Конфиги tab) ----------
+async function renderContentCostReport(){
+  const card = document.getElementById('contentCostCard');
+  const area = document.getElementById('contentCostArea');
+  try{
+    let pool = await tryReadCSVObjects(dataDir, 'content_pool_TEST.csv');
+    if(!pool) pool = await tryReadCSVObjects(dataDir, 'content_pool.csv') || [];
+    const staticPrices = await readCSVObjects(dataDir, 'static_prices.csv');
+    const premiumCars = staticPrices.filter(r=>r.itemId && r.itemId.startsWith('prem-') && r.real);
+
+    const totalCoins = pool.filter(p=>p.currency==='coins').reduce((s,p)=>s+(+p.price||0),0);
+    const totalGems = pool.filter(p=>p.currency==='gems').reduce((s,p)=>s+(+p.price||0),0);
+    const totalPremiumUsd = premiumCars.reduce((s,p)=>s+(+p.real||0),0);
+
+    const byCategory = {};
+    pool.forEach(p=>{
+      const k = p.category||'?';
+      byCategory[k] = byCategory[k] || {coins:0, gems:0, count:0};
+      byCategory[k].count++;
+      if(p.currency==='coins') byCategory[k].coins += (+p.price||0);
+      if(p.currency==='gems') byCategory[k].gems += (+p.price||0);
+    });
+
+    card.style.display='block';
+    area.innerHTML = `
+      <div class="balance-strip" style="margin-bottom:14px">
+        <div class="coin">${totalCoins.toLocaleString('ru-RU')}<small>всего монет в контенте</small></div>
+        <div class="gem">${totalGems.toLocaleString('ru-RU')}<small>всего кристаллов в контенте</small></div>
+        <div style="color:var(--good)">$${totalPremiumUsd.toFixed(2)}<small>премиум-машины (real $)</small></div>
+      </div>
+      <table><thead><tr><th>Категория</th><th>Штук</th><th>Монеты</th><th>Кристаллы</th></tr></thead><tbody>
+      ${Object.keys(byCategory).sort().map(k=>`<tr>
+        <td>${k}</td><td>${byCategory[k].count}</td>
+        <td>${byCategory[k].coins.toLocaleString('ru-RU')}</td>
+        <td>${byCategory[k].gems.toLocaleString('ru-RU')}</td>
+      </tr>`).join('')}
+      </tbody></table>
+    `;
+  }catch(e){
+    card.style.display='block';
+    area.innerHTML = `<div class="empty-state">Не удалось посчитать: ${e.message}</div>`;
+  }
+}
+document.getElementById('btnRefreshCost').onclick = renderContentCostReport;
+
+// ---------- product tiers (S1-R6) + style progression — Конфиги tab, отдельный блок ----------
+let productTiers = [];
+let styleProgression = [];
+function setProductTiersStatus(text, tone=''){
+  const el=document.getElementById('productTiersStatus'); if(!el) return;
+  el.textContent=text; el.style.color=tone==='bad'?'var(--bad)':(tone==='good'?'var(--good)':'var(--muted)');
+}
+function setStyleProgressionStatus(text, tone=''){
+  const el=document.getElementById('styleProgressionStatus'); if(!el) return;
+  el.textContent=text; el.style.color=tone==='bad'?'var(--bad)':(tone==='good'?'var(--good)':'var(--muted)');
+}
+async function loadProductConfigs(){
+  document.getElementById('productConfigsCard').style.display = 'block';
+  try{ productTiers = await readCSVObjects(dataDir, 'product_tiers.csv'); }catch(e){ productTiers = []; }
+  try{ styleProgression = await readCSVObjects(dataDir, 'style_progression.csv'); }catch(e){ styleProgression = []; }
+  renderProductTiers();
+  renderStyleProgression();
+}
+function renderProductTiers(){
+  const body = document.getElementById('productTiersBody');
+  body.innerHTML = productTiers.map((r,i)=>`<tr>
+    <td>${r.tier}</td>
+    <td>${r.channel}</td>
+    <td>${r.channel!=='real' ? `<input data-row="${i}" data-key="targetDay" type="number" min="0" step="0.25" value="${r.targetDay||''}" style="width:70px">` : '—'}</td>
+    <td>${r.channel==='real' ? `<input data-row="${i}" data-key="priceUsd" type="number" min="0" step="1" value="${r.priceUsd||''}" style="width:70px">` : '—'}</td>
+    <td><input data-row="${i}" data-key="meaning" value="${r.meaning||''}" style="width:100%"></td>
+  </tr>`).join('');
+  body.querySelectorAll('input').forEach(input=>{
+    input.oninput = ()=>{
+      productTiers[+input.dataset.row][input.dataset.key] = input.value;
+      setProductTiersStatus('не сохранено', 'bad');
+    };
+  });
+}
+async function saveProductTiers(){
+  const header = ['tier','channel','targetDay','priceUsd','meaning'];
+  const rows = [header, ...productTiers.map(r=>header.map(h=>r[h]??''))];
+  const handle = await dataDir.getFileHandle('product_tiers.csv', {create:true});
+  const w = await handle.createWritable();
+  await w.write(toCSV(rows)+'\n');
+  await w.close();
+}
+document.getElementById('btnSaveProductTiers').onclick = async ()=>{
+  try{
+    await saveProductTiers();
+    setProductTiersStatus('сохранено', 'good');
+  }catch(e){ setProductTiersStatus('ошибка: '+e.message, 'bad'); }
+};
+function renderStyleProgression(){
+  const body = document.getElementById('styleProgressionBody');
+  body.innerHTML = styleProgression.map((r,i)=>`<tr>
+    <td><input data-row="${i}" data-key="styleId" value="${r.styleId||''}" style="width:130px"></td>
+    <td><input data-row="${i}" data-key="name" value="${r.name||''}" style="width:180px"></td>
+    <td><input data-row="${i}" data-key="targetDay" type="number" min="0" value="${r.targetDay||''}" style="width:80px"></td>
+    <td><button class="btn" data-del="${i}" style="padding:2px 8px">✕</button></td>
+  </tr>`).join('');
+  body.querySelectorAll('input').forEach(input=>{
+    input.oninput = ()=>{
+      styleProgression[+input.dataset.row][input.dataset.key] = input.value;
+      setStyleProgressionStatus('не сохранено', 'bad');
+    };
+  });
+  body.querySelectorAll('[data-del]').forEach(btn=>{
+    btn.onclick = ()=>{ styleProgression.splice(+btn.dataset.del,1); renderStyleProgression(); setStyleProgressionStatus('не сохранено', 'bad'); };
+  });
+}
+document.getElementById('btnAddStyleRow').onclick = ()=>{
+  const n = styleProgression.length+1;
+  styleProgression.push({styleId:'style-new-'+n, name:'Новый стиль', targetDay:''});
+  renderStyleProgression();
+  setStyleProgressionStatus('не сохранено', 'bad');
+};
+document.getElementById('btnSaveStyleProgression').onclick = async ()=>{
+  try{
+    const header = ['styleId','name','targetDay'];
+    const rows = [header, ...styleProgression.map(r=>header.map(h=>r[h]??''))];
+    const handle = await dataDir.getFileHandle('style_progression.csv', {create:true});
+    const w = await handle.createWritable();
+    await w.write(toCSV(rows)+'\n');
+    await w.close();
+    setStyleProgressionStatus('сохранено', 'good');
+  }catch(e){ setStyleProgressionStatus('ошибка: '+e.message, 'bad'); }
+};
+
+async function readCSVObjects(dir, name){
+  const handle = await dir.getFileHandle(name);
+  const file = await handle.getFile();
+  const text = (await file.text()).replace(/\r/g,'');
+  const lines = text.split('\n').filter(l=>l.trim()!=='');
+  const header = parseCSVLine(lines[0]);
+  return lines.slice(1).map(line=>{
+    const cols = parseCSVLine(line);
+    const obj = {};
+    header.forEach((h,i)=> obj[h] = cols[i] ?? '');
+    return obj;
+  });
+}
+async function tryReadCSVObjects(dir, name){
+  try{ return await readCSVObjects(dir, name); }catch(e){ return null; }
+}
+
+// ---------- PROFILES: list (left) / form editor (right) ----------
+let profileFileHandles = {}; // name -> handle
+let currentProfileName = null;
+let currentProfile = null;
+let profileOrder = []; // порядок имён файлов — задаёт и список слева, и порядок строк в отчётах
+
+async function loadProfileOrder(){
+  try{
+    const handle = await profilesDir.getFileHandle('_order.json');
+    const text = await (await handle.getFile()).text();
+    const arr = JSON.parse(text);
+    profileOrder = Array.isArray(arr) ? arr : [];
+  }catch(e){ profileOrder = []; }
+}
+async function saveProfileOrder(){
+  try{
+    const handle = await profilesDir.getFileHandle('_order.json', {create:true});
+    const w = await handle.createWritable();
+    await w.write(JSON.stringify(profileOrder, null, 2)+'\n');
+    await w.close();
+  }catch(e){ /* не критично, просто не сохранится порядок между сессиями */ }
+}
+// сверяет profileOrder с реально существующими файлами: новые — в конец, удалённые — выкидывает
+async function syncProfileOrder(){
+  const existing = [];
+  for await (const [name, handle] of profilesDir.entries()){
+    if(handle.kind==='file' && name.toLowerCase().endsWith('.json') && name!=='_order.json') existing.push(name);
+  }
+  const known = profileOrder.filter(n=>existing.includes(n));
+  const fresh = existing.filter(n=>!known.includes(n)).sort();
+  const merged = [...known, ...fresh];
+  const changed = merged.length!==profileOrder.length || merged.some((n,i)=>n!==profileOrder[i]);
+  profileOrder = merged;
+  if(changed) await saveProfileOrder();
+  return profileOrder;
+}
+
+let dragSrcName = null;
+let profileOrderLoaded = false;
+async function renderProfilesList(){
+  const listEl = document.getElementById('profilesList');
+  if(!profileOrderLoaded){ await loadProfileOrder(); profileOrderLoaded = true; }
+  const names = await syncProfileOrder();
+  if(names.length===0){ listEl.innerHTML = '<div class="empty-state" style="padding:20px 10px">Нет профилей. Жми «+ новый профиль».</div>'; return; }
+
+  let html='';
+  for(const name of names){
+    const handle = await profilesDir.getFileHandle(name);
+    profileFileHandles[name] = handle;
+    const text = await (await handle.getFile()).text();
+    let parsed=null; try{ parsed=JSON.parse(text); }catch(e){}
+    html += `<div class="profile-item ${name===currentProfileName?'selected':''}" draggable="true" data-select="${name}" data-name="${name}">
+      <div>${parsed?.name || name}<small>${parsed ? (parsed.roles||[]).join(', ') : 'JSON ошибка'}</small></div>
+    </div>`;
+  }
+  listEl.innerHTML = html;
+  listEl.querySelectorAll('[data-select]').forEach(el=>{
+    el.onclick = ()=> loadProfileIntoEditor(el.dataset.select);
+    el.addEventListener('dragstart', ()=>{ dragSrcName = el.dataset.name; el.classList.add('dragging'); });
+    el.addEventListener('dragend', ()=>{ el.classList.remove('dragging'); listEl.querySelectorAll('.profile-item').forEach(x=>x.classList.remove('drag-over')); });
+    el.addEventListener('dragover', (e)=>{ e.preventDefault(); el.classList.add('drag-over'); });
+    el.addEventListener('dragleave', ()=>{ el.classList.remove('drag-over'); });
+    el.addEventListener('drop', async (e)=>{
+      e.preventDefault();
+      el.classList.remove('drag-over');
+      const targetName = el.dataset.name;
+      if(!dragSrcName || dragSrcName===targetName) return;
+      const from = profileOrder.indexOf(dragSrcName);
+      const to = profileOrder.indexOf(targetName);
+      if(from<0 || to<0) return;
+      profileOrder.splice(from,1);
+      profileOrder.splice(to,0,dragSrcName);
+      dragSrcName = null;
+      await saveProfileOrder();
+      renderProfilesList();
+    });
+  });
+}
+
+async function loadProfileIntoEditor(name){
+  currentProfileName = name;
+  const handle = profileFileHandles[name];
+  const text = await (await handle.getFile()).text();
+  try{ currentProfile = JSON.parse(text); }
+  catch(e){ alert('Невалидный JSON в '+name+': '+e.message); return; }
+  renderProfilesList();
+  renderProfileEditor();
+}
+
+function renderProfileEditor(){
+  const p = currentProfile;
+  const area = document.getElementById('profileEditor');
+  if(!p){ area.innerHTML = '<div class="empty-state">Выбери профиль слева (или создай новый).</div>'; return; }
+
+  migrateProfileToSequences(p);
+
+  const softTierCodes = productTiers.filter(t=>t.channel==='soft').map(t=>t.tier);
+  const hardTierCodes = productTiers.filter(t=>t.channel==='hard').map(t=>t.tier);
+  const realTierCodes = productTiers.filter(t=>t.channel==='real').map(t=>t.tier);
+
+  area.innerHTML = `
+    <div class="card">
+      <h2>Профиль — ${currentProfileName}</h2>
+      <form class="entry" id="profileMetaForm">
+        <label>Название<input type="text" name="name" value="${(p.name||'').replace(/"/g,'&quot;')}" style="width:180px"></label>
+        <label>Дней симуляции<input type="number" name="simulateDays" min="1" value="${p.simulateDays||730}" style="width:110px"></label>
+      </form>
+      <form class="entry" id="profileDescForm" style="margin-top:8px">
+        <label style="flex:1;width:100%">Описание<textarea name="description" rows="4" style="width:100%;resize:vertical;font-family:inherit">${escapeHtml(p.description||'')}</textarea></label>
+      </form>
+
+      <div class="group-title" style="margin-top:14px">Доход в день</div>
+      <p style="color:var(--muted);font-size:12px;margin:0 0 8px">Монет за Арену/Дейлик и кристаллов за rewarded — общие на всех, задаются один раз в Продукт → Шаг 2 (сейчас: ${(marketHypothesis.coinsPerArena||0)+(marketHypothesis.coinsPerDaily||0)} монет/день, ${marketHypothesis.gemsPerAd||0} кристаллов/показ). Тут только то, что действительно у профиля своё — сколько раз в день смотрит rewarded.</p>
+      <form class="entry" id="profileIncomeForm">
+        <label>Rewarded/день<input type="number" name="adsPerDay" min="0" value="${p.income.adsPerDay}" style="width:100px"></label>
+      </form>
+
+      <div class="row" style="margin-top:14px">
+        <button class="btn primary" id="btnSaveProfile">Сохранить профиль</button>
+        <button class="btn" id="btnDuplicateProfile" type="button">Дублировать профиль</button>
+        <button class="btn danger" id="btnDeleteProfile">Удалить профиль</button>
+        <span class="pill" id="profileSaveStatus"></span>
+      </div>
+    </div>
+
+    <div class="group-title" style="margin-top:16px">Секвенции — параллельные треки поведения (софт/хард/реал — просто секвенции). Внутри секвенции линии идут по порядку, линия закрывается по своему условию и не возвращается.</div>
+    <div id="sequencesList"></div>
+    <div class="row" style="margin-top:8px"><button class="btn primary" id="btnAddSequence" type="button">+ Создать секвенцию</button></div>
+  `;
+
+  const PHASE_KIND_LABELS = {
+    'soft-hoardForStyle': '(софт) копить на стиль',
+    'soft-hoardUpToStyle': '(софт) копить на стили до стиля N',
+    'soft-buyTier': '(софт) покупать предмет',
+    'soft-buyStyleOnDay': '(софт) купить стиль в день N',
+    'hard-buyTier': '(хард) покупать предмет',
+    'hard-buyUpgrade': '(хард) покупать апгрейд',
+    'real-buyTier': '(реал) покупать предмет',
+  };
+  function defaultPhaseFor(kind){
+    if(kind==='soft-hoardForStyle') return {kind};
+    if(kind==='soft-hoardUpToStyle') return {kind, styleId:(styleProgression[1]||{}).styleId||''};
+    if(kind==='soft-buyTier') return {kind, tier: softTierCodes[1]||'S2', count:5, topUp:false};
+    if(kind==='soft-buyStyleOnDay') return {kind, styleId:(styleProgression[1]||{}).styleId||'', day:30, topUp:true};
+    if(kind==='hard-buyTier') return {kind, tier: hardTierCodes[0]||'H1', itemsPerMonth:1, topUp:true, cadence:'monthly'};
+    if(kind==='hard-buyUpgrade') return {kind, tier: hardTierCodes[3]||'H4', itemsPerMonth:1, topUp:true, cadence:'monthly'};
+    if(kind==='real-buyTier') return {kind, tier: realTierCodes[1]||'R2', itemsPerMonth:1};
+    return {kind};
+  }
+
+  // цвет по составу валют: хоть одна real-фаза — красный, иначе хоть одна hard — синий, иначе (только soft/пусто) — зелёный
+  function colorForPhases(phases){
+    if(phases.some(ph=>ph.kind && ph.kind.startsWith('real-'))) return 'var(--bad)';
+    if(phases.some(ph=>ph.kind && ph.kind.startsWith('hard-'))) return 'var(--accent)';
+    return 'var(--warn)';
+  }
+
+  function refreshSeqColor(si){
+    const seq = p.sequences[si];
+    const el = document.querySelector(`[data-seqcard="${si}"]`);
+    if(el) el.style.borderColor = colorForPhases(seq.lines.flatMap(l=>l.phases||[]));
+  }
+  function refreshLineColor(si, li){
+    const line = p.sequences[si].lines[li];
+    const el = document.querySelector(`[data-linecard="${si}-${li}"]`);
+    if(el) el.style.borderLeftColor = colorForPhases(line.phases||[]);
+    refreshSeqColor(si);
+  }
+
+  function untilOptions(){
+    const opts = [
+      { v:'never', l:'до конца игры' },
+      { v:'allStylesOpened', l:'пока не открыты все стили' },
+      { v:'phasesComplete', l:'пока фазы не пройдены один раз' },
+    ];
+    styleProgression.slice(1).forEach(s=> opts.push({ v:'styleOpened:'+s.styleId, l:`пока не открыт ${s.name||s.styleId}` }));
+    return opts;
+  }
+
+  function phaseRowHtml(ph, si, li, i){
+    const dp = `data-seqidx="${si}" data-lineidx="${li}" data-phaseidx="${i}"`;
+    const topUp = (label)=>`<label style="flex-direction:row;align-items:center;gap:4px;display:inline-flex;margin-left:8px"><input type="checkbox" ${dp} data-phasekey="topUp" ${ph.topUp?'checked':''}> ${label||'докупать валюту, если не хватает'}</label>`;
+    const del = `<button ${dp} data-delphase="1" style="margin-left:auto">✕</button>`;
+    if(ph.kind==='soft-hoardForStyle'){
+      return `<div class="event-row">
+        <span class="tag">${i+1}. ${PHASE_KIND_LABELS[ph.kind]}</span>
+        <span class="detail">ждёт следующий неоткрытый стиль (без докупки — органично)</span>
+        ${del}
+      </div>`;
+    }
+    if(ph.kind==='soft-hoardUpToStyle'){
+      return `<div class="event-row">
+        <span class="tag">${i+1}. ${PHASE_KIND_LABELS[ph.kind]}</span>
+        <span class="detail">
+          открывает стили по порядку до
+          <select ${dp} data-phasekey="styleId">${styleProgression.map(s=>`<option value="${s.styleId}" ${ph.styleId===s.styleId?'selected':''}>${s.name||s.styleId}</option>`).join('')}</select>
+          включительно, дальше не покупает (без докупки — органично)
+        </span>
+        ${del}
+      </div>`;
+    }
+    if(ph.kind==='soft-buyTier'){
+      return `<div class="event-row">
+        <span class="tag">${i+1}. ${PHASE_KIND_LABELS[ph.kind]}</span>
+        <span class="detail">
+          <select ${dp} data-phasekey="tier">${softTierCodes.map(t=>`<option value="${t}" ${ph.tier===t?'selected':''}>${t}</option>`).join('')}</select>
+          × <input type="number" min="1" value="${ph.count||1}" ${dp} data-phasekey="count" style="width:60px">
+          ${topUp()}
+        </span>
+        ${del}
+      </div>`;
+    }
+    if(ph.kind==='soft-buyStyleOnDay'){
+      return `<div class="event-row">
+        <span class="tag">${i+1}. ${PHASE_KIND_LABELS[ph.kind]}</span>
+        <span class="detail">
+          <select ${dp} data-phasekey="styleId">${styleProgression.map(s=>`<option value="${s.styleId}" ${ph.styleId===s.styleId?'selected':''}>${s.name||s.styleId}</option>`).join('')}</select>
+          день <input type="number" min="0" value="${ph.day||0}" ${dp} data-phasekey="day" style="width:60px">
+          ${topUp('докупать монеты, чтобы гарантированно купить в этот день')}
+        </span>
+        ${del}
+      </div>`;
+    }
+    if(ph.kind==='hard-buyTier' || ph.kind==='hard-buyUpgrade'){
+      return `<div class="event-row">
+        <span class="tag">${i+1}. ${PHASE_KIND_LABELS[ph.kind]}</span>
+        <span class="detail">
+          <select ${dp} data-phasekey="tier">${hardTierCodes.map(t=>`<option value="${t}" ${ph.tier===t?'selected':''}>${t}</option>`).join('')}</select>
+          <select ${dp} data-phasekey="cadence">
+            <option value="monthly" ${ph.cadence!=='daily'?'selected':''}>раз/мес, count</option>
+            <option value="daily" ${ph.cadence==='daily'?'selected':''}>каждый день, пока хватает</option>
+          </select>
+          ${ph.cadence==='daily' ? '' : `× <input type="number" min="0" value="${ph.itemsPerMonth||0}" ${dp} data-phasekey="itemsPerMonth" style="width:60px"> /мес`}
+          ${topUp()}
+        </span>
+        ${del}
+      </div>`;
+    }
+    if(ph.kind==='real-buyTier'){
+      return `<div class="event-row">
+        <span class="tag">${i+1}. ${PHASE_KIND_LABELS[ph.kind]}</span>
+        <span class="detail">
+          <select ${dp} data-phasekey="tier">${realTierCodes.map(t=>`<option value="${t}" ${ph.tier===t?'selected':''}>${t}</option>`).join('')}</select>
+          × <input type="number" min="0" value="${ph.itemsPerMonth||0}" ${dp} data-phasekey="itemsPerMonth" style="width:60px"> /мес
+        </span>
+        ${del}
+      </div>`;
+    }
+    return `<div class="event-row">неизвестная фаза ${del}</div>`;
+  }
+
+  function renderPhasesForLine(si, li){
+    const line = p.sequences[si].lines[li];
+    const el = document.querySelector(`[data-phasesfor-seq="${si}"][data-phasesfor-line="${li}"]`);
+    if(!el) return;
+    el.innerHTML = line.phases.length ? line.phases.map((ph,i)=>phaseRowHtml(ph,si,li,i)).join('') : '<div class="empty-state" style="padding:8px">Нет фаз в этой линии</div>';
+    el.querySelectorAll('[data-delphase]').forEach(btn=>{
+      btn.onclick = ()=>{ line.phases.splice(+btn.dataset.phaseidx,1); renderPhasesForLine(si,li); refreshLineColor(si,li); };
+    });
+    el.querySelectorAll('select,input').forEach(input=>{
+      if(input.closest('[data-delphase]')) return;
+      const ev = input.type==='checkbox' ? 'change' : 'input';
+      input.addEventListener(ev, ()=>{
+        const idx = +input.dataset.phaseidx, key = input.dataset.phasekey;
+        const phase = line.phases[idx];
+        if(input.type==='checkbox') phase[key] = input.checked;
+        else if(key==='count'||key==='itemsPerMonth'||key==='day') phase[key] = +input.value||0;
+        else phase[key] = input.value;
+        if(key==='cadence') renderPhasesForLine(si,li); // перерисовать — у daily нет count
+      });
+    });
+  }
+
+  function renderLinesForSequence(si){
+    const seq = p.sequences[si];
+    const el = document.querySelector(`[data-linesfor-seq="${si}"]`);
+    if(!el) return;
+    const opts = untilOptions();
+    el.innerHTML = seq.lines.length ? seq.lines.map((line,li)=>`
+      <div class="card" data-linecard="${si}-${li}" style="margin-top:8px;padding:10px 12px;border-left:3px solid ${colorForPhases(line.phases||[])}">
+        <div class="row">
+          <input data-seqidx="${si}" data-lineidx="${li}" data-linekey="name" value="${(line.name||'').replace(/"/g,'&quot;')}" style="width:140px" placeholder="название линии">
+          <label style="flex-direction:row;align-items:center;gap:6px;display:inline-flex">закрывается: <select data-seqidx="${si}" data-lineidx="${li}" data-linekey="until">
+            ${opts.map(o=>`<option value="${o.v}" ${line.until===o.v?'selected':''}>${o.l}</option>`).join('')}
+          </select></label>
+          <label style="flex-direction:row;align-items:center;gap:6px;display:inline-flex"><input type="checkbox" data-seqidx="${si}" data-lineidx="${li}" data-linekey="loop" ${line.loop?'checked':''}> зациклить фазы внутри линии</label>
+          <button class="btn danger" data-seqidx="${si}" data-lineidx="${li}" data-delline="1" type="button" style="margin-left:auto">✕ линия</button>
+        </div>
+        <div class="soft-phases-for-line" data-phasesfor-seq="${si}" data-phasesfor-line="${li}" style="margin-top:8px"></div>
+        <div class="row" style="margin-top:6px">
+          <select data-phasekindpicker="1" data-seqidx="${si}" data-lineidx="${li}">
+            ${Object.entries(PHASE_KIND_LABELS).map(([k,l])=>`<option value="${k}">${l}</option>`).join('')}
+          </select>
+          <button class="btn" data-addphase="1" data-seqidx="${si}" data-lineidx="${li}" type="button">+ добавить фазу</button>
+        </div>
+      </div>
+    `).join('') : '<div class="empty-state" style="padding:12px">Нет линий в этой секвенции</div>';
+
+    seq.lines.forEach((line,li)=> renderPhasesForLine(si,li));
+
+    el.querySelectorAll('[data-linekey]').forEach(input=>{
+      const ev = input.type==='checkbox' ? 'change' : 'input';
+      input.addEventListener(ev, ()=>{
+        const s=+input.dataset.seqidx, l=+input.dataset.lineidx, key=input.dataset.linekey;
+        p.sequences[s].lines[l][key] = key==='loop' ? input.checked : input.value;
+      });
+    });
+    el.querySelectorAll('[data-delline]').forEach(btn=>{
+      btn.onclick = ()=>{ const s=+btn.dataset.seqidx; p.sequences[s].lines.splice(+btn.dataset.lineidx,1); renderLinesForSequence(s); refreshSeqColor(s); };
+    });
+    el.querySelectorAll('[data-addphase]').forEach(btn=>{
+      btn.onclick = ()=>{
+        const s=+btn.dataset.seqidx, l=+btn.dataset.lineidx;
+        const picker = el.querySelector(`[data-phasekindpicker][data-seqidx="${s}"][data-lineidx="${l}"]`);
+        p.sequences[s].lines[l].phases.push(defaultPhaseFor(picker.value));
+        renderPhasesForLine(s,l);
+        refreshLineColor(s,l);
+      };
+    });
+  }
+
+  function renderSequences(){
+    const el = document.getElementById('sequencesList');
+    el.innerHTML = p.sequences.length ? p.sequences.map((seq,si)=>`
+      <div class="card" data-seqcard="${si}" style="margin-top:10px;border:1px solid ${colorForPhases(seq.lines.flatMap(l=>l.phases||[]))}">
+        <div class="row">
+          <input data-seqidx="${si}" data-seqkey="name" value="${(seq.name||'').replace(/"/g,'&quot;')}" style="width:160px;font-weight:600" placeholder="название секвенции">
+          <label style="flex-direction:row;align-items:center;gap:6px;display:inline-flex"><input type="checkbox" data-seqidx="${si}" data-seqkey="loopLines" ${seq.loopLines?'checked':''}> зациклить линии внутри секвенции</label>
+          <button class="btn danger" data-delseq="${si}" type="button" style="margin-left:auto">✕ секвенция</button>
+        </div>
+        <div data-linesfor-seq="${si}" style="margin-top:6px"></div>
+        <div class="row" style="margin-top:8px"><button class="btn" data-addline="${si}" type="button">+ Создать линию</button></div>
+      </div>
+    `).join('') : '<div class="empty-state" style="padding:12px">Нет секвенций — профиль ничего не будет делать</div>';
+
+    p.sequences.forEach((seq,si)=> renderLinesForSequence(si));
+
+    el.querySelectorAll('[data-seqkey]').forEach(input=>{
+      const ev = input.type==='checkbox' ? 'change' : 'input';
+      input.addEventListener(ev, ()=>{
+        const s=+input.dataset.seqidx, key=input.dataset.seqkey;
+        p.sequences[s][key] = key==='loopLines' ? input.checked : input.value;
+      });
+    });
+    el.querySelectorAll('[data-delseq]').forEach(btn=>{
+      btn.onclick = ()=>{ p.sequences.splice(+btn.dataset.delseq,1); renderSequences(); };
+    });
+    el.querySelectorAll('[data-addline]').forEach(btn=>{
+      btn.onclick = ()=>{
+        const si=+btn.dataset.addline;
+        p.sequences[si].lines.push({ name:'Линия '+(p.sequences[si].lines.length+1), phases:[], loop:true, until:'never' });
+        renderLinesForSequence(si);
+      };
+    });
+  }
+  renderSequences();
+  document.getElementById('btnAddSequence').onclick = ()=>{
+    p.sequences.push({ name:'Секвенция '+(p.sequences.length+1), lines:[] });
+    renderSequences();
+  };
+
+  // ---- meta / income (auto-applies to in-memory profile, persisted on "Сохранить профиль") ----
+  document.getElementById('profileMetaForm').addEventListener('input', syncMeta);
+  document.getElementById('profileDescForm').addEventListener('input', syncMeta);
+  document.getElementById('profileIncomeForm').addEventListener('input', syncMeta);
+  function syncMeta(){
+    const meta = new FormData(document.getElementById('profileMetaForm'));
+    const desc = new FormData(document.getElementById('profileDescForm'));
+    const income = new FormData(document.getElementById('profileIncomeForm'));
+    p.name = meta.get('name');
+    p.simulateDays = +meta.get('simulateDays')||730;
+    p.description = desc.get('description');
+    p.income = { adsPerDay: +income.get('adsPerDay')||0 };
+  }
+
+  document.getElementById('btnSaveProfile').onclick = async ()=>{
+    const handle = profileFileHandles[currentProfileName];
+    const w = await handle.createWritable();
+    await w.write(JSON.stringify(p, null, 2));
+    await w.close();
+    const status = document.getElementById('profileSaveStatus');
+    status.textContent = 'сохранено ✓';
+    setTimeout(()=> status.textContent='', 1200);
+    renderProfilesList();
+  };
+  document.getElementById('btnDeleteProfile').onclick = async ()=>{
+    if(!confirm('Удалить профиль '+currentProfileName+'?')) return;
+    await profilesDir.removeEntry(currentProfileName);
+    currentProfileName=null; currentProfile=null;
+    renderProfilesList();
+    renderProfileEditor();
+  };
+  document.getElementById('btnDuplicateProfile').onclick = async ()=>{
+    const baseId = p.id.replace(/_\d+$/, '');
+    const baseName = (p.name||baseId).replace(/\s+\d+$/, '');
+    const existing = new Set();
+    for await (const [name] of profilesDir.entries()) existing.add(name);
+    let n = 2;
+    while(existing.has(`${baseId}_${n}.json`)) n++;
+    const newId = `${baseId}_${n}`;
+    const clone = JSON.parse(JSON.stringify(p));
+    clone.id = newId;
+    clone.name = `${baseName} ${n}`;
+    const handle = await profilesDir.getFileHandle(newId+'.json', {create:true});
+    const w = await handle.createWritable();
+    await w.write(JSON.stringify(clone, null, 2));
+    await w.close();
+    await renderProfilesList();
+    await loadProfileIntoEditor(newId+'.json');
+  };
+}
+
+// миграция старых схем (softLine / softLines+hardSpending+realSpending+styleUpgradeSpending) на sequences[]
+function migrateProfileToSequences(p){
+  p.income = p.income || {};
+  if(p.income.adsPerDay===undefined) p.income.adsPerDay = 2;
+  delete p.income.coinsPerArena; delete p.income.coinsPerDaily; // общие, из Продукт → Шаг 2
+  delete p.income.gemsPerAd; // тоже общее, из Продукт → Шаг 2
+
+  if(p.sequences) return; // уже новая схема
+
+  const oldFreeGemSpendTier = p.income.freeGemSpendTier;
+  delete p.income.freeGemSpendTier;
+
+  let softLines = p.softLines;
+  if(!softLines && p.softLine) softLines = [{ name:'Линия 1', phases:p.softLine.phases||[], loop: !!p.softLine.loop, until:'never' }];
+  softLines = softLines || [];
+
+  const sequences = [];
+  if(softLines.length){
+    sequences.push({ name:'Софт', lines: softLines.map(l=>({
+      name: l.name||'Линия', loop: l.loop!==false, until: l.until||'never',
+      phases: (l.phases||[]).map(ph=> ph.kind==='hoardForStyle'
+        ? {kind:'soft-hoardForStyle'}
+        : {kind:'soft-buyTier', tier:ph.tier, count:ph.count||1, topUp:false})
+    })) });
+  }
+
+  // раньше это были независимые параллельные треки — каждый становится своей секвенцией (не линиями внутри одной),
+  // иначе последовательные линии с until:'never' блокируют друг друга (первая никогда не закрывается)
+  if(oldFreeGemSpendTier){
+    sequences.push({ name:'Хард: бесплатные кристаллы', lines:[{ name:'Линия 1', loop:true, until:'never', phases:[
+      {kind:'hard-buyTier', tier:oldFreeGemSpendTier, itemsPerMonth:0, topUp:false, cadence:'daily'}
+    ]}] });
+  }
+  if(p.hardSpending && p.hardSpending.itemsPerMonth>0){
+    sequences.push({ name:'Хард: обычные траты', lines:[{ name:'Линия 1', loop:true, until:'never', phases:[
+      {kind:'hard-buyTier', tier:p.hardSpending.tier, itemsPerMonth:p.hardSpending.itemsPerMonth, topUp:true, cadence:'monthly'}
+    ]}] });
+  }
+  if(p.styleUpgradeSpending && ((p.styleUpgradeSpending.itemsPerMonth||0)>0 || p.styleUpgradeSpending.source==='free')){
+    const isFree = p.styleUpgradeSpending.source==='free';
+    sequences.push({ name:'Хард: апгрейды', lines:[{ name:'Линия 1', loop:true, until:'never', phases:[
+      {kind:'hard-buyUpgrade', tier:p.styleUpgradeSpending.tier||'H4', itemsPerMonth:isFree?0:(p.styleUpgradeSpending.itemsPerMonth||0), topUp:!isFree, cadence:isFree?'daily':'monthly'}
+    ]}] });
+  }
+
+  if(p.realSpending && p.realSpending.itemsPerMonth>0){
+    sequences.push({ name:'Реал', lines:[{ name:'Покупки', loop:true, until:'never', phases:[
+      {kind:'real-buyTier', tier:p.realSpending.tier, itemsPerMonth:p.realSpending.itemsPerMonth}
+    ]}] });
+  }
+
+  p.sequences = sequences;
+  delete p.softLines; delete p.softLine;
+  delete p.hardSpending; delete p.realSpending; delete p.styleUpgradeSpending;
+}
+
+document.getElementById('btnNewProfile').onclick = async ()=>{
+  const id = prompt('id профиля (латиницей, без пробелов):', 'new_profile');
+  if(!id) return;
+  const template = {
+    id, name: id, description: "",
+    simulateDays: 730,
+    income: { adsPerDay: 2 },
+    sequences: [
+      { name:'Софт', lines: [ { name:'Линия 1', phases: [ {kind:'soft-hoardForStyle'}, {kind:'soft-buyTier', tier:'S2', count:5, topUp:false} ], loop: true, until:'never' } ] }
+    ]
+  };
+  const handle = await profilesDir.getFileHandle(id+'.json', {create:true});
+  const w = await handle.createWritable();
+  await w.write(JSON.stringify(template, null, 2));
+  await w.close();
+  await renderProfilesList();
+  await loadProfileIntoEditor(id+'.json');
+};
+
+// ---------- SIMULATION ENGINE (tier-based, content считается бесконечным) ----------
+function seededRandom(seed){
+  let s = seed % 2147483647; if(s<=0) s += 2147483646;
+  return function(){ s = (s*16807) % 2147483647; return (s-1)/2147483646; };
+}
+function hashSeed(str){ let h=0; for(let i=0;i<str.length;i++){ h=(h*31+str.charCodeAt(i))|0; } return Math.abs(h)||1; }
+
+async function loadAllConfigs(){
+  const tiersRows = await tryReadCSVObjects(dataDir, 'product_tiers.csv') || [];
+  const stylesRows = await tryReadCSVObjects(dataDir, 'style_progression.csv') || [];
+  const tiers = {};
+  tiersRows.forEach(r=>{ tiers[r.tier] = { channel:r.channel, targetDay:+r.targetDay||0, priceUsd:+r.priceUsd||0, meaning:r.meaning }; });
+  const styles = stylesRows.map(r=>({ styleId:r.styleId, name:r.name, targetDay:+r.targetDay||0 })).sort((a,b)=>a.targetDay-b.targetDay);
+
+  // ценность дня — тот же расчёт, что в Продукт → Шаг 2: ARPPU дельфина ÷ 30 ÷ курс магазина (Шаг 1)
+  const {usdPerCoin, usdPerGem} = computeShopAnchorValues();
+  const usdPerDay = (marketHypothesis.dolphinArppuUsd||0)/30;
+  const coinsPerDay = usdPerCoin ? usdPerDay/usdPerCoin : 0;
+  const gemsPerDay = usdPerGem ? usdPerDay/usdPerGem : 0;
+
+  return { tiers, styles, coinsPerDay, gemsPerDay, usdPerGem: usdPerGem||0,
+    coinsPerArena: marketHypothesis.coinsPerArena||0, coinsPerDaily: marketHypothesis.coinsPerDaily||0,
+    gemsPerAd: marketHypothesis.gemsPerAd||0 };
+}
+
+function tierPriceCoins(tiers, coinsPerDay, code){
+  const t = tiers[code]; return (t && t.channel==='soft') ? t.targetDay*coinsPerDay : Infinity;
+}
+function tierPriceGems(tiers, gemsPerDay, code){
+  const t = tiers[code]; return (t && t.channel==='hard') ? t.targetDay*gemsPerDay : Infinity;
+}
+function tierPriceUsd(tiers, code){
+  const t = tiers[code]; return (t && t.channel==='real') ? (t.priceUsd||0) : 0;
+}
+
+function simulateProfile(profile, cfg){
+  migrateProfileToSequences(profile);
+  const income = profile.income || {};
+  const sequences = profile.sequences || [];
+  const simDays = profile.simulateDays || 730;
+  const styles = cfg.styles.slice();
+
+  const bal = { coins:0, gems:0 };
+  let totalCoinsEarned=0, totalGemsEarned=0, totalCoinsSpent=0, totalGemsSpent=0, totalRealUsdSpent=0;
+  const tierPurchaseCounts = {};
+  const styleOpenedDay = {};
+  const upgradeOwnedDay = {};
+  const trace = [];
+  const lineClosedDay = {}; // ключ "Секвенция: Линия"
+
+  // состояние на каждую секвенцию — они выполняются параллельно, независимо друг от друга
+  const seqState = sequences.map(()=>({ lineIndex:0, phaseIndex:0, phaseBoughtCount:0 }));
+
+  function nextUnopenedStyle(){
+    for(const s of styles) if(styleOpenedDay[s.styleId]===undefined) return s;
+    return null;
+  }
+  function stylePrice(s){ return s.targetDay * cfg.coinsPerDay; }
+  function seqLineLabel(si){
+    const seq = sequences[si], state = seqState[si];
+    const line = seq.lines[state.lineIndex];
+    return `${seq.name||('Секвенция '+(si+1))}: ${line ? (line.name||('Линия '+(state.lineIndex+1))) : '?'}`;
+  }
+  // ключ включает секвенцию/линию — чтобы в отчёте было видно, кто именно купил, не только суммарно по тиру
+  function countTier(label, tier, n){ const key = `${label} — ${tier}`; tierPurchaseCounts[key] = (tierPurchaseCounts[key]||0) + n; }
+  function nextUpgradeTarget(){
+    for(const s of styles){ if(styleOpenedDay[s.styleId]!==undefined && upgradeOwnedDay[s.styleId]===undefined) return s.styleId; }
+    return null;
+  }
+  // Цена всегда в валюте (монеты/кристаллы), не в $. "Докупить валюту" отличается от "органично" только тем,
+  // что при нехватке баланса топит недостачу за $ — а не игнорирует уже накопленное.
+  function buyCurrency(key, price, usdRate, allowTopUp){
+    if(!isFinite(price) || price<=0) return {bought:false, usdSpent:0};
+    if(bal[key] >= price){
+      bal[key] -= price;
+      if(key==='coins') totalCoinsSpent += price; else totalGemsSpent += price;
+      return {bought:true, usdSpent:0};
+    }
+    if(!allowTopUp) return {bought:false, usdSpent:0};
+    const shortfall = price - bal[key];
+    const usdSpent = shortfall * (usdRate||0);
+    if(key==='coins') totalCoinsSpent += price; else totalGemsSpent += price;
+    bal[key] = 0;
+    return {bought:true, usdSpent};
+  }
+
+  function advancePhase(si){
+    const state = seqState[si];
+    const line = sequences[si].lines[state.lineIndex]; if(!line) return;
+    state.phaseIndex++;
+    state.phaseBoughtCount = 0;
+    if(state.phaseIndex>=line.phases.length) state.phaseIndex = line.loop ? 0 : line.phases.length;
+  }
+  function lineUntilSatisfied(line, state){
+    if(line.until==='allStylesOpened') return styles.length>0 && Object.keys(styleOpenedDay).length>=styles.length;
+    if(line.until==='phasesComplete') return state.phaseIndex>=line.phases.length;
+    if(line.until && line.until.startsWith('styleOpened:')) return styleOpenedDay[line.until.slice('styleOpened:'.length)] !== undefined;
+    return false; // 'never'
+  }
+  function advanceLine(si, day){
+    const seq = sequences[si], state = seqState[si];
+    const line = seq.lines[state.lineIndex];
+    const label = `${seq.name||('Секвенция '+(si+1))}: ${line.name||('Линия '+(state.lineIndex+1))}`;
+    lineClosedDay[label] = day;
+    if(trace.length<500) trace.push({day, type:'lineClosed', line:label});
+    state.lineIndex++;
+    if(state.lineIndex>=seq.lines.length) state.lineIndex = seq.loopLines ? 0 : seq.lines.length;
+    state.phaseIndex = 0; state.phaseBoughtCount = 0;
+  }
+
+  function doBuyHardOnce(tier, topUp, label){
+    const price = tierPriceGems(cfg.tiers, cfg.gemsPerDay, tier);
+    const r = buyCurrency('gems', price, cfg.usdPerGem, topUp);
+    if(!r.bought) return false;
+    totalRealUsdSpent += r.usdSpent;
+    countTier(label, tier, 1);
+    return true;
+  }
+
+  function executePhase(si, day){
+    const state = seqState[si];
+    const line = sequences[si].lines[state.lineIndex];
+    if(!line) return;
+    const phase = line.phases[state.phaseIndex];
+    if(!phase) return;
+
+    const label = seqLineLabel(si);
+
+    if(phase.kind==='soft-hoardForStyle'){
+      const target = nextUnopenedStyle();
+      if(target){
+        const price = stylePrice(target);
+        if(bal.coins >= price){
+          bal.coins -= price; totalCoinsSpent += price;
+          styleOpenedDay[target.styleId] = day;
+          if(trace.length<500) trace.push({day, type:'styleOpened', styleId:target.styleId, line:label});
+          advancePhase(si);
+        }
+      } else {
+        advancePhase(si); // стилей больше нет, а линия ещё не закрыта по условию — идём дальше по фазам
+      }
+    } else if(phase.kind==='soft-hoardUpToStyle'){
+      if(styleOpenedDay[phase.styleId]!==undefined){
+        advancePhase(si); // цель уже достигнута (этой или другой линией) — дальше не покупаем
+      } else {
+        const target = nextUnopenedStyle();
+        if(target){
+          const price = stylePrice(target);
+          if(bal.coins >= price){
+            bal.coins -= price; totalCoinsSpent += price;
+            styleOpenedDay[target.styleId] = day;
+            if(trace.length<500) trace.push({day, type:'styleOpened', styleId:target.styleId, line:label});
+            if(target.styleId===phase.styleId) advancePhase(si); // это и был целевой стиль N — дальше не покупаем
+          }
+        }
+      }
+    } else if(phase.kind==='soft-buyTier'){
+      const price = tierPriceCoins(cfg.tiers, cfg.coinsPerDay, phase.tier);
+      if(state.phaseBoughtCount < (phase.count||0)){
+        const r = buyCurrency('coins', price, cfg.usdPerCoin, !!phase.topUp);
+        if(r.bought){
+          totalRealUsdSpent += r.usdSpent;
+          countTier(label, phase.tier, 1);
+          state.phaseBoughtCount++;
+          if(trace.length<500) trace.push({day, type:'buyTier', tier:phase.tier, price, line:label});
+        }
+      }
+      if(state.phaseBoughtCount >= (phase.count||0)) advancePhase(si);
+    } else if(phase.kind==='soft-buyStyleOnDay'){
+      if(day >= (phase.day||0) && styleOpenedDay[phase.styleId]===undefined){
+        const style = styles.find(s=>s.styleId===phase.styleId);
+        if(style){
+          const price = stylePrice(style);
+          const r = buyCurrency('coins', price, cfg.usdPerCoin, !!phase.topUp);
+          if(r.bought){
+            totalRealUsdSpent += r.usdSpent;
+            styleOpenedDay[phase.styleId] = day;
+            if(trace.length<500) trace.push({day, type:'styleOpened', styleId:phase.styleId, scheduled:true, line:label});
+            advancePhase(si);
+          }
+        } else advancePhase(si); // такого стиля нет в конфиге — не блокируем линию навсегда
+      } else if(styleOpenedDay[phase.styleId]!==undefined){
+        advancePhase(si); // уже куплен (другой линией/раньше) — не ждём
+      }
+    } else if(phase.kind==='hard-buyTier' || phase.kind==='hard-buyUpgrade'){
+      const isUpgrade = phase.kind==='hard-buyUpgrade';
+      const buyOnce = ()=> isUpgrade ? doBuyUpgradeOnceAt(phase.tier, !!phase.topUp, day, label) : doBuyHardOnce(phase.tier, !!phase.topUp, label);
+      if(phase.cadence==='daily'){
+        let guard=0; while(guard++<20 && buyOnce()){}
+      } else if(day % 30 === 0){
+        for(let i=0;i<(phase.itemsPerMonth||0);i++){ if(!buyOnce()) break; }
+      }
+    } else if(phase.kind==='real-buyTier'){
+      if(day % 30 === 0){
+        const price = tierPriceUsd(cfg.tiers, phase.tier);
+        const count = phase.itemsPerMonth||0;
+        if(count>0){ totalRealUsdSpent += price*count; countTier(label, phase.tier, count); }
+      }
+    }
+  }
+  function doBuyUpgradeOnceAt(tier, topUp, day, label){
+    const target = nextUpgradeTarget();
+    if(!target) return false;
+    const price = tierPriceGems(cfg.tiers, cfg.gemsPerDay, tier);
+    const r = buyCurrency('gems', price, cfg.usdPerGem, topUp);
+    if(!r.bought) return false;
+    totalRealUsdSpent += r.usdSpent;
+    upgradeOwnedDay[target] = day;
+    countTier(label, 'upgrade', 1);
+    return true;
+  }
+
+  for(let day=1; day<=simDays; day++){
+    const c = (cfg.coinsPerArena||0) + (cfg.coinsPerDaily||0);
+    const g = (cfg.gemsPerAd||0) * (income.adsPerDay||0);
+    bal.coins += c; totalCoinsEarned += c;
+    bal.gems += g; totalGemsEarned += g;
+
+    sequences.forEach((seq, si)=>{
+      const state = seqState[si];
+      // без зацикливания линий финальная линия никогда не закрывается сама (иначе секвенции некуда переходить);
+      // с зацикливанием (loopLines) закрывается и финальная — advanceLine оборачивает индекс обратно на линию 0
+      let guard = 0;
+      while(state.lineIndex < seq.lines.length && guard++<seq.lines.length+1
+        && (seq.loopLines || state.lineIndex < seq.lines.length-1)
+        && lineUntilSatisfied(seq.lines[state.lineIndex], state)) advanceLine(si, day);
+      if(state.lineIndex < seq.lines.length) executePhase(si, day);
+    });
+  }
+
+  const allStylesOpened = styles.length>0 && Object.keys(styleOpenedDay).length>=styles.length;
+  const allUpgradesOwned = styles.length>0 && Object.keys(upgradeOwnedDay).length>=styles.length;
+  const activeLines = sequences.map((seq,si)=>{
+    const state = seqState[si];
+    const line = seq.lines[state.lineIndex];
+    return line ? `${seq.name||('Секвенция '+(si+1))}: ${line.name||('Линия '+(state.lineIndex+1))}` : null;
+  }).filter(Boolean);
+
+  return {
+    profileId: profile.id,
+    profileName: profile.name,
+    generatedAt: new Date().toISOString(),
+    daysSimulated: simDays,
+    styleOpenedDay,
+    allStylesOpenedDay: allStylesOpened ? Math.max(...Object.values(styleOpenedDay)) : null,
+    upgradeOwnedDay,
+    allUpgradesOwnedDay: allUpgradesOwned ? Math.max(...Object.values(upgradeOwnedDay)) : null,
+    lineClosedDay,
+    activeLines,
+    totalCoinsEarned, totalGemsEarned, totalCoinsSpent, totalGemsSpent,
+    totalRealUsdSpent: +totalRealUsdSpent.toFixed(2),
+    avgMonthlyRealSpend: +(totalRealUsdSpent/(simDays/30)).toFixed(2),
+    tierPurchaseCounts,
+    finalState: { coins: bal.coins, gems: bal.gems },
+    trace
+  };
+}
+
+
+document.getElementById('btnRunSim').onclick = async ()=>{
+  const status = document.getElementById('simStatus');
+  status.textContent = 'считаю…';
+  try{
+    const cfg = await loadAllConfigs();
+    const names = await syncProfileOrder();
+    const reports = [];
+    lastReportsByFile = {};
+    for(const name of names){
+      const handle = await profilesDir.getFileHandle(name);
+      const file = await handle.getFile();
+      let profile;
+      try{ profile = JSON.parse(await file.text()); }catch(e){ continue; }
+      const report = simulateProfile(profile, cfg);
+      reports.push(report);
+      lastReportsByFile[name] = report;
+      const rHandle = await reportsDir.getFileHandle(profile.id+'.json', {create:true});
+      const w = await rHandle.createWritable();
+      await w.write(JSON.stringify(report, null, 2));
+      await w.close();
+    }
+    renderReports(reports);
+    await runHypotheses();
+    status.textContent = 'готово — ' + reports.length + ' отчёт(ов) в reports/';
+  }catch(e){
+    status.textContent = 'ошибка: '+e.message;
+  }
+};
+
+const REPORTS_COLS = [
+  {key:'profileName', label:'Профиль', width:140},
+  {key:'daysSimulated', label:'Дней', width:70},
+  {key:'styles', label:'Стили открыты (день)', width:180},
+  {key:'allStyles', label:'Все стили', width:90},
+  {key:'lines', label:'Линии', width:220},
+  {key:'upgrades', label:'Апгрейды открыты (день)', width:180},
+  {key:'allUpgrades', label:'Все апгрейды', width:100},
+  {key:'coinsEarned', label:'Монет заработано', width:120},
+  {key:'coinsSpent', label:'Монет потрачено', width:120},
+  {key:'gemsEarned', label:'Кристаллов заработано', width:130},
+  {key:'gemsSpent', label:'Кристаллов потрачено', width:130},
+  {key:'tiers', label:'Тиры куплены', width:220},
+  {key:'realTotal', label:'$ реал всего', width:90},
+  {key:'realPerMonth', label:'$ реал/мес', width:90},
+  {key:'open', label:'', width:70},
+];
+const REPORTS_COLWIDTHS_KEY = 'balanceLab.reportsColWidths';
+const REPORTS_HIDDENCOLS_KEY = 'balanceLab.reportsHiddenCols';
+
+let lastReportsList = [];
+
+// Каждый пункт (стиль/апгрейд/тир/линия) — с новой строки; в таблице и в попапе рендерится через white-space:pre-wrap.
+function stylesFmt(r){
+  const entries = Object.entries(r.styleOpenedDay||{});
+  if(!entries.length) return '—';
+  return entries.map(([id,day])=>`${id}@${day}`).join('\n');
+}
+function tiersFmt(r){
+  const entries = Object.entries(r.tierPurchaseCounts||{});
+  if(!entries.length) return '—';
+  return entries.map(([t,n])=>`${t}×${n}`).join('\n');
+}
+function upgradesFmt(r){
+  const entries = Object.entries(r.upgradeOwnedDay||{});
+  if(!entries.length) return '—';
+  return entries.map(([id,day])=>`${id}@${day}`).join('\n');
+}
+function linesFmt(r){
+  const entries = Object.entries(r.lineClosedDay||{});
+  const closedLines = entries.map(([name,day])=>`${name} закрыта@${day}`);
+  const activeLines = (r.activeLines||[]).map(name=>`активна: ${name}`);
+  const all = [...closedLines, ...activeLines];
+  return all.length ? all.join('\n') : '—';
+}
+
+// key -> функция рендера значения ячейки (без экранирования — экранируем один раз при вставке)
+const REPORTS_CELL_VALUE = {
+  profileName: r => r.profileName,
+  daysSimulated: r => String(r.daysSimulated),
+  styles: r => stylesFmt(r),
+  allStyles: r => r.allStylesOpenedDay!==null ? 'день '+r.allStylesOpenedDay : '—',
+  lines: r => linesFmt(r),
+  upgrades: r => upgradesFmt(r),
+  allUpgrades: r => r.allUpgradesOwnedDay!==null ? 'день '+r.allUpgradesOwnedDay : '—',
+  coinsEarned: r => r.totalCoinsEarned.toLocaleString('ru-RU'),
+  coinsSpent: r => r.totalCoinsSpent.toLocaleString('ru-RU'),
+  gemsEarned: r => r.totalGemsEarned.toLocaleString('ru-RU'),
+  gemsSpent: r => r.totalGemsSpent.toLocaleString('ru-RU'),
+  tiers: r => tiersFmt(r),
+  realTotal: r => '$'+r.totalRealUsdSpent,
+  realPerMonth: r => '$'+r.avgMonthlyRealSpend,
+};
+
+function renderReports(reports){
+  lastReportsList = reports;
+  const card = document.getElementById('reportsCard');
+  const area = document.getElementById('reportsArea');
+  card.style.display='block';
+
+  const hidden = loadReportsHiddenCols();
+  const visibleCols = REPORTS_COLS.filter(c=>c.key==='open' || !hidden.includes(c.key));
+
+  const toggleBar = '<div class="col-toggle-bar">' + REPORTS_COLS.filter(c=>c.key!=='open').map(c=>
+    `<button class="col-toggle${hidden.includes(c.key)?'':' active'}" data-toggle-col="${c.key}">${escapeHtml(c.label)}</button>`
+  ).join('') + '</div>';
+
+  const savedWidths = loadReportsColWidths();
+  const colgroup = '<colgroup>' + visibleCols.map(c=>`<col style="width:${savedWidths[c.key]||c.width}px">`).join('') + '</colgroup>';
+  const thead = '<thead><tr>' + visibleCols.map(c=>
+    `<th data-col="${c.key}">${escapeHtml(c.label)}${c.key!=='open' ? '<span class="col-resizer" data-col="'+c.key+'"></span>' : ''}</th>`
+  ).join('') + '</tr></thead>';
+
+  const rows = reports.map((r,idx)=>'<tr>' + visibleCols.map(c=>
+    c.key==='open'
+      ? `<td><button class="btn-open-report" data-open-report="${idx}">Открыть</button></td>`
+      : `<td>${escapeHtml(REPORTS_CELL_VALUE[c.key](r))}</td>`
+  ).join('') + '</tr>').join('');
+
+  area.innerHTML = `${toggleBar}<div style="overflow-x:auto"><table class="resizable" id="reportsTable">${colgroup}${thead}<tbody>${rows}</tbody></table></div>`;
+
+  makeTableResizable(document.getElementById('reportsTable'), visibleCols, REPORTS_COLWIDTHS_KEY);
+  area.querySelectorAll('[data-open-report]').forEach(btn=>{
+    btn.onclick = ()=> openReportModal(lastReportsList[+btn.dataset.openReport]);
+  });
+  area.querySelectorAll('[data-toggle-col]').forEach(btn=>{
+    btn.onclick = ()=> toggleReportsColumn(btn.dataset.toggleCol);
+  });
+}
+
+function toggleReportsColumn(key){
+  const hidden = loadReportsHiddenCols();
+  const next = hidden.includes(key) ? hidden.filter(k=>k!==key) : [...hidden, key];
+  saveReportsHiddenCols(next);
+  renderReports(lastReportsList);
+}
+
+function loadReportsColWidths(){
+  try{ return JSON.parse(localStorage.getItem(REPORTS_COLWIDTHS_KEY)) || {}; }catch(e){ return {}; }
+}
+function saveReportsColWidths(widths){
+  try{ localStorage.setItem(REPORTS_COLWIDTHS_KEY, JSON.stringify(widths)); }catch(e){}
+}
+function loadReportsHiddenCols(){
+  try{ return JSON.parse(localStorage.getItem(REPORTS_HIDDENCOLS_KEY)) || []; }catch(e){ return []; }
+}
+function saveReportsHiddenCols(arr){
+  try{ localStorage.setItem(REPORTS_HIDDENCOLS_KEY, JSON.stringify(arr)); }catch(e){}
+}
+
+// Делает столбцы таблицы перетаскиваемыми по ширине (через <colgroup><col>), ширины сохраняются в localStorage
+// по storageKey и переживают перезагрузку страницы.
+function makeTableResizable(table, cols, storageKey){
+  if(!table) return;
+  const colEls = table.querySelectorAll('colgroup col');
+  table.querySelectorAll('.col-resizer').forEach(handle=>{
+    handle.addEventListener('mousedown', (e)=>{
+      e.preventDefault();
+      const key = handle.dataset.col;
+      const colIndex = cols.findIndex(c=>c.key===key);
+      const colEl = colEls[colIndex];
+      const startX = e.clientX;
+      const startWidth = colEl.getBoundingClientRect().width;
+      handle.classList.add('active');
+      table.classList.add('resizing');
+      function onMove(ev){
+        const newWidth = Math.max(50, startWidth + (ev.clientX - startX));
+        colEl.style.width = newWidth+'px';
+      }
+      function onUp(){
+        document.removeEventListener('mousemove', onMove);
+        document.removeEventListener('mouseup', onUp);
+        handle.classList.remove('active');
+        table.classList.remove('resizing');
+        const widths = loadReportsColWidths();
+        colEls.forEach((c,i)=>{ widths[cols[i].key] = Math.round(c.getBoundingClientRect().width); });
+        saveReportsColWidths(widths);
+      }
+      document.addEventListener('mousemove', onMove);
+      document.addEventListener('mouseup', onUp);
+    });
+  });
+}
+
+// Полноэкранный попап с сырым JSON отчёта — без форматирования, чтобы ничего не обрезалось и не переносилось криво.
+function openReportModal(r){
+  if(!r) return;
+  closeReportModal();
+  const json = JSON.stringify(r, null, 2);
+  const overlay = document.createElement('div');
+  overlay.className = 'modal-overlay';
+  overlay.id = 'reportModalOverlay';
+  overlay.innerHTML = `<div class="modal-box">
+    <div class="modal-head"><h3>Отчёт: ${escapeHtml(r.profileName||'')}</h3><button id="reportModalClose">✕</button></div>
+    <div class="modal-body"><pre class="report-json">${escapeHtml(json)}</pre></div>
+  </div>`;
+  document.body.appendChild(overlay);
+  overlay.addEventListener('click', (e)=>{ if(e.target===overlay) closeReportModal(); });
+  document.getElementById('reportModalClose').onclick = closeReportModal;
+  document.addEventListener('keydown', reportModalEscHandler);
+}
+function reportModalEscHandler(e){ if(e.key==='Escape') closeReportModal(); }
+function closeReportModal(){
+  const el = document.getElementById('reportModalOverlay');
+  if(el) el.remove();
+  document.removeEventListener('keydown', reportModalEscHandler);
+}
+
+
+// ---------- HYPOTHESES: формализованные проверки баланса ----------
+function getByPath(obj, path){
+  return path.split('.').reduce((o,k)=> (o==null ? undefined : o[k]), obj);
+}
+// Метрика "не наступила" — undefined (пути нет) ИЛИ null (поле явно null в схеме отчёта,
+// например allStylesOpenedDay, когда веха не достигнута за simulateDays). Раньше ratio/threshold-режимы
+// трактовали null как 0/falsy и молча выдавали "✓ в диапазоне" вместо честной ошибки — см.
+// DisDocs/Баланс/Модели поведения и проверка дыр экономики.md, «Не реализовано».
+function metricMissing(v){ return v===undefined || v===null; }
+
+function evaluateHypothesis(hyp, reportsByFile){
+  try{
+    if(hyp.mode==='compare'){
+      const rA = reportsByFile[hyp.profileA], rB = reportsByFile[hyp.profileB];
+      if(!rA||!rB) return {hyp, error:'нет отчёта для '+(!rA?hyp.profileA:hyp.profileB)+' — нажми «Запустить симуляцию всех профилей»'};
+      const vA = getByPath(rA, hyp.metric), vB = getByPath(rB, hyp.metric);
+      if(metricMissing(vA) || metricMissing(vB)) return {hyp, error:'путь '+hyp.metric+' не найден или null у '+(metricMissing(vA)?hyp.profileA:hyp.profileB)+' (веха не достигнута за simulateDays?)'};
+      const diff = vB - vA;
+      const diffPercent = vA ? (diff/vA*100) : (vB ? Infinity : 0);
+      const [lo,hi] = hyp.expectedDiffPercentRange || [-Infinity,Infinity];
+      const verdict = diffPercent<lo ? 'below' : (diffPercent>hi ? 'above' : 'ok');
+      return {hyp, vA, vB, diff:+diff.toFixed(2), diffPercent:+diffPercent.toFixed(1), range:[lo,hi], verdict};
+    }
+    if(hyp.mode==='ratio'){
+      const r = reportsByFile[hyp.profile];
+      if(!r) return {hyp, error:'нет отчёта для '+hyp.profile+' — нажми «Запустить симуляцию всех профилей»'};
+      const num = getByPath(r, hyp.metricNumerator), den = getByPath(r, hyp.metricDenominator);
+      if(metricMissing(num) || metricMissing(den)) return {hyp, error:'путь '+(metricMissing(num)?hyp.metricNumerator:hyp.metricDenominator)+' не найден или null в отчёте'};
+      const ratio = den ? num/den : (num ? Infinity : 0);
+      const [lo,hi] = hyp.expectedRange || [-Infinity,Infinity];
+      const verdict = ratio<lo ? 'below' : (ratio>hi ? 'above' : 'ok');
+      return {hyp, ratio:+ratio.toFixed(3), num, den, range:[lo,hi], verdict};
+    }
+    if(hyp.mode==='crossRatio'){
+      // отношение метрики между ДВУМЯ профилями (не внутри одного) — например "сколько % контента у бесплатного
+      // от того же дня у платящего" — устойчиво к росту объёма контента, т.к. это отношение, не абсолютное число
+      const rA = reportsByFile[hyp.profileA], rB = reportsByFile[hyp.profileB];
+      if(!rA||!rB) return {hyp, error:'нет отчёта для '+(!rA?hyp.profileA:hyp.profileB)+' — нажми «Запустить симуляцию всех профилей»'};
+      const vA = getByPath(rA, hyp.metric), vB = getByPath(rB, hyp.metric);
+      if(metricMissing(vA) || metricMissing(vB)) return {hyp, error:'путь '+hyp.metric+' не найден или null у '+(metricMissing(vA)?hyp.profileA:hyp.profileB)+' (короткая симуляция? веха не достигнута? увеличь simulateDays)'};
+      const ratio = vA ? vB/vA : (vB ? Infinity : 0);
+      const [lo,hi] = hyp.expectedRange || [-Infinity,Infinity];
+      const verdict = ratio<lo ? 'below' : (ratio>hi ? 'above' : 'ok');
+      return {hyp, vA, vB, ratio:+ratio.toFixed(3), range:[lo,hi], verdict};
+    }
+    if(hyp.mode==='threshold'){
+      const r = reportsByFile[hyp.profile];
+      if(!r) return {hyp, error:'нет отчёта для '+hyp.profile+' — нажми «Запустить симуляцию всех профилей»'};
+      const v = getByPath(r, hyp.metric);
+      if(metricMissing(v)) return {hyp, error:'путь '+hyp.metric+' не найден или null в отчёте (веха не достигнута за simulateDays?)'};
+      const [lo,hi] = hyp.expectedRange || [-Infinity,Infinity];
+      const verdict = v<lo ? 'below' : (v>hi ? 'above' : 'ok');
+      return {hyp, value:v, range:[lo,hi], verdict};
+    }
+    return {hyp, error:'неизвестный mode: '+hyp.mode};
+  }catch(e){
+    return {hyp, error:e.message};
+  }
+}
+
+const VERDICT_LABEL = {ok:'✓ в диапазоне', below:'⚠ ниже ожидаемого', above:'⚠ выше ожидаемого', error:'ошибка'};
+
+function renderHypothesisResult(res){
+  const badgeClass = res.error ? 'error' : res.verdict;
+  const badgeText = res.error ? 'ошибка' : VERDICT_LABEL[res.verdict];
+  let numsHtml = '';
+  if(res.error){
+    numsHtml = `<div class="hyp-desc" style="color:var(--bad)">${res.error}</div>`;
+  } else if(res.hyp.mode==='compare'){
+    numsHtml = `<div class="hyp-nums">A (${res.hyp.profileA}): <b>${res.vA}</b> → B (${res.hyp.profileB}): <b>${res.vB}</b> · diff <b>${res.diff}</b> (<b>${res.diffPercent}%</b>) · ожидали [${res.range[0]}%, ${res.range[1]}%]</div>`;
+  } else if(res.hyp.mode==='ratio'){
+    numsHtml = `<div class="hyp-nums">${res.hyp.metricNumerator} / ${res.hyp.metricDenominator} = <b>${res.num}</b> / <b>${res.den}</b> = <b>${res.ratio}</b> · ожидали [${res.range[0]}, ${res.range[1]}]</div>`;
+  } else if(res.hyp.mode==='threshold'){
+    numsHtml = `<div class="hyp-nums">${res.hyp.metric} = <b>${res.value}</b> · ожидали [${res.range[0]}, ${res.range[1]}]</div>`;
+  } else if(res.hyp.mode==='crossRatio'){
+    numsHtml = `<div class="hyp-nums">${res.hyp.metric}: B (${res.hyp.profileB})=<b>${res.vB}</b> / A (${res.hyp.profileA})=<b>${res.vA}</b> = <b>${res.ratio}</b> · ожидали [${res.range[0]}, ${res.range[1]}]</div>`;
+  }
+  return `<div class="hyp-card">
+    <div class="hyp-head">
+      <strong>${res.hyp.name}</strong>
+      <span class="hyp-badge ${badgeClass}">${badgeText}</span>
+    </div>
+    <div class="hyp-desc">${res.hyp.description||''}</div>
+    ${numsHtml}
+    ${res.hyp.note ? `<div class="hyp-desc" style="margin-top:6px">💡 ${res.hyp.note}</div>` : ''}
+  </div>`;
+}
+
+async function runHypotheses(){
+  const card = document.getElementById('hypothesesCard');
+  const area = document.getElementById('hypothesesArea');
+  if(!hypothesesDir) return;
+  const names = [];
+  for await (const [name, handle] of hypothesesDir.entries()){
+    if(handle.kind==='file' && name.toLowerCase().endsWith('.json')) names.push(name);
+  }
+  names.sort();
+  card.style.display = 'block';
+  if(names.length===0){ area.innerHTML = '<div class="empty-state">Нет гипотез в hypotheses/. Жми «+ новая гипотеза».</div>'; return; }
+  const results = [];
+  for(const name of names){
+    const handle = await hypothesesDir.getFileHandle(name);
+    const text = await (await handle.getFile()).text();
+    let hyp;
+    try{ hyp = JSON.parse(text); }catch(e){ results.push({hyp:{name, description:''}, error:'невалидный JSON: '+e.message}); continue; }
+    results.push(evaluateHypothesis(hyp, lastReportsByFile));
+  }
+  area.innerHTML = results.map(renderHypothesisResult).join('');
+}
+
+document.getElementById('btnNewHypothesis').onclick = async ()=>{
+  const id = prompt('id гипотезы (латиницей, без пробелов):', 'new_hypothesis');
+  if(!id) return;
+  const template = {
+    id, name: id, description: "",
+    mode: "compare",
+    profileA: "profileA.json",
+    profileB: "profileB.json",
+    metric: "allStylesOpenedDay",
+    expectedDiffPercentRange: [-50, -10],
+    note: ""
+  };
+  const handle = await hypothesesDir.getFileHandle(id+'.json', {create:true});
+  const w = await handle.createWritable();
+  await w.write(JSON.stringify(template, null, 2));
+  await w.close();
+  alert('Создан hypotheses/'+id+'.json — открой его в текстовом редакторе (или через "Открыть один файл" в системном диалоге), настрой profileA/profileB/metric/range, потом жми «Запустить симуляцию всех профилей» ещё раз.');
+  await runHypotheses();
+};
+
+function renderTable(){
+  const area = document.getElementById('configArea');
+  const maxCols = Math.max(1, ...rows.map(r=>r.length));
+  let html = '<table><thead><tr>';
+  for(let c=0;c<maxCols;c++) html += `<th>col ${c+1}</th>`;
+  html += '<th></th></tr></thead><tbody>';
+  rows.forEach((r,ri)=>{
+    const isBlank = r.every(c=>c.trim()==='');
+    html += `<tr data-ri="${ri}" class="${isBlank?'blank-row':''}">`;
+    for(let c=0;c<maxCols;c++){
+      const val = (r[c]??'').replace(/&/g,'&amp;').replace(/</g,'&lt;');
+      html += `<td contenteditable data-ri="${ri}" data-ci="${c}">${val}</td>`;
+    }
+    html += `<td class="row-actions"><button data-del="${ri}" title="удалить строку">✕</button></td></tr>`;
+  });
+  html += '</tbody></table>';
+  area.innerHTML = html;
+
+  area.querySelectorAll('td[contenteditable]').forEach(td=>{
+    td.addEventListener('input',()=>{
+      const ri=+td.dataset.ri, ci=+td.dataset.ci;
+      while(rows[ri].length<=ci) rows[ri].push('');
+      rows[ri][ci]=td.textContent;
+      setDirty(true);
+    });
+  });
+  area.querySelectorAll('[data-del]').forEach(btn=>{
+    btn.onclick=()=>{ rows.splice(+btn.dataset.del,1); setDirty(true); renderTable(); };
+  });
+}
+
+async function saveCSV(){
+  if(!fileHandle) return;
+  const writable = await fileHandle.createWritable();
+  await writable.write(toCSV(rows));
+  await writable.close();
+  setDirty(false);
+  if(fileHandle.name.includes('price')){ priceRows = rows; renderShop(); }
+}
+
+document.getElementById('btnSave').onclick = saveCSV;
+document.getElementById('btnAddRow').onclick = ()=>{ rows.push(['']); setDirty(true); renderTable(); };
+
+// ---------- JOURNEY (player path) ----------
+let journey = [];
+let journeyHandle = null;
+
+function computeBalance(){
+  let coins=0, gems=0;
+  journey.forEach(e=>{
+    const sign = e.kind==='earn' ? 1 : -1;
+    if(e.currency==='coins') coins += sign*e.amount;
+    else gems += sign*e.amount;
+  });
+  return {coins,gems};
+}
+
+function renderJourney(){
+  const body = document.getElementById('journeyBody');
+  body.innerHTML = journey.map((e,i)=>`
+    <tr>
+      <td>${e.date}</td>
+      <td>${e.kind==='earn'?'Заработал':'Потратил'}</td>
+      <td>${e.currency==='coins'?'Монеты':'Кристаллы'}</td>
+      <td class="amt ${e.kind}">${e.kind==='earn'?'+':'-'}${e.amount}</td>
+      <td>${e.note||''}</td>
+      <td class="row-actions"><button data-jdel="${i}">✕</button></td>
+    </tr>`).join('');
+  body.querySelectorAll('[data-jdel]').forEach(btn=>{
+    btn.onclick=()=>{ journey.splice(+btn.dataset.jdel,1); renderJourney(); renderBalance(); renderShop(); };
+  });
+  renderBalance();
+}
+
+function renderBalance(){
+  const {coins,gems} = computeBalance();
+  document.getElementById('balCoins').innerHTML = coins.toLocaleString('ru-RU')+'<small>монеты</small>';
+  document.getElementById('balGems').innerHTML = gems.toLocaleString('ru-RU')+'<small>кристаллы</small>';
+}
+
+document.getElementById('entryForm').addEventListener('submit', ev=>{
+  ev.preventDefault();
+  const f = new FormData(ev.target);
+  journey.push({
+    date: f.get('date'), kind: f.get('kind'), currency: f.get('currency'),
+    amount: +f.get('amount'), note: f.get('note')
+  });
+  journey.sort((a,b)=> a.date<b.date?-1:1);
+  ev.target.reset();
+  renderJourney();
+  renderShop();
+});
+
+document.getElementById('btnOpenJourney').onclick = async ()=>{
+  try{
+    const [handle] = await window.showOpenFilePicker({types:[{description:'JSON', accept:{'application/json':['.json']}}]});
+    journeyHandle = handle;
+    const file = await handle.getFile();
+    journey = JSON.parse(await file.text());
+    document.getElementById('journeyLabel').textContent = handle.name;
+    document.getElementById('btnSaveJourney').disabled = false;
+    renderJourney();
+  }catch(e){
+    if(e.name!=='AbortError') alert('Не удалось открыть: '+e.message);
+  }
+};
+document.getElementById('btnSaveJourney').onclick = async ()=>{
+  if(!journeyHandle){
+    // fallback: create new file
+    try{
+      journeyHandle = await window.showSaveFilePicker({suggestedName:'journey.json', types:[{description:'JSON', accept:{'application/json':['.json']}}]});
+    }catch(e){ return; }
+  }
+  const writable = await journeyHandle.createWritable();
+  await writable.write(JSON.stringify(journey, null, 2));
+  await writable.close();
+  document.getElementById('journeyLabel').textContent = journeyHandle.name + ' — сохранено';
+  document.getElementById('btnSaveJourney').disabled = false;
+};
+
+// ---------- SHOP (built from static_prices.csv) ----------
+function renderShop(){
+  const area = document.getElementById('shopArea');
+  if(!priceRows){ area.innerHTML = '<div class="empty-state">Открой static_prices.csv во вкладке «Конфиги», чтобы увидеть витрину.</div>'; return; }
+
+  const header = priceRows[0]; // itemId,coins,gems,real,productId,level,sale,tag,title,descr
+  const idx = name => header.indexOf(name);
+  const iId=idx('itemId'), iCoins=idx('coins'), iGems=idx('gems'), iReal=idx('real'), iTitle=idx('title');
+
+  const items = priceRows.slice(1).filter(r=> r[iId] && r[iId].trim()!=='');
+  const {coins,gems} = computeBalance();
+
+  // group by prefix before first "-"
+  const groups = {};
+  items.forEach(r=>{
+    const id = r[iId].trim();
+    const g = id.split('-')[0];
+    (groups[g] ||= []).push(r);
+  });
+
+  let html='';
+  Object.keys(groups).sort().forEach(g=>{
+    html += `<div class="group-title">${g}</div><div class="shop-grid">`;
+    groups[g].forEach(r=>{
+      const id=r[iId].trim();
+      const c = +r[iCoins]||0, gm=+r[iGems]||0, real=r[iReal]||'';
+      const title = (r[iTitle]||id).trim();
+      let priceLabel='', afford=true, hasCredit=false;
+      if(c>0){ priceLabel = c.toLocaleString('ru-RU')+' монет'; afford = coins>=c; hasCredit=true; }
+      else if(gm>0){ priceLabel = gm.toLocaleString('ru-RU')+' кристаллов'; afford = gems>=gm; hasCredit=true; }
+      else if(real){ priceLabel = '$'+real; afford=null; }
+      const cls = afford===true?'afford':(afford===false?'locked':'');
+      html += `<div class="shop-item ${cls}">
+        <div class="title">${title}</div>
+        <div class="id">${id}</div>
+        <div class="price">${priceLabel||'—'}</div>
+      </div>`;
+    });
+    html += '</div>';
+  });
+  area.innerHTML = html || '<div class="empty-state">Пусто</div>';
+}
+
+renderBalance();
+</script>
+</body>
+</html>

@@ -1,0 +1,1521 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<title>Car DB — база карточек машин</title>
+<!--
+Car DB — база данных карточек-машин с редактором пропорций (для style-lab и любых
+других задач). Открывать напрямую в Chrome/Edge (нужен File System Access API).
+При первом запуске выберите/создайте папку data/.
+
+Можно открыть ТУ ЖЕ папку data, что и в style-lab — имена файлов не пересекаются
+(_meta_cars.json отдельно от style-lab-ного _meta.json), тогда в style-lab можно
+будет добавлять фото прямо из этой базы машин (кнопка «из базы Car DB» в карточке идеи).
+
+Формат данных (data/):
+  cardSizes.json          — {"sizes":[160,220,260,320,420]} общий список ширин карточки.
+  _meta_cars.json          — счётчик id машин.
+  cars/<carId>.json        — вся карточка машины целиком (поля + разметка).
+  photos/<carId>/<view>/draft/<n>.<ext>   — черновые фото (для работы в редакторе).
+  photos/<carId>/<view>/final.<ext>       — финальное фото ракурса (одно).
+  photos/<carId>/<view>/export.png        — экспортированная карточка (без смещений,
+                                             ширина = car.cardWidth, обрезана/собрана
+                                             из активного фото по сохранённым x/y).
+
+Разметка (guide-линии — 5 вертикальных + 4 горизонтальных) есть только у ракурса
+«сбоку» (side) — это рабочий силуэт. Остальные ракурсы используют тот же холст
+(перетаскивание фото относительно общего центра/пола), но без линий.
+Линии — только вспомогательный инструмент редактора, в экспорт не попадают.
+-->
+<style>
+* { box-sizing: border-box; }
+body {
+  background: #f5f5f0; color: #333; margin: 0;
+  font-family: -apple-system, 'Segoe UI', sans-serif; font-size: 14px;
+}
+#toolbar {
+  display: flex; align-items: center; gap: 14px; padding: 10px 16px;
+  background: #fff; border-bottom: 1px solid #e2e2de;
+}
+#toolbar h1 { font-size: 14px; font-weight: 600; margin: 0; color: #333; white-space: nowrap; }
+#toolbar button {
+  font-size: 11px; padding: 5px 12px; border-radius: 14px; border: 1px solid #ccc;
+  background: #fff; cursor: pointer;
+}
+#toolbar button:hover { background: #f0f0ec; }
+#folder-status { font-size: 10px; color: #999; }
+
+#app-layout { display: flex; height: calc(100vh - 44px); }
+#empty-state { padding: 60px 20px; text-align: center; color: #999; font-size: 13px; width: 100%; }
+
+/* ── левая панель: список машин ─────────────────────────── */
+#car-list-panel {
+  width: 260px; flex: none; border-right: 1px solid #e2e2de; background: #faf9f6;
+  display: flex; flex-direction: column; overflow: hidden;
+}
+#car-list-head { padding: 10px; border-bottom: 1px solid #e2e2de; }
+#btn-new-car {
+  width: 100%; font-size: 12px; padding: 8px; border-radius: 8px; border: 1px dashed #ccc;
+  background: #fff; color: #666; cursor: pointer;
+}
+#btn-new-car:hover { background: #f0f0ec; border-color: #999; }
+#car-list { flex: 1; overflow-y: auto; padding: 6px; }
+.car-list-item {
+  padding: 8px 9px; border-radius: 7px; cursor: pointer; margin-bottom: 3px;
+}
+.car-list-item:hover { background: #efeee9; }
+.car-list-item.active { background: #333; }
+.car-list-item.active .car-item-name { color: #fff; }
+.car-list-item.active .car-item-sub { color: #ccc; }
+.car-item-name { font-size: 13px; font-weight: 600; color: #333; }
+.car-item-sub { font-size: 11px; color: #999; margin-top: 1px; }
+.car-item-id { font-family: monospace; }
+.car-group { margin-bottom: 2px; }
+.car-group summary {
+  cursor: pointer; font-size: 11.5px; font-weight: 600; color: #888; padding: 6px 8px;
+  border-radius: 6px; list-style: none; user-select: none;
+}
+.car-group summary::-webkit-details-marker { display: none; }
+.car-group summary::before { content: '▾ '; }
+.car-group:not([open]) summary::before { content: '▸ '; }
+.car-group summary:hover { background: #efeee9; color: #555; }
+.car-group .car-list-item { margin-left: 6px; }
+.car-subgroup { margin-left: 12px; }
+.car-subgroup summary { font-size: 11px; font-weight: 500; color: #aaa; padding: 4px 8px; }
+.car-subgroup summary:hover { color: #666; }
+
+/* ── основная панель ─────────────────────────────────────── */
+#car-main { flex: 1; overflow-y: auto; padding: 18px 24px 60px; }
+.field-row { margin-bottom: 12px; }
+.field-row label { display: block; font-size: 11px; color: #999; margin-bottom: 4px; }
+.field-row input[type=text], .field-row textarea, .field-row select {
+  width: 100%; font-size: 13px; padding: 7px 9px; border: 1px solid #ddd; border-radius: 6px;
+  font-family: inherit;
+}
+.field-row textarea { min-height: 60px; resize: vertical; }
+.field-grid { display: grid; grid-template-columns: 1fr 1fr 1fr 1fr; gap: 12px; }
+.field-grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+#car-name-input { font-size: 20px; font-weight: 700; padding: 6px 8px; }
+
+.usage-row { display: flex; gap: 6px; align-items: center; margin-bottom: 6px; }
+.usage-row input, .usage-row select { flex: 1; font-size: 12px; padding: 6px 8px; border: 1px solid #ddd; border-radius: 5px; background: #fff; }
+.usage-row button { border: none; background: transparent; color: #ccc; cursor: pointer; font-size: 15px; }
+.usage-row button:hover { color: #c0392b; }
+#btn-add-usage {
+  font-size: 11px; padding: 4px 10px; border-radius: 8px; border: 1px dashed #ccc;
+  background: #fff; color: #999; cursor: pointer;
+}
+#btn-add-usage:hover { background: #f0f0ec; }
+
+.card-actions { display: flex; justify-content: flex-end; gap: 8px; margin: 4px 0 22px; }
+.card-actions button {
+  font-size: 11px; padding: 6px 14px; border-radius: 8px; border: 1px solid #ccc;
+  background: #fff; cursor: pointer;
+}
+#btn-delete-car { color: #c0392b; border-color: #e6b3ac; }
+
+/* ── вкладки ракурсов ────────────────────────────────────── */
+#view-tabs { display: flex; gap: 5px; flex-wrap: wrap; margin: 10px 0 12px; }
+.view-tab {
+  font-size: 11px; padding: 6px 12px; border-radius: 10px; border: 1px solid #ddd;
+  background: #fff; color: #666; cursor: pointer;
+}
+.view-tab.active { background: #333; color: #fff; border-color: #333; }
+.view-tab-custom-input {
+  font-size: 11px; padding: 6px 10px; border-radius: 10px; border: 1px solid #ddd;
+  width: 92px; background: #fff; color: #666;
+}
+.view-tab-custom-input.active { background: #333; color: #fff; border-color: #333; }
+
+/* ── галерея драфт/финал фото ────────────────────────────── */
+.photo-cols { display: grid; grid-template-columns: 1fr 220px; gap: 14px; margin-bottom: 10px; }
+.photo-col-head { font-size: 11px; color: #999; margin-bottom: 6px; }
+.draft-strip { display: flex; gap: 8px; flex-wrap: wrap; }
+.draft-thumb {
+  position: relative; width: 70px; height: 70px; border-radius: 6px; overflow: hidden;
+  border: 2px solid transparent; cursor: pointer; background: #eee;
+}
+.draft-thumb img { width: 100%; height: 100%; object-fit: cover; display: block; }
+.draft-thumb.active { border-color: #6a5acd; }
+.draft-thumb .thumb-del {
+  position: absolute; top: 2px; right: 2px; width: 16px; height: 16px; border-radius: 50%;
+  border: none; background: rgba(0,0,0,.5); color: #fff; font-size: 10px; line-height: 1;
+  cursor: pointer; display: none; align-items: center; justify-content: center; padding: 0;
+}
+.draft-thumb:hover .thumb-del { display: flex; }
+.mini-drop {
+  width: 70px; height: 70px; border-radius: 6px; border: 1px dashed #ccc; color: #bbb;
+  display: flex; align-items: center; justify-content: center; font-size: 20px; cursor: pointer;
+}
+.mini-drop:hover { background: #fff; border-color: #999; color: #666; }
+.mini-drop.drag-over { border-color: #6a5acd; background: #f4f2fc; }
+.final-slot { width: 100px; height: 70px; }
+.final-slot .draft-thumb, .final-slot .mini-drop { width: 100px; height: 70px; }
+
+/* ── холст ───────────────────────────────────────────────── */
+.canvas-toolbar { display: flex; align-items: center; gap: 12px; margin-bottom: 8px; flex-wrap: wrap; }
+.canvas-toolbar button {
+  font-size: 11px; padding: 6px 13px; border-radius: 8px; border: 1px solid #ccc;
+  background: #fff; cursor: pointer;
+}
+.canvas-toolbar button.primary { background: #333; color: #fff; border-color: #333; }
+.canvas-toolbar label.chk { display: flex; align-items: center; gap: 5px; font-size: 11px; color: #666; }
+#export-status { font-size: 10.5px; color: #999; }
+.zoom-controls { display: flex; align-items: center; gap: 4px; }
+.zoom-controls button { width: 26px; padding: 5px 0; font-size: 13px; line-height: 1; }
+#zoom-level { font-size: 11px; color: #888; width: 40px; text-align: center; }
+
+.canvas-area { display: flex; gap: 14px; }
+.canvas-scroll {
+  /* Высота контейнера на экране — фиксированная и небольшая (не должна занимать весь
+     экран). Сам холст (.canvas-inner) логически по-прежнему CANVAS_HEIGHT px, но
+     показывается через CSS zoom — пользователь подбирает масштаб кнопками +/-, чтобы
+     влезла и длинная «блинная» машина, и короткая. */
+  flex: 1; height: 300px; overflow-x: auto; overflow-y: auto; background: #ececea;
+  border-radius: 8px; position: relative; border: 1px solid #ccc;
+  box-shadow: inset 0 0 0 1px #fff;
+}
+/* border-top/bottom холста — это реальные верх/низ экспорта (высота холста всегда
+   целиком идёт в export.png, обрезается только ширина — см. .card-bound). */
+.canvas-inner {
+  /* Верх/низ холста — это буквально верх/низ export.png (высота не обрезается), поэтому
+     стиль как у .card-bound (границ ширины) — вместе они дают полную рамку того, что
+     попадёт в экспорт. */
+  width: 2400px; height: 620px; position: relative;
+  border-top: 3px solid #d68910; border-bottom: 3px solid #d68910; box-sizing: border-box;
+}
+/* Сплошные, не пунктирные: пунктир — это тоже длина в логических px холста, при
+   уменьшении zoom штрихи и промежутки становятся долями пикселя и сливаются в
+   сплошную (или пропадающую) линию. Сплошная линия не зависит от масштаба. */
+.line-fixed-v { position: absolute; top: 0; bottom: 0; width: 0; border-left: 2px solid #999; }
+.line-fixed-h { position: absolute; left: 0; right: 0; height: 0; border-top: 2px solid #999; }
+/* Границы того, что реально попадёт в экспорт (ширина карточки), — не двигаются,
+   не хендлы, просто ориентир при позиционировании фото. */
+.card-bound { position: absolute; top: 0; bottom: 0; width: 0; border-left: 3px solid #d68910; pointer-events: none; }
+.card-bound-label {
+  position: absolute; top: 2px; font-size: 9px; color: #a35a00; background: rgba(255,255,255,.85);
+  padding: 0 3px; border-radius: 3px; white-space: nowrap; transform-origin: 0 0;
+}
+/* Тянуть можно только за точку-хендл, сама линия не драгается — курсор resize на ней
+   был обманчивым (показывал, что можно тащить, а перетаскивание не было навешено). */
+.guide-v { position: absolute; top: 0; bottom: 0; width: 0; border-left: 1px solid; pointer-events: none; }
+.guide-h { position: absolute; left: 0; right: 0; height: 0; border-top: 1px solid; pointer-events: none; }
+/* Пунктир не через border-style (штрихи там мелкие, завязаны на border-width) —
+   через repeating-linear-gradient, длину штриха/промежутка задаём сами в JS. */
+.guide-v-dashed { position: absolute; top: 0; bottom: 0; width: 2px; margin-left: -1px; pointer-events: none; }
+.guide-handle-v {
+  position: absolute; top: 14px; width: 14px; height: 14px; border-radius: 50%;
+  margin-left: -7px; cursor: ew-resize; border: 2px solid #fff; box-shadow: 0 0 0 1px rgba(0,0,0,.2);
+}
+.guide-handle-h {
+  position: absolute; height: 14px; width: 14px; border-radius: 50%;
+  margin-top: -7px; cursor: ns-resize; border: 2px solid #fff; box-shadow: 0 0 0 1px rgba(0,0,0,.2);
+}
+.guide-label {
+  position: absolute; font-size: 9px; color: #666; background: rgba(255,255,255,.8); padding: 0 3px;
+  border-radius: 3px; white-space: nowrap; transform-origin: 0 0;
+}
+.canvas-photo { position: absolute; cursor: grab; user-select: none; -webkit-user-drag: none; }
+.canvas-photo:active { cursor: grabbing; }
+.canvas-photo-empty { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; color: #aaa; font-size: 12px; }
+.canvas-overlay-final { position: absolute; opacity: .5; pointer-events: none; outline: 1px dashed #6a5acd; }
+
+.guide-legend { width: 200px; flex: none; }
+.side-panel-tabs { display: flex; gap: 4px; margin-bottom: 10px; }
+.side-tab {
+  flex: 1; font-size: 11px; padding: 6px 4px; border-radius: 7px; border: 1px solid #ddd;
+  background: #fff; color: #666; cursor: pointer;
+}
+.side-tab.active { background: #333; color: #fff; border-color: #333; }
+.ruler-row { display: flex; align-items: center; gap: 6px; font-size: 11.5px; color: #555; padding: 4px 0; }
+.ruler-row select { font-size: 11px; padding: 3px 4px; border: 1px solid #ddd; border-radius: 4px; width: 100%; }
+/* Пропорциональная линейка (золотое сечение): полоска красный/белый + 3 линии
+   (два конца — тянутся за хендл, средняя — вычисляется, не двигается). */
+.ruler-strip { position: absolute; box-sizing: border-box; }
+.ruler-strip-red { background: #e74c3c; }
+.ruler-strip-white { background: #fff; border: 1px solid #e74c3c; }
+.ruler-gline-v { position: absolute; width: 0; border-left: 7px solid #e74c3c; pointer-events: none; margin-left: -3.5px; }
+.ruler-gline-h { position: absolute; height: 0; border-top: 7px solid #e74c3c; pointer-events: none; margin-top: -3.5px; }
+.ruler-handle-v {
+  position: absolute; top: 14px; width: 14px; height: 14px; border-radius: 50%; margin-left: -7px;
+  background: #e74c3c; border: 2px solid #fff; box-shadow: 0 0 0 1px rgba(0,0,0,.2); cursor: ew-resize;
+}
+.ruler-handle-h {
+  position: absolute; width: 14px; height: 14px; border-radius: 50%; margin-top: -7px;
+  background: #e74c3c; border: 2px solid #fff; box-shadow: 0 0 0 1px rgba(0,0,0,.2); cursor: ns-resize;
+}
+.legend-group-title { font-size: 10px; color: #999; text-transform: uppercase; margin: 10px 0 4px; }
+.legend-group-title:first-child { margin-top: 0; }
+.legend-row { display: flex; align-items: center; gap: 6px; font-size: 11.5px; color: #555; padding: 3px 0; }
+.legend-row input[type=checkbox] { margin: 0; }
+.legend-dot { width: 9px; height: 9px; border-radius: 50%; flex: none; }
+.legend-row .legend-name { flex: 1; }
+.legend-row .legend-val { font-size: 10px; color: #aaa; font-family: monospace; }
+
+.drop-zone-wide {
+  border: 2px dashed #ccc; border-radius: 8px; padding: 10px; text-align: center;
+  font-size: 11px; color: #999; cursor: pointer; margin-top: 6px;
+}
+.drop-zone-wide.drag-over { border-color: #6a5acd; background: #f4f2fc; color: #6a5acd; }
+</style>
+</head>
+<body>
+
+<div id="toolbar">
+  <h1>Car DB — база карточек машин</h1>
+  <button id="btn-open">Открыть папку data</button>
+  <span id="folder-status"></span>
+</div>
+
+<div id="app-layout">
+  <div id="car-list-panel">
+    <div id="car-list-head"><button id="btn-new-car">+ Создать карточку</button></div>
+    <div id="car-list"></div>
+  </div>
+  <div id="car-main">
+    <div id="empty-state">Откройте (или создайте) папку data, чтобы начать.</div>
+    <div id="car-content" style="display:none"></div>
+  </div>
+</div>
+
+<input type="file" id="file-input-hidden" accept="image/*" multiple style="display:none">
+<input type="file" id="file-input-final-hidden" accept="image/*" style="display:none">
+
+<script>
+const App = {};
+
+// ──────────────────────────────────────────────
+// Константы
+// ──────────────────────────────────────────────
+App.Const = {
+  CANVAS_HEIGHT: 620,
+  CANVAS_INNER_WIDTH: 2400,
+  FIXED_CENTER_X: 1200,
+  // Ground = буквально низ карточки (нет отступа) — по умолчанию совпадает с нижней
+  // границей экспорта, но остаётся отдельной, отдельно двигаемой линией на случай,
+  // если для конкретного фото нужно иначе. Фото по умолчанию тоже масштабируется
+  // на всю высоту холста — от верхней границы карточки до нижней, без зазоров.
+  FIXED_GROUND_Y: 620,
+  VIEW_KEYS: ['side', 'front', '34front', '34rear', 'rear', 'custom1', 'custom2'],
+  VIEW_LABELS: { side: 'Сбоку (силуэт)', front: 'Спереди', '34front': '3/4 спереди', '34rear': '3/4 сзади', rear: 'Сзади', custom1: 'Доп. 1', custom2: 'Доп. 2' },
+  VERTICAL_LINES: ['head', 'cab1', 'center', 'cab2', 'trunk'],
+  VERTICAL_LABELS: { head: 'Head', cab1: 'Cab 1', center: 'Center', cab2: 'Cab 2', trunk: 'Trunk' },
+  VERTICAL_DEFAULTS: { head: -180, cab1: -70, center: 0, cab2: 70, trunk: 180 },
+  VERTICAL_COLORS: { head: '#c0392b', cab1: '#d68910', center: '#6a5acd', cab2: '#1e8449', trunk: '#2471a3' },
+  // Раздел «Колёса» — те же вертикальные линии (offsetX), но своя группа в легенде;
+  // radius — пунктиром (по аналогии с вертикальными, просто другой border-style).
+  WHEEL_LINES: ['front', 'rear', 'radius'],
+  WHEEL_LABELS: { front: 'Front', rear: 'Rear', radius: 'Radius' },
+  WHEEL_DEFAULTS: { front: -110, rear: 110, radius: -70 },
+  WHEEL_COLORS: { front: '#117864', rear: '#7d3c98', radius: '#333333' },
+  HORIZONTAL_LINES: ['ground', 'bottom', 'center', 'top'],
+  HORIZONTAL_LABELS: { ground: 'Ground', bottom: 'Bottom', center: 'Center', top: 'Top' },
+  // bottom не равен ground — иначе они лежат друг на друге и bottom физически не виден.
+  HORIZONTAL_DEFAULTS: { ground: 0, bottom: -30, center: -140, top: -280 },
+  HORIZONTAL_COLORS: { ground: '#8e44ad', bottom: '#16a085', center: '#e67e22', top: '#2c3e50' },
+  DEFAULT_CARD_WIDTHS: [160, 220, 260, 320, 420],
+  // ratioByKey — доля МЕНЬШЕЙ части от всего отрезка (для 2x1 меньшая часть — 1/3 и т.д.).
+  // Без инверсии сначала идёт бОльшая часть (1 - ratioByKey), с инверсией — меньшая (ratioByKey).
+  RATIO_ORDER: ['4x1', '7x2', '3x1', '2x1', 'hd', 'gold', 'a4', '4x3', '1x1'],
+  RATIO_LABELS: { '4x1': '4:1', '7x2': '7:2', '3x1': '3:1', '2x1': '2:1', hd: '16:9 (HD)', gold: 'Золотое сечение', a4: '√2 (A4)', '4x3': '4:3', '1x1': '1:1' },
+  RATIOS: { '4x1': 0.2, '7x2': 0.222222, '3x1': 0.25, '2x1': 0.3333, hd: 0.36, gold: 0.38198, a4: 0.4142, '4x3': 0.4286, '1x1': 0.5 },
+  COUNTRIES: [
+    { v: '', label: '— страна —' }, { v: '🇺🇸', label: '🇺🇸 США' }, { v: '🇯🇵', label: '🇯🇵 Япония' },
+    { v: '🇩🇪', label: '🇩🇪 Германия' }, { v: '🇮🇹', label: '🇮🇹 Италия' }, { v: '🇬🇧', label: '🇬🇧 Великобритания' },
+    { v: '🇫🇷', label: '🇫🇷 Франция' }, { v: '🇰🇷', label: '🇰🇷 Корея' }, { v: '🇷🇺', label: '🇷🇺 Россия' },
+    { v: '🇸🇪', label: '🇸🇪 Швеция' }, { v: '🇨🇿', label: '🇨🇿 Чехия' }, { v: '🇦🇺', label: '🇦🇺 Австралия' },
+  ],
+  // Список стилей style-lab — руками (car-db намеренно не читает style-lab live).
+  // Поменялись стили там — поправить и здесь.
+  STYLES: ['Compact', 'America', 'Sport GT', 'Wedge', 'Offroad', 'Pro'],
+};
+
+App.State = {
+  rootHandle: null,
+  cardSizes: [160, 220, 260, 320, 420],
+  guideDefaults: null, // {vertical,horizontal} — общая разметка по умолчанию для новых машин
+  cars: [],            // [{id, name, style, substyle, ...}]
+  activeCarId: null,
+  activeView: 'side',
+  showOverlay: false,
+  canvasZoom: 0.5,  // масштаб показа холста (сам холст логически всегда CANVAS_HEIGHT px)
+  lastFitKey: null, // под какое фото зум уже подгоняли — чтобы не подгонять повторно
+  collapsedStyleGroups: new Set(), // какие папки-стили свёрнуты в списке машин
+  sideTab: 'proportions', // правая панель вида «сбоку»: 'proportions' | 'rulers'
+};
+
+App.esc = s => (s == null ? '' : String(s)).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+App.extOf = name => { let e = (name.split('.').pop() || 'jpg').toLowerCase().replace(/[^a-z0-9]/g, ''); return e || 'jpg'; };
+
+// ──────────────────────────────────────────────
+// FS — File System Access API (тот же паттерн, что в style-lab)
+// ──────────────────────────────────────────────
+App.FS = (function () {
+  const DB_NAME = 'car-db-app', STORE = 'handles';
+  function idbOpen() {
+    return new Promise((res, rej) => {
+      const r = indexedDB.open(DB_NAME, 1);
+      r.onupgradeneeded = () => r.result.createObjectStore(STORE);
+      r.onsuccess = () => res(r.result);
+      r.onerror = () => rej(r.error);
+    });
+  }
+  async function idbSet(key, val) {
+    const db = await idbOpen();
+    return new Promise((res, rej) => {
+      const tx = db.transaction(STORE, 'readwrite');
+      tx.objectStore(STORE).put(val, key);
+      tx.oncomplete = () => res();
+      tx.onerror = () => rej(tx.error);
+    });
+  }
+  async function idbGet(key) {
+    const db = await idbOpen();
+    return new Promise((res, rej) => {
+      const tx = db.transaction(STORE, 'readonly');
+      const rq = tx.objectStore(STORE).get(key);
+      rq.onsuccess = () => res(rq.result);
+      rq.onerror = () => rej(rq.error);
+    });
+  }
+  async function pickFolder() {
+    const handle = await window.showDirectoryPicker({ id: 'car-db-data', mode: 'readwrite' });
+    await idbSet('root', handle);
+    return handle;
+  }
+  async function restoreFolder() {
+    try {
+      const handle = await idbGet('root');
+      if (!handle) return null;
+      const perm = await handle.queryPermission({ mode: 'readwrite' });
+      if (perm === 'granted') return handle;
+      return { needsPermission: true, handle };
+    } catch (e) { return null; }
+  }
+  async function ensurePermission(handle) {
+    const perm = await handle.requestPermission({ mode: 'readwrite' });
+    return perm === 'granted';
+  }
+  async function readText(fileHandle) { const f = await fileHandle.getFile(); return await f.text(); }
+  async function writeText(fileHandle, text) { const w = await fileHandle.createWritable(); await w.write(text); await w.close(); }
+  async function writeBytes(fileHandle, bytes) { const w = await fileHandle.createWritable(); await w.write(bytes); await w.close(); }
+  async function getJSON(dirHandle, name, fallback) {
+    try { const fh = await dirHandle.getFileHandle(name); return JSON.parse(await readText(fh)); }
+    catch (e) { return fallback; }
+  }
+  async function setJSON(dirHandle, name, obj) {
+    const fh = await dirHandle.getFileHandle(name, { create: true });
+    await writeText(fh, JSON.stringify(obj, null, 2));
+  }
+  async function getDirOpt(parent, name) { try { return await parent.getDirectoryHandle(name); } catch (e) { return null; } }
+  async function ensureDir(parent, name) { return await parent.getDirectoryHandle(name, { create: true }); }
+
+  return { pickFolder, restoreFolder, ensurePermission, readText, writeText, writeBytes, getJSON, setJSON, getDirOpt, ensureDir };
+})();
+
+// ──────────────────────────────────────────────
+// Data — машины, фото, разметка, экспорт
+// ──────────────────────────────────────────────
+App.Data = (function () {
+  const C = App.Const;
+
+  function defaultRulers() {
+    return {
+      // По умолчанию концы совпадают с head/trunk (горизонтальная) и top/ground
+      // (вертикальная) — дальше их можно тащить независимо, средняя точка не тянется,
+      // она всегда вычисляется по выбранному соотношению между текущими концами.
+      horizontal: { enabled: false, startOffsetX: C.VERTICAL_DEFAULTS.head, endOffsetX: C.VERTICAL_DEFAULTS.trunk, ratioKey: 'gold', invert: false },
+      vertical: { enabled: false, startOffsetY: C.HORIZONTAL_DEFAULTS.top, endOffsetY: C.HORIZONTAL_DEFAULTS.ground, ratioKey: 'gold', invert: false },
+    };
+  }
+  function defaultGuides() {
+    // Если кто-то уже сохранил разметку «по умолчанию» (кнопка в легенде) — берём её,
+    // иначе — встроенные константы. Общий конфиг на все машины (guideDefaults.json).
+    if (App.State.guideDefaults) return JSON.parse(JSON.stringify(App.State.guideDefaults));
+    const vertical = {}; C.VERTICAL_LINES.forEach(k => vertical[k] = { offsetX: C.VERTICAL_DEFAULTS[k], visible: true });
+    const horizontal = {}; C.HORIZONTAL_LINES.forEach(k => horizontal[k] = { offsetY: C.HORIZONTAL_DEFAULTS[k], visible: true });
+    const wheels = {}; C.WHEEL_LINES.forEach(k => wheels[k] = { offsetX: C.WHEEL_DEFAULTS[k], visible: true });
+    return { vertical, horizontal, wheels, rulers: defaultRulers() };
+  }
+  async function saveGuideDefaults(guides) {
+    App.State.guideDefaults = JSON.parse(JSON.stringify(guides));
+    await App.FS.setJSON(App.State.rootHandle, 'guideDefaults.json', App.State.guideDefaults);
+  }
+  function defaultView(key) {
+    return {
+      draft: [], activeSel: null, final: null, lastExport: null,
+      customLabel: key === 'custom1' ? 'Доп. 1' : (key === 'custom2' ? 'Доп. 2' : undefined),
+      guides: key === 'side' ? defaultGuides() : undefined,
+    };
+  }
+  function defaultCar(id) {
+    const views = {};
+    C.VIEW_KEYS.forEach(k => views[k] = defaultView(k));
+    return {
+      id, name: 'Новая машина', style: '', substyle: '', usageLinks: [],
+      descShort: '', descHistorical: '', country: '', designer: '',
+      cardWidth: App.State.cardSizes[0] || 260, views,
+    };
+  }
+
+  async function nextId(prefix) {
+    // Отдельное имя файла (не _meta.json) — чтобы можно было открыть в car-db и
+    // style-lab одну и ту же папку data и не смешать их счётчики id.
+    const meta = await App.FS.getJSON(App.State.rootHandle, '_meta_cars.json', { counter: 0 });
+    meta.counter = (meta.counter || 0) + 1;
+    await App.FS.setJSON(App.State.rootHandle, '_meta_cars.json', meta);
+    return prefix + String(meta.counter).padStart(4, '0');
+  }
+
+  async function loadAll() {
+    const root = App.State.rootHandle;
+    const sizesCfg = await App.FS.getJSON(root, 'cardSizes.json', null);
+    if (!sizesCfg) { App.State.cardSizes = C.DEFAULT_CARD_WIDTHS.slice(); await App.FS.setJSON(root, 'cardSizes.json', { sizes: App.State.cardSizes }); }
+    else App.State.cardSizes = sizesCfg.sizes || C.DEFAULT_CARD_WIDTHS.slice();
+    // null, если ещё никто не сохранял — тогда defaultGuides() берёт встроенные константы.
+    App.State.guideDefaults = await App.FS.getJSON(root, 'guideDefaults.json', null);
+
+    App.State.cars = [];
+    const carsDir = await App.FS.getDirOpt(root, 'cars');
+    if (carsDir) {
+      for await (const [name, handle] of carsDir.entries()) {
+        if (handle.kind !== 'file' || !name.toLowerCase().endsWith('.json')) continue;
+        try {
+          const car = JSON.parse(await App.FS.readText(handle));
+          car._handle = handle;
+          // на случай старых карточек без части ракурсов/полей — докладываем дефолты
+          C.VIEW_KEYS.forEach(k => { if (!car.views[k]) car.views[k] = defaultView(k); });
+          if (car.views.side.guides && !car.views.side.guides.rulers) car.views.side.guides.rulers = defaultRulers();
+          if (car.views.side.guides && !car.views.side.guides.wheels) {
+            const wheels = {}; C.WHEEL_LINES.forEach(k => wheels[k] = { offsetX: C.WHEEL_DEFAULTS[k], visible: true });
+            car.views.side.guides.wheels = wheels;
+          }
+          App.State.cars.push(car);
+        } catch (e) { console.warn('bad car file', name, e); }
+      }
+    }
+    App.State.cars.sort((a, b) => (a.name || '').localeCompare(b.name || '', 'ru'));
+  }
+
+  async function saveCardSizes() { await App.FS.setJSON(App.State.rootHandle, 'cardSizes.json', { sizes: App.State.cardSizes }); }
+
+  async function saveCar(car) {
+    const carsDir = await App.FS.ensureDir(App.State.rootHandle, 'cars');
+    const fh = await carsDir.getFileHandle(car.id + '.json', { create: true });
+    car._handle = fh;
+    const clean = Object.assign({}, car); delete clean._handle;
+    await App.FS.writeText(fh, JSON.stringify(clean, null, 2));
+  }
+
+  async function createCar() {
+    const id = await nextId('car');
+    const car = defaultCar(id);
+    await saveCar(car);
+    App.State.cars.push(car);
+    App.State.cars.sort((a, b) => (a.name || '').localeCompare(b.name || '', 'ru'));
+    return car;
+  }
+
+  async function deleteCar(car) {
+    const carsDir = await App.FS.ensureDir(App.State.rootHandle, 'cars');
+    try { await carsDir.removeEntry(car.id + '.json'); } catch (e) {}
+    try {
+      const photosRoot = await App.FS.getDirOpt(App.State.rootHandle, 'photos');
+      if (photosRoot) await photosRoot.removeEntry(car.id, { recursive: true });
+    } catch (e) {}
+    App.State.cars = App.State.cars.filter(c => c.id !== car.id);
+  }
+
+  async function viewDirEnsure(carId, viewKey) {
+    const photosRoot = await App.FS.ensureDir(App.State.rootHandle, 'photos');
+    const carDir = await App.FS.ensureDir(photosRoot, carId);
+    return await App.FS.ensureDir(carDir, viewKey);
+  }
+
+  async function getPhotoFile(carId, viewKey, sub, filename) {
+    try {
+      const photosRoot = await App.FS.getDirOpt(App.State.rootHandle, 'photos'); if (!photosRoot) return null;
+      const carDir = await App.FS.getDirOpt(photosRoot, carId); if (!carDir) return null;
+      const vDir = await App.FS.getDirOpt(carDir, viewKey); if (!vDir) return null;
+      const dir = sub ? await App.FS.getDirOpt(vDir, sub) : vDir;
+      if (!dir) return null;
+      const fh = await dir.getFileHandle(filename);
+      return await fh.getFile();
+    } catch (e) { return null; }
+  }
+
+  // Ровно во всю высоту холста (между верхней и нижней границей карточки), без
+  // ограничения «не апскейлить», даже если оригинал меньше.
+  function fitScale(bitmap) { return C.CANVAS_HEIGHT / bitmap.height; }
+
+  async function addDraftPhoto(car, viewKey, file) {
+    const vd = await viewDirEnsure(car.id, viewKey);
+    const dd = await App.FS.ensureDir(vd, 'draft');
+    const view = car.views[viewKey];
+    const idx = view.draft.length + 1;
+    const fname = idx + '.' + App.extOf(file.name);
+    const fh = await dd.getFileHandle(fname, { create: true });
+    await App.FS.writeBytes(fh, await file.arrayBuffer());
+    const bitmap = await createImageBitmap(file);
+    view.draft.push({ file: fname, x: 0, y: 0, scale: fitScale(bitmap) });
+    view.activeSel = { kind: 'draft', index: view.draft.length - 1 };
+    await saveCar(car);
+  }
+
+  async function removeDraftPhoto(car, viewKey, idx) {
+    const vd = await viewDirEnsure(car.id, viewKey);
+    const dd = await App.FS.ensureDir(vd, 'draft');
+    const view = car.views[viewKey];
+    const item = view.draft[idx];
+    if (item) { try { await dd.removeEntry(item.file); } catch (e) {} }
+    view.draft.splice(idx, 1);
+    if (view.activeSel && view.activeSel.kind === 'draft') {
+      if (view.draft.length === 0) view.activeSel = view.final ? { kind: 'final' } : null;
+      else if (view.activeSel.index >= view.draft.length) view.activeSel = { kind: 'draft', index: view.draft.length - 1 };
+    }
+    await saveCar(car);
+  }
+
+  async function setFinalPhoto(car, viewKey, file) {
+    const vd = await viewDirEnsure(car.id, viewKey);
+    const view = car.views[viewKey];
+    if (view.final) { try { await vd.removeEntry(view.final.file); } catch (e) {} }
+    const fname = 'final.' + App.extOf(file.name);
+    const fh = await vd.getFileHandle(fname, { create: true });
+    await App.FS.writeBytes(fh, await file.arrayBuffer());
+    const bitmap = await createImageBitmap(file);
+    view.final = { file: fname, x: 0, y: 0, scale: fitScale(bitmap) };
+    view.activeSel = { kind: 'final' };
+    await saveCar(car);
+  }
+
+  async function removeFinalPhoto(car, viewKey) {
+    const vd = await viewDirEnsure(car.id, viewKey);
+    const view = car.views[viewKey];
+    if (view.final) { try { await vd.removeEntry(view.final.file); } catch (e) {} }
+    view.final = null;
+    if (view.activeSel && view.activeSel.kind === 'final') view.activeSel = view.draft.length ? { kind: 'draft', index: 0 } : null;
+    await saveCar(car);
+  }
+
+  function activePhotoMeta(view) {
+    const sel = view.activeSel;
+    if (sel && sel.kind === 'final' && view.final) return { kind: 'final', meta: view.final };
+    if (sel && sel.kind === 'draft' && view.draft[sel.index]) return { kind: 'draft', meta: view.draft[sel.index], index: sel.index };
+    if (view.final) return { kind: 'final', meta: view.final };
+    if (view.draft.length) return { kind: 'draft', meta: view.draft[0], index: 0 };
+    return null;
+  }
+
+  async function exportView(car, viewKey) {
+    const view = car.views[viewKey];
+    const active = activePhotoMeta(view);
+    if (!active) { alert('Нет фото для экспорта — добавьте драфт или финал.'); return false; }
+    const sub = active.kind === 'draft' ? 'draft' : '';
+    const file = await getPhotoFile(car.id, viewKey, sub, active.meta.file);
+    if (!file) { alert('Не удалось прочитать файл фото.'); return false; }
+    const bitmap = await createImageBitmap(file);
+    const width = car.cardWidth || 260;
+    const canvas = document.createElement('canvas');
+    canvas.width = width; canvas.height = C.CANVAS_HEIGHT;
+    const ctx = canvas.getContext('2d');
+    const dw = bitmap.width * active.meta.scale, dh = bitmap.height * active.meta.scale;
+    const cx = width / 2 + active.meta.x, gy = C.FIXED_GROUND_Y + active.meta.y;
+    ctx.drawImage(bitmap, cx - dw / 2, gy - dh, dw, dh);
+    const blob = await new Promise(res => canvas.toBlob(res, 'image/png'));
+    const vd = await viewDirEnsure(car.id, viewKey);
+    const fh = await vd.getFileHandle('export.png', { create: true });
+    await App.FS.writeBytes(fh, await blob.arrayBuffer());
+    view.lastExport = { width, at: new Date().toISOString() };
+    await saveCar(car);
+    return true;
+  }
+
+  function mimeFromExt(ext) {
+    if (ext === 'jpg' || ext === 'jpeg') return 'image/jpeg';
+    if (ext === 'webp') return 'image/webp';
+    return 'image/png';
+  }
+
+  // Перезаписывает САМ файл активного фото зеркально по горизонтали (не превью,
+  // не отдельная копия) — x/масштаб не трогаем: фото зеркалится вокруг своего же центра.
+  async function flipPhotoHorizontal(car, viewKey) {
+    const view = car.views[viewKey];
+    const active = activePhotoMeta(view);
+    if (!active) return false;
+    const sub = active.kind === 'draft' ? 'draft' : '';
+    const file = await getPhotoFile(car.id, viewKey, sub, active.meta.file);
+    if (!file) return false;
+    const bitmap = await createImageBitmap(file);
+    const canvas = document.createElement('canvas');
+    canvas.width = bitmap.width; canvas.height = bitmap.height;
+    const ctx = canvas.getContext('2d');
+    ctx.translate(bitmap.width, 0); ctx.scale(-1, 1);
+    ctx.drawImage(bitmap, 0, 0);
+    const ext = App.extOf(active.meta.file);
+    const blob = await new Promise(res => canvas.toBlob(res, mimeFromExt(ext), 0.95));
+    const vd = await viewDirEnsure(car.id, viewKey);
+    const dir = sub ? await App.FS.ensureDir(vd, sub) : vd;
+    const fh = await dir.getFileHandle(active.meta.file, { create: true });
+    await App.FS.writeBytes(fh, await blob.arrayBuffer());
+    return true;
+  }
+
+  return {
+    loadAll, saveCardSizes, saveGuideDefaults, saveCar, createCar, deleteCar, viewDirEnsure, getPhotoFile,
+    addDraftPhoto, removeDraftPhoto, setFinalPhoto, removeFinalPhoto, activePhotoMeta, exportView, flipPhotoHorizontal,
+    defaultRulers,
+  };
+})();
+
+// ──────────────────────────────────────────────
+// Drag — общий помощник для перетаскивания (pointer events)
+// ──────────────────────────────────────────────
+App.Drag = function (el, opts) {
+  el.addEventListener('pointerdown', e => {
+    e.preventDefault(); e.stopPropagation();
+    try { el.setPointerCapture(e.pointerId); } catch (err) {}
+    const startX = e.clientX, startY = e.clientY;
+    // Мышь двигается в экранных пикселях, а холст может быть отмасштабирован (zoom) —
+    // переводим дельту в логические пиксели .canvas-inner, иначе при zoom != 1 всё
+    // будет двигаться быстрее/медленнее курсора.
+    const scale = (typeof opts.scale === 'function' ? opts.scale() : opts.scale) || 1;
+    function move(ev) {
+      const dx = opts.axis === 'y' ? 0 : (ev.clientX - startX) / scale;
+      const dy = opts.axis === 'x' ? 0 : (ev.clientY - startY) / scale;
+      opts.onDrag(dx, dy);
+    }
+    function up() {
+      el.removeEventListener('pointermove', move);
+      el.removeEventListener('pointerup', up);
+      if (opts.onEnd) opts.onEnd();
+    }
+    el.addEventListener('pointermove', move);
+    el.addEventListener('pointerup', up);
+  });
+};
+
+// ──────────────────────────────────────────────
+// UI
+// ──────────────────────────────────────────────
+App.UI = (function () {
+  const C = App.Const;
+
+  function activeCar() { return App.State.cars.find(c => c.id === App.State.activeCarId) || null; }
+
+  function carListItem(car) {
+    const div = document.createElement('div');
+    div.className = 'car-list-item' + (car.id === App.State.activeCarId ? ' active' : '');
+    div.innerHTML = `<div class="car-item-name">${App.esc(car.name || '(без названия)')}</div>` +
+      `<div class="car-item-sub"><span class="car-item-id">${App.esc(car.id)}</span></div>`;
+    div.addEventListener('click', () => { App.State.activeCarId = car.id; App.State.activeView = 'side'; renderAll(); });
+    return div;
+  }
+
+  function collapsibleGroup(key, label, count, extraClass) {
+    const details = document.createElement('details');
+    details.className = 'car-group' + (extraClass ? ' ' + extraClass : '');
+    details.open = !App.State.collapsedStyleGroups.has(key);
+    details.addEventListener('toggle', () => {
+      if (details.open) App.State.collapsedStyleGroups.delete(key);
+      else App.State.collapsedStyleGroups.add(key);
+    });
+    const summary = document.createElement('summary');
+    summary.textContent = label + ' (' + count + ')';
+    details.appendChild(summary);
+    return details;
+  }
+
+  // Группы-«папки» по стилю (сворачиваемые), а не фильтр — так видно сразу всю базу,
+  // не нужно переключать туда-обратно. Порядок групп — как в App.Const.STYLES,
+  // без стиля — отдельной группой в конце. Пустые группы (0 машин) не показываем.
+  // Внутри стиля — если есть подстиль, машина уходит во вложенную подпапку по
+  // подстилю (сворачиваемую так же); без подстиля — лежит прямо в папке стиля.
+  function renderCarList() {
+    const wrap = document.getElementById('car-list');
+    wrap.innerHTML = '';
+    const groupKeys = C.STYLES.concat(['']);
+    const groupLabels = Object.assign({}, ...C.STYLES.map(s => ({ [s]: s })), { '': 'Без стиля' });
+    groupKeys.forEach(styleKey => {
+      const cars = App.State.cars.filter(c => (c.style || '') === styleKey);
+      if (!cars.length) return;
+      const details = collapsibleGroup(styleKey, groupLabels[styleKey], cars.length);
+
+      const noSub = cars.filter(c => !c.substyle);
+      noSub.forEach(car => details.appendChild(carListItem(car)));
+
+      const bySub = new Map();
+      cars.forEach(c => { if (c.substyle) { if (!bySub.has(c.substyle)) bySub.set(c.substyle, []); bySub.get(c.substyle).push(c); } });
+      Array.from(bySub.keys()).sort((a, b) => a.localeCompare(b, 'ru')).forEach(sub => {
+        const subCars = bySub.get(sub);
+        const subDetails = collapsibleGroup('sub:' + styleKey + '|' + sub, sub, subCars.length, 'car-subgroup');
+        subCars.forEach(car => subDetails.appendChild(carListItem(car)));
+        details.appendChild(subDetails);
+      });
+
+      wrap.appendChild(details);
+    });
+  }
+
+  function fieldRow(labelText, inputEl) {
+    const row = document.createElement('div');
+    row.className = 'field-row';
+    const label = document.createElement('label');
+    label.textContent = labelText;
+    row.appendChild(label);
+    row.appendChild(inputEl);
+    return row;
+  }
+
+  function renderCarForm(car, container) {
+    const nameInput = document.createElement('input');
+    nameInput.type = 'text'; nameInput.id = 'car-name-input'; nameInput.value = car.name || '';
+    nameInput.placeholder = 'Марка Модель Год';
+    nameInput.oninput = () => {
+      car.name = nameInput.value;
+      const item = document.querySelector('.car-list-item.active .car-item-name');
+      if (item) item.textContent = car.name || '(без названия)';
+    };
+    nameInput.onblur = () => App.Data.saveCar(car);
+    const nameRow = fieldRow('Название (марка-модель-год)', nameInput);
+    const idBadge = document.createElement('span');
+    idBadge.textContent = car.id;
+    idBadge.title = 'id машины — так называется её файл: cars/' + car.id + '.json и папка фото photos/' + car.id;
+    idBadge.style.cssText = 'display:inline-block;margin-top:5px;font-family:monospace;font-size:11px;color:#999;';
+    nameRow.appendChild(idBadge);
+    container.appendChild(nameRow);
+
+    const grid = document.createElement('div');
+    grid.className = 'field-grid';
+    const mk = (labelText, key, placeholder) => {
+      const inp = document.createElement('input');
+      inp.type = 'text'; inp.value = car[key] || ''; inp.placeholder = placeholder || '';
+      inp.oninput = () => { car[key] = inp.value; };
+      inp.onblur = () => { App.Data.saveCar(car); renderCarList(); }; // подстиль виден в списке слева
+      grid.appendChild(fieldRow(labelText, inp));
+    };
+    const styleSelect = document.createElement('select');
+    const styleOpt0 = document.createElement('option'); styleOpt0.value = ''; styleOpt0.textContent = '— стиль —';
+    styleSelect.appendChild(styleOpt0);
+    C.STYLES.forEach(s => {
+      const opt = document.createElement('option'); opt.value = s; opt.textContent = s;
+      if (car.style === s) opt.selected = true;
+      styleSelect.appendChild(opt);
+    });
+    styleSelect.onchange = () => { car.style = styleSelect.value; App.Data.saveCar(car); renderAll(); };
+    grid.appendChild(fieldRow('Стиль', styleSelect));
+    mk('Подстиль', 'substyle', 'Fin Tail');
+
+    const countrySelect = document.createElement('select');
+    C.COUNTRIES.forEach(c => {
+      const opt = document.createElement('option'); opt.value = c.v; opt.textContent = c.label;
+      if ((car.country || '') === c.v) opt.selected = true;
+      countrySelect.appendChild(opt);
+    });
+    countrySelect.onchange = () => { car.country = countrySelect.value; App.Data.saveCar(car); };
+    grid.appendChild(fieldRow('Страна происхождения', countrySelect));
+
+    const designerInput = document.createElement('input');
+    designerInput.type = 'text'; designerInput.value = car.designer || ''; designerInput.placeholder = 'необязательно';
+    designerInput.oninput = () => { car.designer = designerInput.value; };
+    designerInput.onblur = () => App.Data.saveCar(car);
+    grid.appendChild(fieldRow('Дизайнер / бюро', designerInput));
+    container.appendChild(grid);
+
+    // связи использования
+    const usageWrap = document.createElement('div');
+    usageWrap.className = 'field-row';
+    const usageLabel = document.createElement('label'); usageLabel.textContent = 'Связи с использованием (стиль → категория, задание)';
+    usageWrap.appendChild(usageLabel);
+    const usageList = document.createElement('div');
+    usageWrap.appendChild(usageList);
+    function renderUsage() {
+      usageList.innerHTML = '';
+      (car.usageLinks || []).forEach((link, i) => {
+        const row = document.createElement('div'); row.className = 'usage-row';
+        const s = document.createElement('select'); s.style.flex = '1';
+        const sOpt0 = document.createElement('option'); sOpt0.value = ''; sOpt0.textContent = '— стиль —';
+        s.appendChild(sOpt0);
+        C.STYLES.forEach(st => {
+          const opt = document.createElement('option'); opt.value = st; opt.textContent = st;
+          if (link.style === st) opt.selected = true;
+          s.appendChild(opt);
+        });
+        s.onchange = () => { link.style = s.value; App.Data.saveCar(car); };
+        const c = document.createElement('input'); c.placeholder = 'категория (Inspire)'; c.value = link.category || '';
+        c.oninput = () => { link.category = c.value; }; c.onblur = () => App.Data.saveCar(car);
+        const n = document.createElement('input'); n.placeholder = 'заметка / задание'; n.value = link.note || '';
+        n.oninput = () => { link.note = n.value; }; n.onblur = () => App.Data.saveCar(car);
+        const del = document.createElement('button'); del.textContent = '×';
+        del.addEventListener('click', () => { car.usageLinks.splice(i, 1); renderUsage(); App.Data.saveCar(car); });
+        row.appendChild(s); row.appendChild(c); row.appendChild(n); row.appendChild(del);
+        usageList.appendChild(row);
+      });
+    }
+    renderUsage();
+    const addUsageBtn = document.createElement('button'); addUsageBtn.id = 'btn-add-usage'; addUsageBtn.textContent = '+ связь';
+    addUsageBtn.addEventListener('click', () => { car.usageLinks = car.usageLinks || []; car.usageLinks.push({ style: '', category: '', note: '' }); renderUsage(); App.Data.saveCar(car); });
+    usageWrap.appendChild(addUsageBtn);
+    container.appendChild(usageWrap);
+
+    const grid2 = document.createElement('div');
+    grid2.className = 'field-grid-2';
+    const mkTa = (labelText, key) => {
+      const ta = document.createElement('textarea'); ta.value = car[key] || '';
+      ta.oninput = () => { car[key] = ta.value; };
+      ta.onblur = () => App.Data.saveCar(car);
+      grid2.appendChild(fieldRow(labelText, ta));
+    };
+    mkTa('Описание дизайна (короткое)', 'descShort');
+    mkTa('Историческое описание', 'descHistorical');
+    container.appendChild(grid2);
+
+    // размер карточки
+    const widthRow = document.createElement('div'); widthRow.className = 'field-row';
+    const widthLabel = document.createElement('label'); widthLabel.textContent = 'Размер карточки (ширина)';
+    widthRow.appendChild(widthLabel);
+    const widthInner = document.createElement('div'); widthInner.style.display = 'flex'; widthInner.style.gap = '8px'; widthInner.style.alignItems = 'center';
+    const widthSelect = document.createElement('select'); widthSelect.style.width = '140px';
+    App.State.cardSizes.forEach(w => {
+      const opt = document.createElement('option'); opt.value = w; opt.textContent = w + ' px';
+      if (car.cardWidth === w) opt.selected = true;
+      widthSelect.appendChild(opt);
+    });
+    widthSelect.onchange = () => { car.cardWidth = parseInt(widthSelect.value, 10); App.Data.saveCar(car); renderAll(); };
+    const editSizesBtn = document.createElement('button'); editSizesBtn.textContent = 'изменить набор ширин';
+    editSizesBtn.style.cssText = 'font-size:11px;padding:6px 10px;border-radius:8px;border:1px solid #ccc;background:#fff;cursor:pointer;';
+    editSizesBtn.addEventListener('click', async () => {
+      const cur = App.State.cardSizes.join(', ');
+      const raw = prompt('Ширины через запятую (px), общие для всех карточек:', cur);
+      if (raw == null) return;
+      const sizes = raw.split(',').map(s => parseInt(s.trim(), 10)).filter(n => !isNaN(n) && n > 0);
+      if (!sizes.length) return;
+      App.State.cardSizes = sizes;
+      await App.Data.saveCardSizes();
+      renderAll();
+    });
+    widthInner.appendChild(widthSelect); widthInner.appendChild(editSizesBtn);
+    widthRow.appendChild(widthInner);
+    container.appendChild(widthRow);
+
+    const actions = document.createElement('div'); actions.className = 'card-actions';
+    const delBtn = document.createElement('button'); delBtn.id = 'btn-delete-car'; delBtn.textContent = 'Удалить карточку';
+    delBtn.addEventListener('click', async () => {
+      if (!confirm('Удалить карточку «' + (car.name || '') + '» вместе со всеми фото?')) return;
+      await App.Data.deleteCar(car);
+      App.State.activeCarId = null;
+      renderAll();
+    });
+    actions.appendChild(delBtn);
+    container.appendChild(actions);
+  }
+
+  function renderViewTabs(car, container) {
+    const tabs = document.createElement('div'); tabs.id = 'view-tabs';
+    C.VIEW_KEYS.forEach(key => {
+      const isCustom = key === 'custom1' || key === 'custom2';
+      let el;
+      if (isCustom) {
+        el = document.createElement('input');
+        el.className = 'view-tab-custom-input' + (App.State.activeView === key ? ' active' : '');
+        el.value = car.views[key].customLabel || C.VIEW_LABELS[key];
+        el.oninput = () => { car.views[key].customLabel = el.value; };
+        el.onblur = () => App.Data.saveCar(car);
+        // Перерендер только при переключении на ДРУГУЮ вкладку — иначе клик в это же
+        // поле (чтобы переименовать) каждый раз пересоздаёт input и сбрасывает фокус.
+        el.addEventListener('click', () => { if (App.State.activeView !== key) { App.State.activeView = key; renderAll(); } });
+      } else {
+        el = document.createElement('button');
+        el.className = 'view-tab' + (App.State.activeView === key ? ' active' : '');
+        el.textContent = C.VIEW_LABELS[key];
+        el.addEventListener('click', () => { if (App.State.activeView !== key) { App.State.activeView = key; renderAll(); } });
+      }
+      tabs.appendChild(el);
+    });
+    container.appendChild(tabs);
+  }
+
+  function draftThumb(car, viewKey, item, idx, view) {
+    const div = document.createElement('div');
+    const active = view.activeSel && view.activeSel.kind === 'draft' && view.activeSel.index === idx;
+    div.className = 'draft-thumb' + (active ? ' active' : '');
+    const img = document.createElement('img');
+    div.appendChild(img);
+    App.Data.getPhotoFile(car.id, viewKey, 'draft', item.file).then(f => { if (f) img.src = URL.createObjectURL(f); });
+    const del = document.createElement('button'); del.className = 'thumb-del'; del.textContent = '×';
+    del.addEventListener('click', async e => { e.stopPropagation(); await App.Data.removeDraftPhoto(car, viewKey, idx); renderAll(); });
+    div.appendChild(del);
+    div.addEventListener('click', async () => { view.activeSel = { kind: 'draft', index: idx }; await App.Data.saveCar(car); renderAll(); });
+    return div;
+  }
+
+  function renderPhotoCols(car, viewKey, container) {
+    const view = car.views[viewKey];
+    const cols = document.createElement('div'); cols.className = 'photo-cols';
+
+    const draftCol = document.createElement('div');
+    const draftHead = document.createElement('div'); draftHead.className = 'photo-col-head'; draftHead.textContent = 'Драфт (для работы в редакторе, любые фото)';
+    draftCol.appendChild(draftHead);
+    const strip = document.createElement('div'); strip.className = 'draft-strip';
+    view.draft.forEach((item, idx) => strip.appendChild(draftThumb(car, viewKey, item, idx, view)));
+    const addDrop = document.createElement('div'); addDrop.className = 'mini-drop'; addDrop.textContent = '+'; addDrop.title = 'Добавить драфт-фото';
+    wireDropZone(addDrop, async files => { for (const f of files) await App.Data.addDraftPhoto(car, viewKey, f); renderAll(); });
+    strip.appendChild(addDrop);
+    draftCol.appendChild(strip);
+    cols.appendChild(draftCol);
+
+    const finalCol = document.createElement('div'); finalCol.className = 'final-slot';
+    const finalHead = document.createElement('div'); finalHead.className = 'photo-col-head'; finalHead.textContent = 'Финал (в билд)';
+    finalCol.appendChild(finalHead);
+    if (view.final) {
+      const active = view.activeSel && view.activeSel.kind === 'final';
+      const div = document.createElement('div'); div.className = 'draft-thumb' + (active ? ' active' : '');
+      const img = document.createElement('img'); div.appendChild(img);
+      App.Data.getPhotoFile(car.id, viewKey, '', view.final.file).then(f => { if (f) img.src = URL.createObjectURL(f); });
+      const del = document.createElement('button'); del.className = 'thumb-del'; del.textContent = '×';
+      del.addEventListener('click', async e => { e.stopPropagation(); await App.Data.removeFinalPhoto(car, viewKey); renderAll(); });
+      div.appendChild(del);
+      div.addEventListener('click', async () => { view.activeSel = { kind: 'final' }; await App.Data.saveCar(car); renderAll(); });
+      finalCol.appendChild(div);
+    } else {
+      const drop = document.createElement('div'); drop.className = 'mini-drop'; drop.textContent = '+'; drop.title = 'Загрузить финальное фото';
+      wireDropZone(drop, async files => { if (files[0]) { await App.Data.setFinalPhoto(car, viewKey, files[0]); renderAll(); } });
+      finalCol.appendChild(drop);
+    }
+    cols.appendChild(finalCol);
+
+    container.appendChild(cols);
+  }
+
+  function wireDropZone(el, onFiles) {
+    el.addEventListener('dragover', e => { e.preventDefault(); el.classList.add('drag-over'); });
+    el.addEventListener('dragleave', () => el.classList.remove('drag-over'));
+    el.addEventListener('drop', e => {
+      e.preventDefault(); el.classList.remove('drag-over');
+      const files = Array.from(e.dataTransfer.files).filter(f => f.type.startsWith('image/'));
+      if (files.length) onFiles(files);
+    });
+    el.addEventListener('click', () => {
+      const input = document.createElement('input'); input.type = 'file'; input.accept = 'image/*'; input.multiple = true;
+      input.addEventListener('change', () => { if (input.files.length) onFiles(Array.from(input.files)); });
+      input.click();
+    });
+  }
+
+  function renderCanvas(car, viewKey, container) {
+    const C_ = App.Const;
+    const view = car.views[viewKey];
+    const isSide = viewKey === 'side';
+
+    const toolbar = document.createElement('div'); toolbar.className = 'canvas-toolbar';
+    const exportBtn = document.createElement('button'); exportBtn.className = 'primary'; exportBtn.textContent = 'Экспортировать';
+    exportBtn.title = 'Ширина карточки: ' + (car.cardWidth || 260) + 'px (см. оранжевые линии на холсте)';
+    exportBtn.addEventListener('click', async () => { const ok = await App.Data.exportView(car, viewKey); renderAll(); });
+    toolbar.appendChild(exportBtn);
+
+    const zoomWrap = document.createElement('div'); zoomWrap.className = 'zoom-controls';
+    const zoomOut = document.createElement('button'); zoomOut.textContent = '−'; zoomOut.title = 'Уменьшить масштаб холста';
+    zoomOut.addEventListener('click', () => { App.State.canvasZoom = Math.max(0.15, Math.round((App.State.canvasZoom - 0.1) * 100) / 100); renderAll(); });
+    const zoomLevel = document.createElement('span'); zoomLevel.id = 'zoom-level'; zoomLevel.textContent = Math.round(App.State.canvasZoom * 100) + '%';
+    const zoomIn = document.createElement('button'); zoomIn.textContent = '+'; zoomIn.title = 'Увеличить масштаб холста';
+    zoomIn.addEventListener('click', () => { App.State.canvasZoom = Math.min(2, Math.round((App.State.canvasZoom + 0.1) * 100) / 100); renderAll(); });
+    const fitZoomBtn = document.createElement('button'); fitZoomBtn.textContent = 'Фит';
+    fitZoomBtn.title = 'Подобрать масштаб холста так, чтобы вся машина влезла по ширине и высоте, с запасом';
+    zoomWrap.appendChild(zoomOut); zoomWrap.appendChild(zoomLevel); zoomWrap.appendChild(zoomIn); zoomWrap.appendChild(fitZoomBtn);
+    toolbar.appendChild(zoomWrap);
+    const overlayLabel = document.createElement('label'); overlayLabel.className = 'chk';
+    const overlayChk = document.createElement('input'); overlayChk.type = 'checkbox'; overlayChk.checked = App.State.showOverlay;
+    overlayChk.onchange = () => { App.State.showOverlay = overlayChk.checked; renderAll(); };
+    overlayLabel.appendChild(overlayChk); overlayLabel.appendChild(document.createTextNode(' показать экспортированный финал поверх'));
+    toolbar.appendChild(overlayLabel);
+    const status = document.createElement('span'); status.id = 'export-status';
+    status.textContent = view.lastExport ? ('экспорт: ' + view.lastExport.width + 'px, ' + new Date(view.lastExport.at).toLocaleString('ru')) : 'ещё не экспортировано';
+    toolbar.appendChild(status);
+    container.appendChild(toolbar);
+
+    const area = document.createElement('div'); area.className = 'canvas-area';
+    const scroll = document.createElement('div'); scroll.className = 'canvas-scroll';
+    const inner = document.createElement('div'); inner.className = 'canvas-inner';
+    inner.style.zoom = App.State.canvasZoom;
+
+    // Подбираем zoom так, чтобы активное фото по ширине и вся карточка по высоте
+    // влезли в контейнер холста, с запасом (90% доступного места). Общая функция —
+    // и для кнопки «Фит», и для автовызова при открытии карточки / смене фото.
+    async function runFit(silent) {
+      const a = App.Data.activePhotoMeta(view);
+      if (!a) { if (!silent) alert('Нет активного фото — нечего вписывать.'); return; }
+      const sub = a.kind === 'draft' ? 'draft' : '';
+      const file = await App.Data.getPhotoFile(car.id, viewKey, sub, a.meta.file);
+      if (!file) return;
+      const bmp = await createImageBitmap(file);
+      const photoW = bmp.width * a.meta.scale;
+      const margin = 0.9;
+      const zByWidth = (scroll.clientWidth * margin) / photoW;
+      const zByHeight = (scroll.clientHeight * margin) / C_.CANVAS_HEIGHT;
+      let z = Math.min(zByWidth, zByHeight);
+      z = Math.max(0.15, Math.min(2, Math.round(z * 100) / 100));
+      App.State.canvasZoom = z;
+      renderAll();
+    }
+    fitZoomBtn.addEventListener('click', () => runFit(false));
+
+    // Автофит: как только показанное фото (карточка/ракурс/драфт-или-финал/файл)
+    // отличается от того, под что зум подбирали в прошлый раз — подгоняем заново.
+    // Сравнение по ключу, а не «при каждом рендере», иначе автофит перебивал бы
+    // ручные +/− и слайдер масштаба фото при каждом их клике.
+    {
+      const a = App.Data.activePhotoMeta(view);
+      const fitKey = a ? [car.id, viewKey, a.kind, a.index ?? '', a.meta.file].join('|') : null;
+      if (fitKey !== App.State.lastFitKey) {
+        App.State.lastFitKey = fitKey;
+        if (fitKey) runFit(true);
+      }
+    }
+
+    const vLine = document.createElement('div'); vLine.className = 'line-fixed-v'; vLine.style.left = C_.FIXED_CENTER_X + 'px'; inner.appendChild(vLine);
+    const hLine = document.createElement('div'); hLine.className = 'line-fixed-h'; hLine.style.top = C_.FIXED_GROUND_Y + 'px'; inner.appendChild(hLine);
+
+    // Фото — ПЕРЕД линиями разметки в DOM: линии/ползунки должны лежать поверх
+    // фото и получать клики первыми, иначе крупное фото перехватывает указатель
+    // и ползунки становятся недостижимы.
+    const active = App.Data.activePhotoMeta(view);
+    if (active) {
+      const img = document.createElement('img'); img.className = 'canvas-photo';
+      const sub = active.kind === 'draft' ? 'draft' : '';
+      App.Data.getPhotoFile(car.id, viewKey, sub, active.meta.file).then(f => {
+        if (!f) return;
+        img.src = URL.createObjectURL(f);
+        createImageBitmap(f).then(bmp => {
+          img.dataset.w = bmp.width; img.dataset.h = bmp.height;
+          positionPhoto(img, active.meta, bmp.width, bmp.height);
+        });
+      });
+      App.Drag(img, {
+        scale: () => App.State.canvasZoom,
+        onDrag: (dx, dy) => {
+          const w = parseFloat(img.dataset.w) || img.naturalWidth, h = parseFloat(img.dataset.h) || img.naturalHeight;
+          const nx = origX + dx, ny = origY + dy;
+          active.meta.x = nx; active.meta.y = ny;
+          positionPhoto(img, active.meta, w, h);
+        },
+        onEnd: () => App.Data.saveCar(car),
+      });
+      var origX = active.meta.x, origY = active.meta.y;
+      img.addEventListener('pointerdown', () => { origX = active.meta.x; origY = active.meta.y; });
+      inner.appendChild(img);
+
+      // Масштаб фото — отдельный от zoom холста. Ползунок + число (не тянуть за край
+      // самого фото: при большом зуме край легко уезжает за экран).
+      const scaleRow = document.createElement('div'); scaleRow.className = 'canvas-toolbar';
+      const fitBtn = document.createElement('button'); fitBtn.textContent = 'Выровнять по высоте';
+      fitBtn.title = 'Высота фото = ' + C_.CANVAS_HEIGHT + 'px — от верхней до нижней границы карточки';
+      scaleRow.appendChild(fitBtn);
+      const flipBtn = document.createElement('button'); flipBtn.textContent = '⇋ Флип по горизонтали';
+      flipBtn.title = 'Перезаписывает сам файл фото зеркально (навсегда)';
+      flipBtn.addEventListener('click', async () => {
+        flipBtn.disabled = true;
+        try { await App.Data.flipPhotoHorizontal(car, viewKey); renderAll(); }
+        finally { flipBtn.disabled = false; }
+      });
+      scaleRow.appendChild(flipBtn);
+      const scaleLbl = document.createElement('span'); scaleLbl.textContent = 'Масштаб фото:';
+      scaleLbl.style.cssText = 'font-size:11px;color:#888;';
+      scaleRow.appendChild(scaleLbl);
+      const scaleRange = document.createElement('input'); scaleRange.type = 'range';
+      scaleRange.min = '5'; scaleRange.max = '300'; scaleRange.step = '1'; scaleRange.value = Math.round(active.meta.scale * 100);
+      scaleRange.style.width = '160px';
+      scaleRow.appendChild(scaleRange);
+      const scaleNum = document.createElement('input'); scaleNum.type = 'number';
+      scaleNum.min = '5'; scaleNum.max = '300'; scaleNum.step = '1'; scaleNum.value = Math.round(active.meta.scale * 100);
+      scaleNum.style.cssText = 'width:60px;font-size:11px;padding:4px 6px;border:1px solid #ddd;border-radius:5px;';
+      scaleRow.appendChild(scaleNum);
+      const scalePct = document.createElement('span'); scalePct.textContent = '%';
+      scalePct.style.cssText = 'font-size:11px;color:#888;';
+      scaleRow.appendChild(scalePct);
+
+      function applyScale(pct, persist) {
+        pct = Math.max(5, Math.min(300, pct));
+        active.meta.scale = pct / 100;
+        const w = parseFloat(img.dataset.w) || img.naturalWidth, h = parseFloat(img.dataset.h) || img.naturalHeight;
+        positionPhoto(img, active.meta, w, h);
+        scaleRange.value = pct; scaleNum.value = Math.round(pct);
+        if (persist) App.Data.saveCar(car);
+      }
+      scaleRange.addEventListener('input', () => applyScale(parseFloat(scaleRange.value), false));
+      scaleRange.addEventListener('change', () => applyScale(parseFloat(scaleRange.value), true));
+      scaleNum.addEventListener('input', () => { const v = parseFloat(scaleNum.value); if (!isNaN(v)) applyScale(v, false); });
+      scaleNum.addEventListener('change', () => { const v = parseFloat(scaleNum.value); if (!isNaN(v)) applyScale(v, true); });
+      fitBtn.addEventListener('click', () => {
+        const h = parseFloat(img.dataset.h) || img.naturalHeight;
+        if (!h) return;
+        // Без ограничения «не больше 100%» — жмём именно к высоте холста, апскейлит,
+        // если фото меньше. applyScale сама подрежет к диапазону ползунка (5–300%).
+        applyScale((C_.CANVAS_HEIGHT / h) * 100, true);
+      });
+      container.appendChild(scaleRow);
+    } else {
+      const empty = document.createElement('div'); empty.className = 'canvas-photo-empty'; empty.textContent = 'Добавьте драфт или финал фото ниже';
+      inner.appendChild(empty);
+    }
+
+    // Границы ширины карточки (то, что реально попадёт в export.png) — после фото
+    // в DOM, чтобы лежать поверх, а не прятаться за ним; не хендл, не двигается.
+    const cw = car.cardWidth || 260;
+    [C_.FIXED_CENTER_X - cw / 2, C_.FIXED_CENTER_X + cw / 2].forEach((bx, i) => {
+      const bound = document.createElement('div'); bound.className = 'card-bound'; bound.style.left = bx + 'px';
+      inner.appendChild(bound);
+      const lbl = document.createElement('div'); lbl.className = 'card-bound-label';
+      lbl.style.left = (bx + (i === 0 ? -46 : 4)) + 'px'; lbl.style.top = '2px';
+      lbl.textContent = 'край карточки (' + cw + 'px)';
+      lbl.style.transform = 'scale(' + (1 / App.State.canvasZoom) + ')';
+      inner.appendChild(lbl);
+    });
+
+    if (isSide) {
+      const showHandles = App.State.sideTab === 'proportions'; // на табе «Линейки» — только сами линии, без контролов
+
+      // Общая отрисовка группы вертикальных линий (offsetX): «Вертикальные» и «Колёса»
+      // используют один и тот же механизм, отличаются только набором ключей/цветами/
+      // высотой подписи и тем, что radius рисуется пунктиром.
+      function renderVerticalGroup(keys, dataObj, labels, colors, prefix, labelTop, dashedKeys) {
+        keys.forEach(key => {
+          const g = dataObj[key];
+          if (!g.visible) return;
+          const x = C_.FIXED_CENTER_X + g.offsetX;
+          const dashed = dashedKeys && dashedKeys.has(key);
+          const line = document.createElement('div');
+          line.style.left = x + 'px';
+          if (dashed) {
+            line.className = 'guide-v-dashed';
+            // Штрих 14px, промежуток 12px — крупно, чтобы не сливалось в сплошную при zoom холста.
+            line.style.backgroundImage = 'repeating-linear-gradient(to bottom, ' + colors[key] + ' 0, ' + colors[key] + ' 14px, transparent 14px, transparent 26px)';
+          } else {
+            line.className = 'guide-v';
+            line.style.borderColor = colors[key];
+          }
+          inner.appendChild(line);
+          const label = document.createElement('div'); label.className = 'guide-label'; label.style.left = (x + 8) + 'px'; label.style.top = labelTop + 'px'; label.textContent = labels[key];
+          label.style.transform = 'scale(' + (1 / App.State.canvasZoom) + ')';
+          inner.appendChild(label);
+          if (!showHandles) return;
+          const handle = document.createElement('div'); handle.className = 'guide-handle-v'; handle.style.left = x + 'px'; handle.style.background = colors[key];
+          // Компенсируем zoom холста, чтобы точка всегда была одного экранного размера
+          // (её центр — точка отсчёта transform — уже совпадает с центром линии за счёт
+          // отрицательных margin в CSS, так что позиция от масштабирования не съезжает).
+          handle.style.transform = 'scale(' + (1 / App.State.canvasZoom) + ')';
+          // baseX перечитывается на каждый pointerdown (а не один раз при рендере) —
+          // иначе второй драг подряд считает смещение от устаревшей стартовой точки
+          // и линия дёргается обратно.
+          let baseX = x;
+          handle.addEventListener('pointerdown', () => { baseX = C_.FIXED_CENTER_X + g.offsetX; });
+          App.Drag(handle, {
+            axis: 'x', scale: () => App.State.canvasZoom,
+            onDrag: (dx) => { const nx = baseX + dx; handle.style.left = nx + 'px'; line.style.left = nx + 'px'; label.style.left = (nx + 8) + 'px'; g.offsetX = (nx - C_.FIXED_CENTER_X); updateLegendVal(prefix + key, g.offsetX); },
+            onEnd: () => App.Data.saveCar(car),
+          });
+          inner.appendChild(handle);
+        });
+      }
+      renderVerticalGroup(C_.VERTICAL_LINES, view.guides.vertical, C_.VERTICAL_LABELS, C_.VERTICAL_COLORS, 'v-', 2);
+      const wheels = view.guides.wheels || (view.guides.wheels = (() => { const w = {}; C_.WHEEL_LINES.forEach(k => w[k] = { offsetX: C_.WHEEL_DEFAULTS[k], visible: true }); return w; })());
+      renderVerticalGroup(C_.WHEEL_LINES, wheels, C_.WHEEL_LABELS, C_.WHEEL_COLORS, 'w-', 18, new Set(C_.WHEEL_LINES));
+
+      C_.HORIZONTAL_LINES.forEach(key => {
+        const g = view.guides.horizontal[key];
+        if (!g.visible) return;
+        const y = C_.FIXED_GROUND_Y + g.offsetY;
+        const line = document.createElement('div'); line.className = 'guide-h'; line.style.top = y + 'px'; line.style.borderColor = C_.HORIZONTAL_COLORS[key];
+        inner.appendChild(line);
+        const label = document.createElement('div'); label.className = 'guide-label'; label.style.left = (C_.FIXED_CENTER_X + 12) + 'px'; label.style.top = (y - 15) + 'px'; label.textContent = C_.HORIZONTAL_LABELS[key];
+        label.style.transform = 'scale(' + (1 / App.State.canvasZoom) + ')';
+        inner.appendChild(label);
+        if (!showHandles) return;
+        const handle = document.createElement('div'); handle.className = 'guide-handle-h'; handle.style.top = y + 'px'; handle.style.left = C_.FIXED_CENTER_X + 'px'; handle.style.background = C_.HORIZONTAL_COLORS[key];
+        handle.style.transform = 'scale(' + (1 / App.State.canvasZoom) + ')';
+        let baseY = y;
+        handle.addEventListener('pointerdown', () => { baseY = C_.FIXED_GROUND_Y + g.offsetY; });
+        App.Drag(handle, {
+          axis: 'y', scale: () => App.State.canvasZoom,
+          onDrag: (dx, dy) => { const ny = baseY + dy; handle.style.top = ny + 'px'; line.style.top = ny + 'px'; label.style.top = (ny - 15) + 'px'; g.offsetY = (ny - C_.FIXED_GROUND_Y); updateLegendVal('h-' + key, g.offsetY); },
+          onEnd: () => App.Data.saveCar(car),
+        });
+        inner.appendChild(handle);
+      });
+
+      // Пропорциональная линейка — только на своём табе. Полоска красный/белый на
+      // границе выбранного соотношения + 3 линии (два конца тянутся, средняя вычисляется).
+      // ratioByKey — доля МЕНЬШЕЙ части; без инверсии первой идёт бОльшая (1 - ratio).
+      function rulerSplitFrac(r) {
+        const v = C_.RATIOS[r.ratioKey || 'gold'] ?? C_.RATIOS.gold;
+        return r.invert ? v : (1 - v);
+      }
+      if (App.State.sideTab === 'rulers') {
+        const rulers = view.guides.rulers || (view.guides.rulers = App.Data.defaultRulers());
+
+        if (rulers.horizontal.enabled) {
+          const r = rulers.horizontal;
+          const stripY = C_.CANVAS_HEIGHT - 20, stripH = 14;
+          const redRect = document.createElement('div'); redRect.className = 'ruler-strip ruler-strip-red';
+          const whiteRect = document.createElement('div'); whiteRect.className = 'ruler-strip ruler-strip-white';
+          const lStart = document.createElement('div'); lStart.className = 'ruler-gline-v';
+          const lRatio = document.createElement('div'); lRatio.className = 'ruler-gline-v';
+          const lEnd = document.createElement('div'); lEnd.className = 'ruler-gline-v';
+          [redRect, whiteRect, lStart, lRatio, lEnd].forEach(el => inner.appendChild(el));
+          [lStart, lRatio, lEnd].forEach(l => { l.style.top = '0px'; l.style.height = (stripY + stripH) + 'px'; });
+          redRect.style.top = stripY + 'px'; redRect.style.height = stripH + 'px';
+          whiteRect.style.top = stripY + 'px'; whiteRect.style.height = stripH + 'px';
+
+          function layoutH() {
+            const startX = C_.FIXED_CENTER_X + r.startOffsetX, endX = C_.FIXED_CENTER_X + r.endOffsetX;
+            const ratioX = startX + (endX - startX) * rulerSplitFrac(r);
+            lStart.style.left = startX + 'px'; lRatio.style.left = ratioX + 'px'; lEnd.style.left = endX + 'px';
+            redRect.style.left = Math.min(startX, ratioX) + 'px'; redRect.style.width = Math.abs(ratioX - startX) + 'px';
+            whiteRect.style.left = Math.min(ratioX, endX) + 'px'; whiteRect.style.width = Math.abs(endX - ratioX) + 'px';
+          }
+          layoutH();
+
+          [['startOffsetX'], ['endOffsetX']].forEach(([key]) => {
+            const handle = document.createElement('div'); handle.className = 'ruler-handle-v';
+            handle.style.transform = 'scale(' + (1 / App.State.canvasZoom) + ')';
+            handle.style.left = (C_.FIXED_CENTER_X + r[key]) + 'px';
+            let base = r[key];
+            handle.addEventListener('pointerdown', () => { base = r[key]; });
+            App.Drag(handle, {
+              axis: 'x', scale: () => App.State.canvasZoom,
+              onDrag: dx => { r[key] = base + dx; handle.style.left = (C_.FIXED_CENTER_X + r[key]) + 'px'; layoutH(); },
+              onEnd: () => App.Data.saveCar(car),
+            });
+            inner.appendChild(handle);
+          });
+        }
+
+        if (rulers.vertical.enabled) {
+          const r = rulers.vertical;
+          const stripX = (C_.FIXED_CENTER_X - cw / 2) - 30, stripW = 14;
+          const redRect = document.createElement('div'); redRect.className = 'ruler-strip ruler-strip-red';
+          const whiteRect = document.createElement('div'); whiteRect.className = 'ruler-strip ruler-strip-white';
+          const lStart = document.createElement('div'); lStart.className = 'ruler-gline-h';
+          const lRatio = document.createElement('div'); lRatio.className = 'ruler-gline-h';
+          const lEnd = document.createElement('div'); lEnd.className = 'ruler-gline-h';
+          [redRect, whiteRect, lStart, lRatio, lEnd].forEach(el => inner.appendChild(el));
+          [lStart, lRatio, lEnd].forEach(l => { l.style.left = '0px'; l.style.right = '0px'; });
+          redRect.style.left = stripX + 'px'; redRect.style.width = stripW + 'px';
+          whiteRect.style.left = stripX + 'px'; whiteRect.style.width = stripW + 'px';
+
+          function layoutV() {
+            const startY = C_.FIXED_GROUND_Y + r.startOffsetY, endY = C_.FIXED_GROUND_Y + r.endOffsetY;
+            const ratioY = startY + (endY - startY) * rulerSplitFrac(r);
+            lStart.style.top = startY + 'px'; lRatio.style.top = ratioY + 'px'; lEnd.style.top = endY + 'px';
+            redRect.style.top = Math.min(startY, ratioY) + 'px'; redRect.style.height = Math.abs(ratioY - startY) + 'px';
+            whiteRect.style.top = Math.min(ratioY, endY) + 'px'; whiteRect.style.height = Math.abs(endY - ratioY) + 'px';
+          }
+          layoutV();
+
+          [['startOffsetY'], ['endOffsetY']].forEach(([key]) => {
+            const handle = document.createElement('div'); handle.className = 'ruler-handle-h';
+            handle.style.transform = 'scale(' + (1 / App.State.canvasZoom) + ')';
+            handle.style.left = stripX + 'px';
+            handle.style.top = (C_.FIXED_GROUND_Y + r[key]) + 'px';
+            let base = r[key];
+            handle.addEventListener('pointerdown', () => { base = r[key]; });
+            App.Drag(handle, {
+              axis: 'y', scale: () => App.State.canvasZoom,
+              onDrag: (dx, dy) => { r[key] = base + dy; handle.style.top = (C_.FIXED_GROUND_Y + r[key]) + 'px'; layoutV(); },
+              onEnd: () => App.Data.saveCar(car),
+            });
+            inner.appendChild(handle);
+          });
+        }
+      }
+    }
+
+    if (App.State.showOverlay && view.lastExport) {
+      const ov = document.createElement('img'); ov.className = 'canvas-overlay-final';
+      App.Data.getPhotoFile(car.id, viewKey, '', 'export.png').then(f => { if (f) ov.src = URL.createObjectURL(f); });
+      ov.style.left = (C_.FIXED_CENTER_X - view.lastExport.width / 2) + 'px';
+      ov.style.top = '0px';
+      ov.style.width = view.lastExport.width + 'px';
+      ov.style.height = C_.CANVAS_HEIGHT + 'px';
+      inner.appendChild(ov);
+    }
+
+    scroll.appendChild(inner);
+    area.appendChild(scroll);
+
+    if (isSide) {
+      const legend = document.createElement('div'); legend.className = 'guide-legend';
+
+      const tabsRow = document.createElement('div'); tabsRow.className = 'side-panel-tabs';
+      [['proportions', 'Пропорции'], ['rulers', 'Линейки']].forEach(([key, label]) => {
+        const btn = document.createElement('button'); btn.className = 'side-tab' + (App.State.sideTab === key ? ' active' : '');
+        btn.textContent = label;
+        btn.addEventListener('click', () => { if (App.State.sideTab !== key) { App.State.sideTab = key; renderAll(); } });
+        tabsRow.appendChild(btn);
+      });
+      legend.appendChild(tabsRow);
+
+      if (App.State.sideTab === 'proportions') {
+        const vTitle = document.createElement('div'); vTitle.className = 'legend-group-title'; vTitle.textContent = 'Вертикальные';
+        legend.appendChild(vTitle);
+        C_.VERTICAL_LINES.forEach(key => legend.appendChild(legendRow('v-' + key, C_.VERTICAL_LABELS[key], C_.VERTICAL_COLORS[key], view.guides.vertical[key], 'offsetX', car, view)));
+        const hTitle = document.createElement('div'); hTitle.className = 'legend-group-title'; hTitle.textContent = 'Горизонтальные';
+        legend.appendChild(hTitle);
+        C_.HORIZONTAL_LINES.forEach(key => legend.appendChild(legendRow('h-' + key, C_.HORIZONTAL_LABELS[key], C_.HORIZONTAL_COLORS[key], view.guides.horizontal[key], 'offsetY', car, view)));
+        const wTitle = document.createElement('div'); wTitle.className = 'legend-group-title'; wTitle.textContent = 'Колёса';
+        legend.appendChild(wTitle);
+        C_.WHEEL_LINES.forEach(key => legend.appendChild(legendRow('w-' + key, C_.WHEEL_LABELS[key], C_.WHEEL_COLORS[key], view.guides.wheels[key], 'offsetX', car, view)));
+        const saveDefBtn = document.createElement('button');
+        saveDefBtn.textContent = 'Сохранить линии по умолчанию';
+        saveDefBtn.title = 'Эта разметка станет стартовой для всех НОВЫХ машин (общий конфиг на всю базу)';
+        saveDefBtn.style.cssText = 'margin-top:12px;width:100%;font-size:10.5px;padding:6px 8px;border-radius:6px;border:1px dashed #ccc;background:#fff;color:#888;cursor:pointer;';
+        saveDefBtn.addEventListener('click', async () => {
+          await App.Data.saveGuideDefaults(view.guides);
+          alert('Сохранено — новые машины будут стартовать с этой разметкой.');
+        });
+        legend.appendChild(saveDefBtn);
+      } else {
+        const rulers = view.guides.rulers || (view.guides.rulers = App.Data.defaultRulers());
+        const rTitle = document.createElement('div'); rTitle.className = 'legend-group-title'; rTitle.textContent = 'Пропорциональная линейка';
+        legend.appendChild(rTitle);
+
+        function rulerControls(label, r, resetLabel, resetFn) {
+          const wrap = document.createElement('div'); wrap.style.marginBottom = '10px';
+          const rowMain = document.createElement('label'); rowMain.className = 'ruler-row';
+          const chk = document.createElement('input'); chk.type = 'checkbox'; chk.checked = r.enabled;
+          chk.onchange = () => { r.enabled = chk.checked; App.Data.saveCar(car); renderAll(); };
+          rowMain.appendChild(chk); rowMain.appendChild(document.createTextNode(label));
+          wrap.appendChild(rowMain);
+
+          const rowRatio = document.createElement('div'); rowRatio.className = 'ruler-row';
+          const sel = document.createElement('select');
+          C_.RATIO_ORDER.forEach(k => {
+            const opt = document.createElement('option'); opt.value = k; opt.textContent = C_.RATIO_LABELS[k];
+            if ((r.ratioKey || 'gold') === k) opt.selected = true;
+            sel.appendChild(opt);
+          });
+          sel.onchange = () => { r.ratioKey = sel.value; App.Data.saveCar(car); renderAll(); };
+          rowRatio.appendChild(sel);
+          wrap.appendChild(rowRatio);
+
+          const rowInv = document.createElement('label'); rowInv.className = 'ruler-row';
+          const chkInv = document.createElement('input'); chkInv.type = 'checkbox'; chkInv.checked = !!r.invert;
+          chkInv.onchange = () => { r.invert = chkInv.checked; App.Data.saveCar(car); renderAll(); };
+          rowInv.appendChild(chkInv); rowInv.appendChild(document.createTextNode('инверсия (сначала меньшая часть)'));
+          wrap.appendChild(rowInv);
+
+          const resetBtn = document.createElement('button'); resetBtn.textContent = resetLabel;
+          resetBtn.style.cssText = 'width:100%;font-size:10.5px;padding:5px 6px;border-radius:6px;border:1px solid #ccc;background:#fff;color:#666;cursor:pointer;margin-top:2px;';
+          resetBtn.addEventListener('click', () => { resetFn(); App.Data.saveCar(car); renderAll(); });
+          wrap.appendChild(resetBtn);
+
+          return wrap;
+        }
+        legend.appendChild(rulerControls('Горизонтальная', rulers.horizontal, 'Концы = Head / Trunk', () => {
+          rulers.horizontal.startOffsetX = view.guides.vertical.head.offsetX;
+          rulers.horizontal.endOffsetX = view.guides.vertical.trunk.offsetX;
+        }));
+        legend.appendChild(rulerControls('Вертикальная', rulers.vertical, 'Концы = Bottom / Top', () => {
+          rulers.vertical.startOffsetY = view.guides.horizontal.bottom.offsetY;
+          rulers.vertical.endOffsetY = view.guides.horizontal.top.offsetY;
+        }));
+
+        const hint = document.createElement('div');
+        hint.textContent = 'Концы (по умолчанию head/trunk и top/ground) — тянуть за красную точку. Средняя точка вычисляется по выбранному соотношению, не двигается.';
+        hint.style.cssText = 'font-size:10px;color:#999;margin-top:4px;line-height:1.4;';
+        legend.appendChild(hint);
+      }
+      area.appendChild(legend);
+    }
+
+    container.appendChild(area);
+    // Только теперь холст реально в DOM и имеет ширину — до этого clientWidth был 0
+    // и центрирование скролла считалось неверно. scrollLeft у скролл-контейнера — в
+    // экранных пикселях, а FIXED_CENTER_X — в логических пикселях .canvas-inner,
+    // поэтому переводим через текущий zoom.
+    scroll.scrollLeft = C_.FIXED_CENTER_X * App.State.canvasZoom - scroll.clientWidth / 2;
+  }
+
+  function positionPhoto(img, meta, w, h) {
+    const C_ = App.Const;
+    const dw = w * meta.scale, dh = h * meta.scale;
+    img.style.width = dw + 'px'; img.style.height = dh + 'px';
+    img.style.left = (C_.FIXED_CENTER_X + meta.x - dw / 2) + 'px';
+    img.style.top = (C_.FIXED_GROUND_Y + meta.y - dh) + 'px';
+  }
+
+  function legendRow(id, label, color, g, offsetKey, car, view) {
+    const row = document.createElement('div'); row.className = 'legend-row';
+    const chk = document.createElement('input'); chk.type = 'checkbox'; chk.checked = g.visible;
+    chk.onchange = () => { g.visible = chk.checked; App.Data.saveCar(car); renderAll(); };
+    row.appendChild(chk);
+    const dot = document.createElement('span'); dot.className = 'legend-dot'; dot.style.background = color; row.appendChild(dot);
+    const name = document.createElement('span'); name.className = 'legend-name'; name.textContent = label; row.appendChild(name);
+    const val = document.createElement('span'); val.className = 'legend-val'; val.id = 'legend-val-' + id; val.textContent = Math.round(g[offsetKey]); row.appendChild(val);
+    return row;
+  }
+  function updateLegendVal(id, val) {
+    const el = document.getElementById('legend-val-' + id);
+    if (el) el.textContent = Math.round(val);
+  }
+
+  function renderCarContent() {
+    const car = activeCar();
+    const content = document.getElementById('car-content');
+    const empty = document.getElementById('empty-state');
+    if (!car) { content.style.display = 'none'; empty.style.display = 'block'; empty.textContent = App.State.cars.length ? 'Выберите карточку слева.' : 'Нажмите «+ Создать карточку», чтобы начать.'; return; }
+    empty.style.display = 'none'; content.style.display = 'block';
+    content.innerHTML = '';
+    renderCarForm(car, content);
+    renderViewTabs(car, content);
+    renderPhotoCols(car, App.State.activeView, content);
+    renderCanvas(car, App.State.activeView, content);
+  }
+
+  function renderAll() {
+    const hasFolder = !!App.State.rootHandle;
+    document.getElementById('empty-state').style.display = hasFolder ? 'none' : 'block';
+    document.getElementById('car-list-panel').style.display = hasFolder ? 'flex' : 'none';
+    if (!hasFolder) { document.getElementById('empty-state').textContent = 'Откройте (или создайте) папку data, чтобы начать.'; return; }
+    renderCarList();
+    renderCarContent();
+  }
+
+  return { renderAll, activeCar };
+})();
+
+function renderAll() { App.UI.renderAll(); }
+
+// ──────────────────────────────────────────────
+// Bootstrap
+// ──────────────────────────────────────────────
+async function loadFolder(handle) {
+  App.State.rootHandle = handle;
+  document.getElementById('folder-status').textContent = handle.name;
+  await App.Data.loadAll();
+  renderAll();
+}
+
+document.getElementById('btn-open').addEventListener('click', async () => {
+  try { const handle = await App.FS.pickFolder(); await loadFolder(handle); } catch (e) {}
+});
+document.getElementById('btn-new-car').addEventListener('click', async () => {
+  const car = await App.Data.createCar();
+  App.State.activeCarId = car.id;
+  App.State.activeView = 'side';
+  renderAll();
+});
+
+renderAll(); // скрыть левую панель, пока папка data не выбрана
+
+(async function boot() {
+  const restored = await App.FS.restoreFolder();
+  if (!restored) return;
+  if (restored.needsPermission) {
+    document.getElementById('folder-status').textContent = 'нажмите «Открыть папку data», чтобы восстановить доступ';
+    return;
+  }
+  await loadFolder(restored);
+})();
+</script>
+</body>
+</html>

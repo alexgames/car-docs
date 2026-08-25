@@ -1,0 +1,41 @@
+{
+  "id": "dolphin",
+  "name": "Дельфин ($20/мес)",
+  "description": "Медианный платящий, не среднее по рынку (см. Продукт → Шаг 2, ARPPU дельфина = $20/мес). Три soft-линии подряд в секвенции «Софт»: (1) цикл 'копит на стиль → докупает S2', пока не открыты все стили; (2) после этого — эскалация тиров: сначала S3, потом (без цикла) переходит к более дорогому S4; (3) финальная линия — просто держит S5 до конца игры. Параллельно — три независимые hard-секвенции (бесплатные кристаллы на H1, обычные hard-траты 2×H3/мес, апгрейды 1/мес) и одна real-секвенция (1×R2/мес). Смешивает апгрейды с обычными hard-тратами, как реальный игрок, а не изолирует один тип трат (для изолированной проверки только апгрейдов — см. upgradeFirstDolphin/upgradeFirstF2P/hardCollector). Цена всегда в валюте (не в $ напрямую) — 'докупать валюту' (topUp) значит только готовность топить недостачу за $, не игнорировать уже накопленное.",
+  "simulateDays": 730,
+  "income": { "adsPerDay": 2 },
+  "sequences": [
+    {
+      "name": "Софт",
+      "lines": [
+        { "name": "Стили + S2", "phases": [ { "kind": "soft-hoardForStyle" }, { "kind": "soft-buyTier", "tier": "S2", "count": 3, "topUp": false } ], "loop": true, "until": "allStylesOpened" },
+        { "name": "Эскалация S3→S4", "phases": [ { "kind": "soft-buyTier", "tier": "S3", "count": 5, "topUp": false }, { "kind": "soft-buyTier", "tier": "S4", "count": 3, "topUp": false } ], "loop": false, "until": "phasesComplete" },
+        { "name": "S5 навсегда", "phases": [ { "kind": "soft-buyTier", "tier": "S5", "count": 9999, "topUp": false } ], "loop": true, "until": "never" }
+      ]
+    },
+    {
+      "name": "Хард: бесплатные кристаллы",
+      "lines": [
+        { "name": "Линия 1", "phases": [ { "kind": "hard-buyTier", "tier": "H1", "itemsPerMonth": 0, "topUp": false, "cadence": "daily" } ], "loop": true, "until": "never" }
+      ]
+    },
+    {
+      "name": "Хард: обычные траты",
+      "lines": [
+        { "name": "Линия 1", "phases": [ { "kind": "hard-buyTier", "tier": "H3", "itemsPerMonth": 2, "topUp": true, "cadence": "monthly" } ], "loop": true, "until": "never" }
+      ]
+    },
+    {
+      "name": "Хард: апгрейды",
+      "lines": [
+        { "name": "Линия 1", "phases": [ { "kind": "hard-buyUpgrade", "tier": "H4", "itemsPerMonth": 1, "topUp": true, "cadence": "monthly" } ], "loop": true, "until": "never" }
+      ]
+    },
+    {
+      "name": "Реал",
+      "lines": [
+        { "name": "Покупки", "phases": [ { "kind": "real-buyTier", "tier": "R2", "itemsPerMonth": 1 } ], "loop": true, "until": "never" }
+      ]
+    }
+  ]
+}

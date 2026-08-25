@@ -1,0 +1,23 @@
+{
+  "id": "i0004",
+  "style": "style1",
+  "block": "inspire",
+  "text": "A hangover from the 1930s, the 103E\nhad rod brakes, a side-valve engine,\nthree gears, and pre-war styling.\nIt was basic and very cheap, and\nremained in production until 1959.",
+  "button": "Create",
+  "images": [
+    {
+      "file": "1.png",
+      "flag": "🇺🇸",
+      "title": "Wolseley 1500 1957",
+      "caption": "Morris recycled the Minor’s floorpan and fitted it with a bigger engine to make this upmarket Wolseley (also available under the Riley name); a popular car, it sold over 140,000."
+    },
+    {
+      "file": "2.png",
+      "flag": "🇯🇵",
+      "title": "Ford Popular 103E 1953",
+      "caption": "A hangover frddom the 1930s, the 103E had rod brakes, a side-valve engine, three gears, and pre-war styling. It was basic and very cheap, and remained in production until 1959."
+    }
+  ],
+  "order": 0,
+  "count": 1
+}

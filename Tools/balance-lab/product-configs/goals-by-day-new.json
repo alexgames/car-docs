@@ -1,0 +1,29 @@
+{
+  "schemaVersion": 1,
+  "description": "Новые цели по календарным дням.",
+  "unit": "calendar_day",
+  "economy": {
+    "boostsEnabled": false,
+    "xpAndLevelsEnabled": false,
+    "rewardedAdsPerDay": 3
+  },
+  "dayBands": [
+    {
+      "id": "days_1_3",
+      "days": [
+        1,
+        3
+      ],
+      "playerNeed": "",
+      "targetUnlocks": {
+        "extras": 0,
+        "tools": 0,
+        "styles": 0,
+        "upgrades": 0,
+        "promo": 0
+      },
+      "contentDensity": "high"
+    }
+  ],
+  "reportChecks": []
+}

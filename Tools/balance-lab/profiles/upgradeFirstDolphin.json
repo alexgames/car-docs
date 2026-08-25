@@ -1,0 +1,27 @@
+{
+  "id": "upgradeFirstDolphin",
+  "name": "Upgrade-first Dolphin",
+  "description": "Тестовый профиль hard-линии: платящий, почти весь hard-бюджет уходит на апгрейды стилей (цена H4 в кристаллах, недостачу топит за $, topUp:true) — обычный hard-трек не подключён вовсе, чтобы изолировать именно апгрейд-путь. Бесплатные кристаллы отдельно копятся на H1.",
+  "simulateDays": 730,
+  "income": { "adsPerDay": 2 },
+  "sequences": [
+    {
+      "name": "Софт",
+      "lines": [
+        { "name": "Стили", "phases": [ { "kind": "soft-hoardForStyle" } ], "loop": true, "until": "never" }
+      ]
+    },
+    {
+      "name": "Хард: бесплатные кристаллы",
+      "lines": [
+        { "name": "Линия 1", "phases": [ { "kind": "hard-buyTier", "tier": "H1", "itemsPerMonth": 0, "topUp": false, "cadence": "daily" } ], "loop": true, "until": "never" }
+      ]
+    },
+    {
+      "name": "Хард: апгрейды",
+      "lines": [
+        { "name": "Линия 1", "phases": [ { "kind": "hard-buyUpgrade", "tier": "H4", "itemsPerMonth": 3, "topUp": true, "cadence": "monthly" } ], "loop": true, "until": "never" }
+      ]
+    }
+  ]
+}

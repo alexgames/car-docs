@@ -1,0 +1,1169 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<title>Style Lab — карточки идей</title>
+<!--
+Style Lab — конструктор идей по стилям CarDesign (метод карточек).
+Открывать напрямую в Chrome/Edge (нужен File System Access API), сервер не требуется.
+При первом запуске выберите/создайте папку data/ — интерфейс запросит доступ на чтение/запись.
+
+Формат данных (data/):
+  blocks.json          — {"order":[...], "items":{id:{title,hint,defaultButton}}}
+                          ОБЩИЙ для всех стилей список разделов (шаблон). Поменяли здесь —
+                          поменялось у всех 5 стилей сразу. Данные внутри разделов — свои у каждого стиля.
+  styles.json           — {"order":[5 id], "items":{id:{title,description}}}
+  _meta.json             — {"counter": N} счётчик для генерации id идей (i0001, ...)
+  ideas/<style>/<block>/<ideaId>.json  — {id, style, block, text, button, images:[...], order}
+  images/<style>/<ideaId>/1.jpg, 2.jpg, 3.jpg  — сами фото (1–3 шт., перетащены из Finder)
+
+Экспорт в HTML для игры (мобайл-ландшафт, фон-чертёж и т.п.) — отдельный следующий шаг,
+здесь не реализован. Формат данных выше рассчитан на то, чтобы его было легко проитерировать.
+-->
+<style>
+* { box-sizing: border-box; }
+body {
+  background: #f5f5f0; color: #333; margin: 0;
+  font-family: -apple-system, 'Segoe UI', sans-serif; font-size: 14px;
+}
+#toolbar {
+  display: flex; align-items: center; gap: 14px; padding: 10px 16px;
+  background: #fff; border-bottom: 1px solid #e2e2de;
+}
+#toolbar h1 { font-size: 14px; font-weight: 600; margin: 0; color: #333; white-space: nowrap; }
+#toolbar button {
+  font-size: 11px; padding: 5px 12px; border-radius: 14px; border: 1px solid #ccc;
+  background: #fff; cursor: pointer;
+}
+#toolbar button:hover { background: #f0f0ec; }
+#folder-status { font-size: 10px; color: #999; }
+
+#style-tabs { display: flex; gap: 6px; padding: 10px 16px; background: #fff; border-bottom: 1px solid #eee; flex-wrap: wrap; }
+.style-tab {
+  font-size: 12px; padding: 6px 14px; border-radius: 14px; border: 1px solid #ddd;
+  background: #fff; color: #555; cursor: pointer;
+}
+.style-tab.active { background: #333; color: #fff; border-color: #333; }
+
+#main { max-width: 1100px; margin: 0 auto; padding-bottom: 60px; }
+#empty-state { padding: 60px 20px; text-align: center; color: #999; font-size: 13px; }
+
+.style-header { padding: 18px 16px 4px; }
+#style-title-input {
+  font-size: 20px; font-weight: 700; border: 1px solid transparent; background: transparent;
+  padding: 3px 6px; border-radius: 6px; width: 100%; color: #222;
+}
+#style-title-input:hover, #style-title-input:focus { background: #fff; border-color: #ddd; outline: none; }
+#style-desc {
+  width: 100%; font-size: 13px; color: #555; border: 1px solid transparent; border-radius: 6px;
+  padding: 7px 8px; resize: vertical; min-height: 42px; background: transparent; font-family: inherit; margin-top: 4px;
+}
+#style-desc:hover, #style-desc:focus { border-color: #ddd; background: #fff; outline: none; }
+
+.block-section { margin: 22px 16px 0; }
+.block-head { display: flex; align-items: baseline; gap: 8px; margin-bottom: 8px; }
+.block-title-input {
+  font-size: 20px; font-weight: 700; color: #222; border: 1px solid transparent; background: transparent;
+  padding: 3px 6px; border-radius: 6px; width: 260px;
+}
+.block-title-input:hover, .block-title-input:focus { background: #fff; border-color: #ddd; outline: none; }
+.block-hint-input {
+  flex: 1; font-size: 11px; color: #999; border: 1px solid transparent; background: transparent;
+  padding: 2px 5px; border-radius: 5px; min-width: 0;
+}
+.block-hint-input:hover, .block-hint-input:focus { background: #fff; border-color: #ddd; outline: none; }
+.block-del {
+  border: none; background: transparent; color: #ccc; cursor: pointer; font-size: 14px; flex: none; line-height: 1;
+}
+.block-del:hover { color: #c0392b; }
+
+/* Ширина карточки не задаётся — она складывается из ширины фото внутри (см. ниже).
+   Высота фото зафиксирована (см. .thumb-wrap), ширина — natural по файлу: длинная
+   машина на длинном фото → широкая карточка, это специально (сам подбираешь кадрирование). */
+/* Одна категория — всегда одна строка: новая карточка добавляется вправо (со скроллом),
+   переноса на вторую строку той же категории нет и не будет. */
+.cards-row { display: flex; flex-wrap: nowrap; gap: 12px; overflow-x: auto; padding: 2px 2px 10px; }
+.idea-card {
+  flex: 0 0 auto; background: #fff; border-radius: 10px; padding: 10px;
+  box-shadow: 0 1px 2px rgba(0,0,0,.08); cursor: pointer; position: relative;
+}
+.idea-card:hover { filter: brightness(.98); }
+/* Каждое фото — свой столбец: заголовок сверху, ниже картинка (фикс. высота, флаг —
+   иконка в углу), ниже опционально описание. Так одна карточка покрывает и «3 ракурса
+   одной машины» (заголовок/флаг/описание только у первого фото, общий текст карточки —
+   master-описание), и «3 машины» (у каждого фото свои заголовок+флаг+описание). */
+.idea-thumbs { display: flex; gap: 10px; margin-bottom: 8px; align-items: flex-start; }
+.idea-thumb-col { display: flex; flex-direction: column; gap: 4px; }
+/* Заголовок и флаг — одной строкой над фото, не поверх него. */
+.thumb-head { display: flex; align-items: center; gap: 6px; }
+.thumb-title {
+  font-size: 11.5px; font-weight: 700; color: #333; line-height: 1.3; max-width: 170px;
+  overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+}
+.thumb-flag-inline { font-size: 20px; line-height: 1; }
+.thumb-wrap { display: inline-block; height: 150px; }
+.thumb-wrap .thumb-img { height: 150px; width: auto; display: block; border-radius: 6px; background: #eee; }
+.thumb-caption {
+  font-size: 10.5px; color: #777; line-height: 1.25; max-height: 2.5em; overflow: hidden; max-width: 220px;
+}
+.idea-text {
+  /* max-width обязателен: карточка теперь авто-ширины (см. .idea-card), и без предела
+     блок текста без переноса растягивает всю карточку под себя — классический CSS-баг
+     shrink-to-fit. Без него длинный текст один раздувал карточку сильнее, чем любые фото. */
+  font-size: 12.5px; color: #333; line-height: 1.4; max-height: 4.2em; overflow: hidden;
+  margin-bottom: 8px; max-width: 320px;
+}
+.idea-footer { display: flex; align-items: center; justify-content: flex-end; }
+/* Счётчик собранных машин относится ко всей идее, не к конкретному фото — стоит внизу,
+   на уровне кнопки, слева от неё (margin-right:auto прижимает кнопку к правому краю). */
+.idea-counter {
+  display: flex; align-items: center; gap: 4px; font-size: 12px; color: #555;
+  background: #f5f5f0; padding: 3px 10px; border-radius: 10px; margin-right: auto;
+}
+.idea-counter-icon { font-size: 13px; line-height: 1; }
+.idea-counter-num { font-weight: 700; color: #333; }
+.idea-btn-pill {
+  font-size: 11px; padding: 4px 11px; border-radius: 10px; background: #333; color: #fff; display: inline-block;
+}
+.card-del {
+  position: absolute; top: 4px; right: 4px; width: 18px; height: 18px; border-radius: 50%;
+  border: none; background: rgba(0,0,0,.1); color: #888; font-size: 12px; line-height: 1;
+  cursor: pointer; display: none; align-items: center; justify-content: center; padding: 0;
+}
+.idea-card:hover .card-del { display: flex; }
+.card-del:hover { background: #e6b3ac; color: #c0392b; }
+
+.add-card {
+  flex: 0 0 90px; display: flex; align-items: center; justify-content: center;
+  border: 1px dashed #ccc; border-radius: 10px; color: #aaa; font-size: 26px; cursor: pointer;
+  background: transparent; min-height: 200px;
+}
+.add-card:hover { background: #fff; border-color: #999; color: #666; }
+
+.btn-add-row {
+  font-size: 11px; padding: 5px 12px; border-radius: 8px; border: 1px dashed #ccc;
+  background: transparent; color: #999; cursor: pointer; margin-top: 2px;
+}
+.btn-add-row:hover { background: #fff; border-color: #999; color: #666; }
+
+#add-block-row { padding: 10px 16px 40px; }
+#btn-add-block {
+  font-size: 11px; padding: 7px 16px; border-radius: 8px; border: 1px dashed #ccc;
+  background: transparent; color: #999; cursor: pointer;
+}
+#btn-add-block:hover { background: #fff; border-color: #999; color: #666; }
+
+.modal-overlay {
+  position: fixed; inset: 0; background: rgba(0,0,0,.28); z-index: 500;
+  display: flex; align-items: center; justify-content: center; padding: 20px;
+}
+.modal-box {
+  background: #fff; border-radius: 12px; padding: 22px 24px; width: 620px; max-width: 100%;
+  box-shadow: 0 12px 40px rgba(0,0,0,.22);
+}
+.modal-box h2 { font-size: 16px; margin: 0 0 4px; color: #333; }
+.modal-box .modal-sub { font-size: 11px; color: #999; margin: 0 0 16px; }
+.modal-box label { display: block; font-size: 11px; color: #999; margin: 12px 0 5px; }
+.modal-box label:first-of-type { margin-top: 0; }
+.drop-zone {
+  border: 2px dashed #ccc; border-radius: 10px; padding: 18px 10px; text-align: center;
+  font-size: 12px; color: #999; cursor: pointer;
+}
+.drop-zone.drag-over { border-color: #6a5acd; background: #f4f2fc; color: #6a5acd; }
+.pick-car-btn {
+  display: block; width: 100%; margin-top: 8px; font-size: 11px; padding: 7px 10px;
+  border-radius: 8px; border: 1px dashed #ccc; background: #fff; color: #888; cursor: pointer;
+}
+.pick-car-btn:hover { background: #f4f2fc; border-color: #6a5acd; color: #6a5acd; }
+.thumb-row { display: flex; gap: 10px; margin-top: 10px; flex-wrap: wrap; }
+.thumb-item { width: 140px; display: flex; flex-direction: column; gap: 4px; }
+.thumb-img-wrap { position: relative; width: 100%; height: 100px; }
+.thumb-img-wrap img { width: 100%; height: 100%; object-fit: cover; border-radius: 6px; background: #eee; }
+.thumb-remove {
+  position: absolute; top: -6px; right: -6px; width: 20px; height: 20px; border-radius: 50%;
+  border: none; background: #c0392b; color: #fff; font-size: 12px; cursor: pointer; line-height: 1;
+}
+.thumb-flag-select, .thumb-title-input, .thumb-caption-input {
+  width: 100%; font-size: 11px; padding: 4px 6px; border: 1px solid #ddd; border-radius: 5px; font-family: inherit;
+}
+.thumb-flag-select { text-align: center; background: #fff; }
+.thumb-title-input::placeholder, .thumb-caption-input::placeholder { color: #bbb; }
+#idea-text, #idea-button, #idea-count {
+  width: 100%; font-size: 13px; padding: 8px 10px; border: 1px solid #ddd; border-radius: 6px;
+  font-family: inherit;
+}
+#idea-text { min-height: 90px; resize: vertical; }
+#idea-count { width: 100px; }
+.modal-actions { display: flex; justify-content: space-between; gap: 8px; margin-top: 20px; }
+.modal-actions-right { display: flex; gap: 8px; }
+.modal-actions button {
+  font-size: 12px; padding: 7px 16px; border-radius: 6px; border: 1px solid #ccc;
+  background: #fff; cursor: pointer;
+}
+.modal-actions button:hover { background: #f0f0ec; }
+.modal-actions button.primary { background: #333; color: #fff; border-color: #333; }
+.modal-actions button.primary:hover { background: #111; }
+#idea-delete { color: #c0392b; border-color: #e6b3ac; }
+
+#cp-search {
+  width: 100%; font-size: 13px; padding: 7px 9px; border: 1px solid #ddd; border-radius: 6px; margin-bottom: 10px;
+}
+#cp-car-list { max-height: 260px; overflow-y: auto; }
+.cp-car-row { padding: 8px 10px; border-radius: 7px; cursor: pointer; }
+.cp-car-row:hover { background: #f0f0ec; }
+.cp-car-name { font-size: 13px; font-weight: 600; color: #222; }
+.cp-car-sub { font-size: 11px; color: #999; margin-top: 1px; }
+#cp-views-title { font-size: 12px; color: #999; margin: 14px 0 8px; }
+#cp-views-row { display: flex; gap: 10px; flex-wrap: wrap; }
+.cp-view-thumb { width: 108px; cursor: pointer; }
+.cp-view-thumb img { width: 100%; height: 78px; object-fit: cover; border-radius: 6px; background: #eee; }
+.cp-view-thumb .cp-view-label { font-size: 10px; color: #666; text-align: center; margin-top: 3px; }
+.cp-view-thumb:hover img { outline: 2px solid #6a5acd; }
+#cp-back { margin-top: 12px; font-size: 11px; padding: 6px 12px; border-radius: 6px; border: 1px solid #ccc; background: #fff; cursor: pointer; }
+</style>
+</head>
+<body>
+
+<div id="toolbar">
+  <h1>Style Lab — карточки идей</h1>
+  <button id="btn-open">Открыть папку data</button>
+  <span id="folder-status"></span>
+</div>
+
+<div id="style-tabs"></div>
+
+<div id="main">
+  <div id="empty-state">Откройте (или создайте) папку data, чтобы начать.</div>
+  <div id="content" style="display:none">
+    <div class="style-header">
+      <input id="style-title-input" type="text">
+      <textarea id="style-desc" placeholder="Описание стиля…"></textarea>
+    </div>
+    <div id="blocks-root"></div>
+    <div id="add-block-row">
+      <button id="btn-add-block">+ Добавить раздел (появится у всех стилей)</button>
+    </div>
+  </div>
+</div>
+
+<input type="file" id="file-input-hidden" accept="image/*" multiple style="display:none">
+
+<div id="idea-modal" class="modal-overlay" style="display:none;">
+  <div class="modal-box">
+    <h2 id="idea-modal-title">Новая идея</h2>
+    <p class="modal-sub" id="idea-modal-sub"></p>
+    <label>Фото (1–3, перетащите из Finder или кликните). У каждого — свои опциональные флаг, заголовок
+      и описание (для «3 машины»); если это ракурсы одной машины — заполните только у первого фото.</label>
+    <div class="drop-zone" id="drop-zone">Перетащите сюда фото или кликните, чтобы выбрать</div>
+    <button type="button" id="btn-pick-car" class="pick-car-btn">📚 добавить фото из базы Car DB</button>
+    <div class="thumb-row" id="thumb-row"></div>
+    <label for="idea-text">Общий текст (одна на всю идею, опционально)</label>
+    <textarea id="idea-text" placeholder="Описание идеи…"></textarea>
+    <label for="idea-button">Подпись кнопки</label>
+    <input id="idea-button" type="text">
+    <label for="idea-count">Счётчик собранных машин (иконка слева на карточке; пусто/0 — не показывать)</label>
+    <input id="idea-count" type="number" min="0" step="1" placeholder="0">
+    <div class="modal-actions">
+      <button id="idea-delete" style="display:none">Удалить</button>
+      <div class="modal-actions-right">
+        <button id="idea-cancel">Отмена</button>
+        <button id="idea-save" class="primary">Создать</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div id="car-picker-modal" class="modal-overlay" style="display:none;">
+  <div class="modal-box" style="width:560px;">
+    <h2>Выбрать машину из базы Car DB</h2>
+    <p class="modal-sub" id="cp-status"></p>
+    <button type="button" id="cp-connect" class="pick-car-btn" style="display:none;">Открыть папку с базой Car DB…</button>
+    <input id="cp-search" type="text" placeholder="поиск по названию/стилю…">
+    <div id="cp-car-list"></div>
+    <div id="cp-views" style="display:none;">
+      <div id="cp-views-title"></div>
+      <div id="cp-views-row"></div>
+      <button type="button" id="cp-back">← назад к списку</button>
+    </div>
+    <div class="modal-actions">
+      <div></div>
+      <div class="modal-actions-right"><button id="cp-cancel">Закрыть</button></div>
+    </div>
+  </div>
+</div>
+
+<script>
+const App = {};
+
+App.DEFAULT_BLOCKS = {
+  order: ['recreate', 'inspire', 'wild', 'bodykit', 'saved', 'players'],
+  items: {
+    recreate: { title: 'Recreate', hint: 'Точное воссоздание референса — обычно чертёж + фото', defaultButton: 'Create' },
+    inspire:  { title: 'Inspire',  hint: 'Идеи-вдохновение', defaultButton: 'Create' },
+    wild:     { title: 'Wild Cards', hint: 'Смелые нестандартные идеи', defaultButton: 'Create' },
+    bodykit:  { title: 'Обвес', hint: 'Идеи по обвесу (черновой раздел)', defaultButton: 'Create' },
+    saved:    { title: 'Сохранённые идеи', hint: 'Готовые машины, добавленные в идеи', defaultButton: 'Use' },
+    players:  { title: 'Лучшие работы игроков', hint: 'Рефы — открываются в игре как фото', defaultButton: 'Смотреть' },
+  },
+};
+
+App.DEFAULT_STYLES = {
+  order: ['style1', 'style2', 'style3', 'style4', 'style5'],
+  items: {
+    style1: { title: 'Compact', description: '' },
+    style2: { title: 'America', description: '' },
+    style3: { title: 'Sport GT', description: '' },
+    style4: { title: 'Wedge', description: '' },
+    style5: { title: 'Offroad', description: '' },
+  },
+};
+
+App.State = {
+  rootHandle: null,
+  carDbRootHandle: null,  // отдельная папка-источник базы Car DB (независима от rootHandle)
+  blocksCfg: null,
+  stylesCfg: null,
+  ideas: new Map(),       // "style|block" -> [{meta, handle, dirHandle}]
+  activeStyle: null,
+  modal: null,            // {mode, style, block, record, images:[{file,url,flag,title,caption}]}
+};
+
+App.esc = s => (s == null ? '' : String(s)).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+
+// Флаг — иконка страны (эмодзи), выбирается из списка, а не вводится текстом.
+App.FLAGS = [
+  { v: '', label: '— без флага —' },
+  { v: '🇺🇸', label: '🇺🇸 США' },
+  { v: '🇯🇵', label: '🇯🇵 Япония' },
+  { v: '🇩🇪', label: '🇩🇪 Германия' },
+  { v: '🇮🇹', label: '🇮🇹 Италия' },
+  { v: '🇬🇧', label: '🇬🇧 Великобритания' },
+  { v: '🇫🇷', label: '🇫🇷 Франция' },
+  { v: '🇰🇷', label: '🇰🇷 Корея' },
+  { v: '🇷🇺', label: '🇷🇺 Россия' },
+  { v: '🇸🇪', label: '🇸🇪 Швеция' },
+  { v: '🇨🇿', label: '🇨🇿 Чехия' },
+  { v: '🇦🇺', label: '🇦🇺 Австралия' },
+];
+
+// Фото в идее хранится как {file, flag, title, caption} — все три опциональны и относятся
+// именно к этому фото (нужно и для «3 ракурса одной машины», и для «3 разных машин»).
+// Старые записи могли быть просто строкой с именем файла — приводим к общему виду.
+App.normImg = img => (typeof img === 'string') ? { file: img, flag: '', title: '', caption: '' } : {
+  file: img.file, flag: img.flag || '', title: img.title || '', caption: img.caption || '',
+};
+
+// ──────────────────────────────────────────────
+// FS — File System Access API
+// ──────────────────────────────────────────────
+App.FS = (function () {
+  const DB_NAME = 'style-lab-app', STORE = 'handles';
+
+  function idbOpen() {
+    return new Promise((res, rej) => {
+      const r = indexedDB.open(DB_NAME, 1);
+      r.onupgradeneeded = () => r.result.createObjectStore(STORE);
+      r.onsuccess = () => res(r.result);
+      r.onerror = () => rej(r.error);
+    });
+  }
+  async function idbSet(key, val) {
+    const db = await idbOpen();
+    return new Promise((res, rej) => {
+      const tx = db.transaction(STORE, 'readwrite');
+      tx.objectStore(STORE).put(val, key);
+      tx.oncomplete = () => res();
+      tx.onerror = () => rej(tx.error);
+    });
+  }
+  async function idbGet(key) {
+    const db = await idbOpen();
+    return new Promise((res, rej) => {
+      const tx = db.transaction(STORE, 'readonly');
+      const rq = tx.objectStore(STORE).get(key);
+      rq.onsuccess = () => res(rq.result);
+      rq.onerror = () => rej(rq.error);
+    });
+  }
+
+  async function pickFolder() {
+    const handle = await window.showDirectoryPicker({ id: 'style-lab-data', mode: 'readwrite' });
+    await idbSet('root', handle);
+    return handle;
+  }
+  async function restoreFolder() {
+    try {
+      const handle = await idbGet('root');
+      if (!handle) return null;
+      const perm = await handle.queryPermission({ mode: 'readwrite' });
+      if (perm === 'granted') return handle;
+      return { needsPermission: true, handle };
+    } catch (e) { return null; }
+  }
+  // Отдельная, независимая от основной, папка — источник базы Car DB. Не обязана
+  // совпадать с открытой папкой data: выбирается один раз и запоминается отдельно,
+  // чтобы не нужно было держать одну и ту же папку открытой в обоих инструментах.
+  async function pickCarDbFolder() {
+    const handle = await window.showDirectoryPicker({ id: 'style-lab-cardb-source', mode: 'read' });
+    await idbSet('carDbRoot', handle);
+    return handle;
+  }
+  async function restoreCarDbFolder() {
+    try {
+      const handle = await idbGet('carDbRoot');
+      if (!handle) return null;
+      const perm = await handle.queryPermission({ mode: 'read' });
+      if (perm === 'granted') return handle;
+      return { needsPermission: true, handle };
+    } catch (e) { return null; }
+  }
+  async function ensureReadPermission(handle) {
+    const perm = await handle.requestPermission({ mode: 'read' });
+    return perm === 'granted';
+  }
+  async function ensurePermission(handle) {
+    const perm = await handle.requestPermission({ mode: 'readwrite' });
+    return perm === 'granted';
+  }
+
+  async function readText(fileHandle) {
+    const f = await fileHandle.getFile();
+    return await f.text();
+  }
+  async function writeText(fileHandle, text) {
+    const w = await fileHandle.createWritable();
+    await w.write(text);
+    await w.close();
+  }
+  async function writeBytes(fileHandle, arrayBuffer) {
+    const w = await fileHandle.createWritable();
+    await w.write(arrayBuffer);
+    await w.close();
+  }
+  async function getJSON(dirHandle, name, fallback) {
+    try {
+      const fh = await dirHandle.getFileHandle(name);
+      return JSON.parse(await readText(fh));
+    } catch (e) { return fallback; }
+  }
+  async function setJSON(dirHandle, name, obj) {
+    const fh = await dirHandle.getFileHandle(name, { create: true });
+    await writeText(fh, JSON.stringify(obj, null, 2));
+  }
+  async function getDirOpt(parent, name) {
+    try { return await parent.getDirectoryHandle(name); } catch (e) { return null; }
+  }
+  async function ensureDir(parent, name) {
+    return await parent.getDirectoryHandle(name, { create: true });
+  }
+
+  return {
+    pickFolder, restoreFolder, ensurePermission, readText, writeText, writeBytes, getJSON, setJSON, getDirOpt, ensureDir,
+    pickCarDbFolder, restoreCarDbFolder, ensureReadPermission,
+  };
+})();
+
+// ──────────────────────────────────────────────
+// Data — styles.json / blocks.json / ideas / images
+// ──────────────────────────────────────────────
+App.Data = (function () {
+  async function nextId(prefix) {
+    const meta = await App.FS.getJSON(App.State.rootHandle, '_meta.json', { counter: 0 });
+    meta.counter = (meta.counter || 0) + 1;
+    await App.FS.setJSON(App.State.rootHandle, '_meta.json', meta);
+    return prefix + String(meta.counter).padStart(4, '0');
+  }
+
+  async function loadAll() {
+    const root = App.State.rootHandle;
+    App.State.blocksCfg = await App.FS.getJSON(root, 'blocks.json', null);
+    if (!App.State.blocksCfg) {
+      App.State.blocksCfg = JSON.parse(JSON.stringify(App.DEFAULT_BLOCKS));
+      await App.FS.setJSON(root, 'blocks.json', App.State.blocksCfg);
+    }
+    App.State.stylesCfg = await App.FS.getJSON(root, 'styles.json', null);
+    if (!App.State.stylesCfg) {
+      App.State.stylesCfg = JSON.parse(JSON.stringify(App.DEFAULT_STYLES));
+      await App.FS.setJSON(root, 'styles.json', App.State.stylesCfg);
+    }
+    if (!App.State.activeStyle || !App.State.stylesCfg.items[App.State.activeStyle]) {
+      App.State.activeStyle = App.State.stylesCfg.order[0];
+    }
+    await reloadIdeas();
+  }
+
+  async function reloadIdeas() {
+    App.State.ideas = new Map();
+    const root = App.State.rootHandle;
+    const ideasRoot = await App.FS.getDirOpt(root, 'ideas');
+    if (!ideasRoot) return;
+    for (const style of App.State.stylesCfg.order) {
+      const styleDir = await App.FS.getDirOpt(ideasRoot, style);
+      if (!styleDir) continue;
+      for (const block of App.State.blocksCfg.order) {
+        const blockDir = await App.FS.getDirOpt(styleDir, block);
+        if (!blockDir) continue;
+        const list = [];
+        for await (const [name, handle] of blockDir.entries()) {
+          if (handle.kind !== 'file' || !name.toLowerCase().endsWith('.json')) continue;
+          try {
+            const meta = JSON.parse(await App.FS.readText(handle));
+            list.push({ meta, handle, dirHandle: blockDir });
+          } catch (e) { console.warn('bad idea file', name, e); }
+        }
+        list.sort((a, b) => ((a.meta.row ?? 0) - (b.meta.row ?? 0)) || ((a.meta.order ?? 0) - (b.meta.order ?? 0)));
+        App.State.ideas.set(style + '|' + block, list);
+      }
+    }
+  }
+
+  // pending — [{file:File, flag, title, caption}]. Сначала читаем байты каждого файла
+  // в память (readPending) и только потом трогаем диск — иначе при редактировании,
+  // если сперва стереть старые файлы, а «сохранённое» фото на самом деле было тем же
+  // File-объектом, читать будет уже нечего, запись оборвётся с ошибкой и фото пропадёт.
+  async function readPending(pending) {
+    const out = [];
+    for (const p of pending) {
+      let ext = (p.file.name.split('.').pop() || 'jpg').toLowerCase().replace(/[^a-z0-9]/g, '');
+      if (!ext) ext = 'jpg';
+      out.push({ ext, bytes: await p.file.arrayBuffer(), flag: p.flag || '', title: p.title || '', caption: p.caption || '' });
+    }
+    return out;
+  }
+
+  async function writeImages(dirHandle, buffers) {
+    const images = [];
+    let i = 0;
+    for (const b of buffers) {
+      i++;
+      const fname = i + '.' + b.ext;
+      const fh = await dirHandle.getFileHandle(fname, { create: true });
+      await App.FS.writeBytes(fh, b.bytes);
+      images.push({ file: fname, flag: b.flag, title: b.title, caption: b.caption });
+    }
+    return images;
+  }
+
+  async function createIdea(style, block, row, text, button, count, pending) {
+    const buffers = await readPending(pending);
+    const root = App.State.rootHandle;
+    const id = await nextId('i');
+    const imagesRoot = await App.FS.ensureDir(root, 'images');
+    const styleImgDir = await App.FS.ensureDir(imagesRoot, style);
+    const ideaImgDir = await App.FS.ensureDir(styleImgDir, id);
+    const images = await writeImages(ideaImgDir, buffers);
+
+    const list = App.State.ideas.get(style + '|' + block) || [];
+    const order = list.filter(r => (r.meta.row || 0) === row).length;
+    const meta = { id, style, block, row, text, button, count, images, order };
+
+    const ideasRoot = await App.FS.ensureDir(root, 'ideas');
+    const styleDir = await App.FS.ensureDir(ideasRoot, style);
+    const blockDir = await App.FS.ensureDir(styleDir, block);
+    const fh = await blockDir.getFileHandle(id + '.json', { create: true });
+    await App.FS.writeText(fh, JSON.stringify(meta, null, 2));
+  }
+
+  async function updateIdea(record, text, button, count, pending) {
+    const buffers = await readPending(pending); // читаем ДО удаления старых файлов
+    const { id, style } = record.meta;
+    const root = App.State.rootHandle;
+    const imagesRoot = await App.FS.ensureDir(root, 'images');
+    const styleImgDir = await App.FS.ensureDir(imagesRoot, style);
+    const ideaImgDir = await App.FS.ensureDir(styleImgDir, id);
+    const oldNames = [];
+    for await (const [name] of ideaImgDir.entries()) oldNames.push(name);
+    for (const name of oldNames) await ideaImgDir.removeEntry(name);
+    const images = await writeImages(ideaImgDir, buffers);
+    const meta = Object.assign({}, record.meta, { text, button, count, images });
+    await App.FS.writeText(record.handle, JSON.stringify(meta, null, 2));
+  }
+
+  async function deleteIdea(record) {
+    const { id, style } = record.meta;
+    await record.dirHandle.removeEntry(id + '.json');
+    try {
+      const imagesRoot = await App.FS.getDirOpt(App.State.rootHandle, 'images');
+      const styleImgDir = imagesRoot && await App.FS.getDirOpt(imagesRoot, style);
+      if (styleImgDir) await styleImgDir.removeEntry(id, { recursive: true });
+    } catch (e) { /* не критично */ }
+  }
+
+  async function getIdeaImageFile(style, ideaId, filename) {
+    try {
+      const imagesRoot = await App.FS.getDirOpt(App.State.rootHandle, 'images'); if (!imagesRoot) return null;
+      const styleDir = await App.FS.getDirOpt(imagesRoot, style); if (!styleDir) return null;
+      const ideaDir = await App.FS.getDirOpt(styleDir, ideaId); if (!ideaDir) return null;
+      const fh = await ideaDir.getFileHandle(filename);
+      return await fh.getFile();
+    } catch (e) { return null; }
+  }
+
+  async function saveStyles() { await App.FS.setJSON(App.State.rootHandle, 'styles.json', App.State.stylesCfg); }
+  async function saveBlocks() { await App.FS.setJSON(App.State.rootHandle, 'blocks.json', App.State.blocksCfg); }
+
+  async function addBlock() {
+    const idRaw = prompt('ID раздела (латиницей, без пробелов)');
+    if (!idRaw) return;
+    const id = idRaw.trim().toLowerCase().replace(/[^a-z0-9_-]/g, '-');
+    if (!id) return;
+    if (App.State.blocksCfg.items[id]) { alert('Раздел с таким id уже есть.'); return; }
+    const title = prompt('Название раздела', id) || id;
+    App.State.blocksCfg.order.push(id);
+    App.State.blocksCfg.items[id] = { title, hint: '', defaultButton: 'Create' };
+    await saveBlocks();
+    await reloadIdeas();
+    App.UI.renderAll();
+  }
+
+  async function deleteBlock(id) {
+    let used = false;
+    App.State.ideas.forEach((list, key) => { if (key.endsWith('|' + id) && list.length) used = true; });
+    if (used) { alert('В разделе «' + id + '» есть идеи (в одном из стилей) — сначала удалите их.'); return; }
+    if (!confirm('Удалить раздел «' + (App.State.blocksCfg.items[id]?.title || id) + '» у всех стилей?')) return;
+    App.State.blocksCfg.order = App.State.blocksCfg.order.filter(b => b !== id);
+    delete App.State.blocksCfg.items[id];
+    await saveBlocks();
+    App.UI.renderAll();
+  }
+
+  return {
+    loadAll, reloadIdeas, createIdea, updateIdea, deleteIdea, getIdeaImageFile,
+    saveStyles, saveBlocks, addBlock, deleteBlock,
+  };
+})();
+
+// ──────────────────────────────────────────────
+// CarDB — только чтение базы машин (car-db), если в этой же папке data есть cars/.
+// Позволяет добавлять фото в идею прямо из базы, а не только через drag&drop.
+// ──────────────────────────────────────────────
+App.CarDB = (function () {
+  const VIEW_KEYS = ['side', 'front', '34front', '34rear', 'rear', 'custom1', 'custom2'];
+  const VIEW_LABELS = { side: 'Сбоку', front: 'Спереди', '34front': '3/4 спереди', '34rear': '3/4 сзади', rear: 'Сзади', custom1: 'Доп. 1', custom2: 'Доп. 2' };
+
+  async function listCars() {
+    if (!App.State.carDbRootHandle) return null; // папка базы ещё не выбрана
+    const carsDir = await App.FS.getDirOpt(App.State.carDbRootHandle, 'cars');
+    if (!carsDir) return null; // папка выбрана, но базы машин (cars/) в ней нет
+    const cars = [];
+    for await (const [name, handle] of carsDir.entries()) {
+      if (handle.kind !== 'file' || !name.toLowerCase().endsWith('.json')) continue;
+      try { cars.push(JSON.parse(await App.FS.readText(handle))); } catch (e) { console.warn('bad car file', name, e); }
+    }
+    cars.sort((a, b) => (a.name || '').localeCompare(b.name || '', 'ru'));
+    return cars;
+  }
+
+  async function getPhotoFile(carId, viewKey, sub, filename) {
+    try {
+      const photosRoot = await App.FS.getDirOpt(App.State.carDbRootHandle, 'photos'); if (!photosRoot) return null;
+      const carDir = await App.FS.getDirOpt(photosRoot, carId); if (!carDir) return null;
+      const vDir = await App.FS.getDirOpt(carDir, viewKey); if (!vDir) return null;
+      const dir = sub ? await App.FS.getDirOpt(vDir, sub) : vDir;
+      if (!dir) return null;
+      const fh = await dir.getFileHandle(filename);
+      return await fh.getFile();
+    } catch (e) { return null; }
+  }
+
+  // Доступные для показа ракурсы машины: финал в приоритете, иначе первый драфт.
+  function availableViews(car) {
+    const out = [];
+    VIEW_KEYS.forEach(key => {
+      const view = car.views && car.views[key];
+      if (!view) return;
+      if (view.final) out.push({ key, label: car.views[key].customLabel || VIEW_LABELS[key], sub: '', filename: view.final.file });
+      else if (view.draft && view.draft.length) out.push({ key, label: car.views[key].customLabel || VIEW_LABELS[key], sub: 'draft', filename: view.draft[0].file });
+    });
+    return out;
+  }
+
+  return { listCars, getPhotoFile, availableViews };
+})();
+
+// ──────────────────────────────────────────────
+// UI
+// ──────────────────────────────────────────────
+App.UI = (function () {
+  function renderTabs() {
+    const wrap = document.getElementById('style-tabs');
+    wrap.innerHTML = '';
+    App.State.stylesCfg.order.forEach(id => {
+      const btn = document.createElement('button');
+      btn.className = 'style-tab' + (id === App.State.activeStyle ? ' active' : '');
+      btn.textContent = App.State.stylesCfg.items[id].title;
+      btn.addEventListener('click', () => { App.State.activeStyle = id; renderAll(); });
+      wrap.appendChild(btn);
+    });
+  }
+
+  function renderStyleHeader() {
+    const style = App.State.stylesCfg.items[App.State.activeStyle];
+    const titleInput = document.getElementById('style-title-input');
+    const descInput = document.getElementById('style-desc');
+    titleInput.value = style.title;
+    descInput.value = style.description || '';
+
+    titleInput.oninput = () => {
+      style.title = titleInput.value;
+      const tabs = document.querySelectorAll('#style-tabs .style-tab');
+      const idx = App.State.stylesCfg.order.indexOf(App.State.activeStyle);
+      if (tabs[idx]) tabs[idx].textContent = titleInput.value;
+    };
+    titleInput.onblur = () => App.Data.saveStyles();
+    descInput.onblur = () => { style.description = descInput.value; App.Data.saveStyles(); };
+  }
+
+  // Ширина карточки растёт с числом фото: 1 фото — одна «ширина», 3 фото — три,
+  // так что каждое отдельное фото визуально остаётся одного и того же размера
+  function ideaCard(style, block, record) {
+    const div = document.createElement('div');
+    div.className = 'idea-card';
+    const thumbs = document.createElement('div');
+    thumbs.className = 'idea-thumbs';
+    (record.meta.images || []).map(App.normImg).forEach(img => {
+      const col = document.createElement('div');
+      col.className = 'idea-thumb-col';
+
+      if (img.title || img.flag) {
+        const head = document.createElement('div');
+        head.className = 'thumb-head';
+        if (img.flag) {
+          const flag = document.createElement('span');
+          flag.className = 'thumb-flag-inline';
+          flag.textContent = img.flag;
+          head.appendChild(flag);
+        }
+        if (img.title) {
+          const ttl = document.createElement('span');
+          ttl.className = 'thumb-title';
+          ttl.textContent = img.title;
+          head.appendChild(ttl);
+        }
+        col.appendChild(head);
+      }
+
+      const wrap = document.createElement('div');
+      wrap.className = 'thumb-wrap';
+      const im = document.createElement('img');
+      im.className = 'thumb-img';
+      im.alt = img.title || '';
+      wrap.appendChild(im);
+      col.appendChild(wrap);
+
+      if (img.caption) {
+        const cap = document.createElement('div');
+        cap.className = 'thumb-caption';
+        cap.textContent = img.caption;
+        col.appendChild(cap);
+      }
+
+      thumbs.appendChild(col);
+      App.Data.getIdeaImageFile(style, record.meta.id, img.file).then(file => {
+        if (file) im.src = URL.createObjectURL(file);
+      });
+    });
+    div.appendChild(thumbs);
+    if (record.meta.text) {
+      const text = document.createElement('div');
+      text.className = 'idea-text';
+      text.textContent = record.meta.text;
+      div.appendChild(text);
+    }
+    const footer = document.createElement('div');
+    footer.className = 'idea-footer';
+    const count = parseInt(record.meta.count, 10) || 0;
+    if (count > 0) {
+      const counter = document.createElement('div');
+      counter.className = 'idea-counter';
+      counter.title = 'Собрано машин: ' + count;
+      counter.innerHTML = '<span class="idea-counter-icon">🚗</span><span class="idea-counter-num">' + count + '</span>';
+      footer.appendChild(counter);
+    }
+    const pill = document.createElement('span');
+    pill.className = 'idea-btn-pill';
+    pill.textContent = record.meta.button || 'Create';
+    footer.appendChild(pill);
+    div.appendChild(footer);
+
+    const del = document.createElement('button');
+    del.className = 'card-del';
+    del.textContent = '×';
+    del.title = 'Удалить идею';
+    del.addEventListener('click', async e => {
+      e.stopPropagation();
+      if (!confirm('Удалить идею?')) return;
+      await App.Data.deleteIdea(record);
+      await App.Data.reloadIdeas();
+      renderBlocks();
+    });
+    div.appendChild(del);
+
+    div.addEventListener('click', () => App.Modal.open(style, block, record));
+    return div;
+  }
+
+  function blockSection(blockId) {
+    const cfg = App.State.blocksCfg.items[blockId];
+    const style = App.State.activeStyle;
+    const section = document.createElement('div');
+    section.className = 'block-section';
+
+    const head = document.createElement('div');
+    head.className = 'block-head';
+    const titleInput = document.createElement('input');
+    titleInput.className = 'block-title-input';
+    titleInput.value = cfg.title;
+    titleInput.oninput = () => { cfg.title = titleInput.value; };
+    titleInput.onblur = () => App.Data.saveBlocks();
+    const hintInput = document.createElement('input');
+    hintInput.className = 'block-hint-input';
+    hintInput.value = cfg.hint || '';
+    hintInput.placeholder = 'подсказка (необязательно)';
+    hintInput.oninput = () => { cfg.hint = hintInput.value; };
+    hintInput.onblur = () => App.Data.saveBlocks();
+    const del = document.createElement('button');
+    del.className = 'block-del';
+    del.textContent = '×';
+    del.title = 'Удалить раздел (у всех стилей)';
+    del.addEventListener('click', () => App.Data.deleteBlock(blockId));
+    head.appendChild(titleInput);
+    head.appendChild(hintInput);
+    head.appendChild(del);
+    section.appendChild(head);
+
+    // Категория состоит из строк (rowNum 0,1,2…), внутри строки — только вправо, без
+    // переноса (см. .cards-row). Новая строка добавляется отдельной кнопкой ниже.
+    const list = App.State.ideas.get(style + '|' + blockId) || [];
+    const byRow = new Map();
+    list.forEach(record => {
+      const rn = parseInt(record.meta.row, 10) || 0;
+      if (!byRow.has(rn)) byRow.set(rn, []);
+      byRow.get(rn).push(record);
+    });
+    const rowNums = Array.from(byRow.keys()).sort((a, b) => a - b);
+    if (!rowNums.length) rowNums.push(0);
+
+    rowNums.forEach(rn => {
+      const cardsRow = document.createElement('div');
+      cardsRow.className = 'cards-row';
+      (byRow.get(rn) || []).forEach(record => cardsRow.appendChild(ideaCard(style, blockId, record)));
+      const addCard = document.createElement('div');
+      addCard.className = 'add-card';
+      addCard.textContent = '+';
+      addCard.title = 'Добавить идею в эту строку';
+      addCard.addEventListener('click', () => App.Modal.open(style, blockId, null, rn));
+      cardsRow.appendChild(addCard);
+      section.appendChild(cardsRow);
+    });
+
+    const addRowBtn = document.createElement('button');
+    addRowBtn.className = 'btn-add-row';
+    addRowBtn.textContent = '+ Создать строку';
+    const nextRow = Math.max(...rowNums) + 1;
+    addRowBtn.addEventListener('click', () => App.Modal.open(style, blockId, null, nextRow));
+    section.appendChild(addRowBtn);
+
+    return section;
+  }
+
+  function renderBlocks() {
+    const root = document.getElementById('blocks-root');
+    root.innerHTML = '';
+    App.State.blocksCfg.order.forEach(blockId => root.appendChild(blockSection(blockId)));
+  }
+
+  function renderAll() {
+    const hasFolder = !!App.State.rootHandle;
+    document.getElementById('empty-state').style.display = hasFolder ? 'none' : 'block';
+    document.getElementById('content').style.display = hasFolder ? 'block' : 'none';
+    if (!hasFolder) return;
+    renderTabs();
+    renderStyleHeader();
+    renderBlocks();
+  }
+
+  return { renderAll, renderBlocks };
+})();
+
+// ──────────────────────────────────────────────
+// Modal — создание/редактирование идеи
+// ──────────────────────────────────────────────
+App.Modal = (function () {
+  function el(id) { return document.getElementById(id); }
+
+  async function open(style, block, record, row) {
+    App.State.modal = { mode: record ? 'edit' : 'new', style, block, record, row: row || 0, images: [] };
+    if (record) {
+      for (const raw of record.meta.images || []) {
+        const img = App.normImg(raw);
+        const file = await App.Data.getIdeaImageFile(style, record.meta.id, img.file);
+        if (file) App.State.modal.images.push({ file, url: URL.createObjectURL(file), flag: img.flag, title: img.title, caption: img.caption });
+      }
+    }
+    el('idea-modal-title').textContent = record ? 'Редактировать идею' : 'Новая идея';
+    const blockTitle = App.State.blocksCfg.items[block]?.title || block;
+    const styleTitle = App.State.stylesCfg.items[style]?.title || style;
+    el('idea-modal-sub').textContent = styleTitle + ' · ' + blockTitle;
+    el('idea-text').value = record ? (record.meta.text || '') : '';
+    el('idea-button').value = record ? (record.meta.button || '') : (App.State.blocksCfg.items[block]?.defaultButton || 'Create');
+    el('idea-count').value = (record && record.meta.count) ? record.meta.count : '';
+    el('idea-delete').style.display = record ? 'inline-block' : 'none';
+    el('idea-save').textContent = record ? 'Сохранить' : 'Создать';
+    renderThumbs();
+    el('idea-modal').style.display = 'flex';
+  }
+
+  function close() {
+    App.State.modal = null;
+    el('idea-modal').style.display = 'none';
+  }
+
+  function renderThumbs() {
+    const row = el('thumb-row');
+    row.innerHTML = '';
+    App.State.modal.images.forEach((img, i) => {
+      const item = document.createElement('div');
+      item.className = 'thumb-item';
+
+      // Порядок полей повторяет итоговую карточку: заголовок — над фото.
+      const titleInput = document.createElement('input');
+      titleInput.className = 'thumb-title-input';
+      titleInput.placeholder = 'заголовок фото';
+      titleInput.value = img.title || '';
+      titleInput.title = 'Заголовок именно этого фото (опционально)';
+      titleInput.oninput = () => { img.title = titleInput.value; };
+      item.appendChild(titleInput);
+
+      const wrap = document.createElement('div');
+      wrap.className = 'thumb-img-wrap';
+      const im = document.createElement('img');
+      im.src = img.url;
+      const rm = document.createElement('button');
+      rm.className = 'thumb-remove';
+      rm.textContent = '×';
+      rm.addEventListener('click', () => { App.State.modal.images.splice(i, 1); renderThumbs(); });
+      wrap.appendChild(im);
+      wrap.appendChild(rm);
+      item.appendChild(wrap);
+
+      const flagSelect = document.createElement('select');
+      flagSelect.className = 'thumb-flag-select';
+      flagSelect.title = 'Флаг/страна этого фото (опционально)';
+      App.FLAGS.forEach(f => {
+        const opt = document.createElement('option');
+        opt.value = f.v;
+        opt.textContent = f.label;
+        if ((img.flag || '') === f.v) opt.selected = true;
+        flagSelect.appendChild(opt);
+      });
+      flagSelect.onchange = () => { img.flag = flagSelect.value; };
+      item.appendChild(flagSelect);
+
+      const capInput = document.createElement('input');
+      capInput.className = 'thumb-caption-input';
+      capInput.placeholder = 'описание фото';
+      capInput.value = img.caption || '';
+      capInput.title = 'Описание именно этого фото (опционально)';
+      capInput.oninput = () => { img.caption = capInput.value; };
+      item.appendChild(capInput);
+
+      row.appendChild(item);
+    });
+  }
+
+  function addFiles(fileList) {
+    const files = Array.from(fileList).filter(f => f.type.startsWith('image/'));
+    for (const f of files) {
+      if (App.State.modal.images.length >= 3) break;
+      App.State.modal.images.push({ file: f, url: URL.createObjectURL(f), flag: '', title: '', caption: '' });
+    }
+    renderThumbs();
+  }
+
+  // ── Выбор фото из базы car-db (если в этой же папке data есть cars/) ──
+  let cpCars = null; // кэш списка машин на время открытой модалки идеи
+
+  function cpRenderList(filter) {
+    const list = el('cp-car-list');
+    list.innerHTML = '';
+    const q = (filter || '').trim().toLowerCase();
+    (cpCars || []).filter(c => !q || (c.name + ' ' + c.style + ' ' + c.substyle).toLowerCase().includes(q)).forEach(car => {
+      const row = document.createElement('div'); row.className = 'cp-car-row';
+      const sub = [car.style, car.substyle].filter(Boolean).join(' · ');
+      row.innerHTML = `<div class="cp-car-name">${App.esc(car.country ? car.country + ' ' : '')}${App.esc(car.name || '(без названия)')}</div>` +
+        (sub ? `<div class="cp-car-sub">${App.esc(sub)}</div>` : '');
+      row.addEventListener('click', () => cpShowCar(car));
+      list.appendChild(row);
+    });
+  }
+
+  function cpShowCar(car) {
+    const views = App.CarDB.availableViews(car);
+    el('cp-car-list').style.display = 'none';
+    el('cp-search').style.display = 'none';
+    const panel = el('cp-views');
+    panel.style.display = 'block';
+    el('cp-views-title').textContent = (car.name || '') + ' — выберите ракурс';
+    const row = el('cp-views-row');
+    row.innerHTML = '';
+    if (!views.length) { row.textContent = 'У этой машины пока нет фото.'; }
+    views.forEach(v => {
+      const item = document.createElement('div'); item.className = 'cp-view-thumb';
+      const img = document.createElement('img');
+      item.appendChild(img);
+      const label = document.createElement('div'); label.className = 'cp-view-label'; label.textContent = v.label;
+      item.appendChild(label);
+      App.CarDB.getPhotoFile(car.id, v.key, v.sub, v.filename).then(f => { if (f) img.src = URL.createObjectURL(f); });
+      item.addEventListener('click', async () => {
+        if (App.State.modal.images.length >= 3) { alert('В идее уже 3 фото — сначала уберите одно.'); return; }
+        const f = await App.CarDB.getPhotoFile(car.id, v.key, v.sub, v.filename);
+        if (!f) { alert('Не удалось прочитать фото.'); return; }
+        App.State.modal.images.push({ file: f, url: URL.createObjectURL(f), flag: car.country || '', title: car.name || '', caption: car.descShort || '' });
+        renderThumbs();
+        closeCarPicker();
+      });
+      row.appendChild(item);
+    });
+  }
+
+  function cpBackToList() {
+    el('cp-views').style.display = 'none';
+    el('cp-car-list').style.display = 'block';
+    el('cp-search').style.display = 'block';
+  }
+
+  async function cpRefresh() {
+    if (!App.State.carDbRootHandle) {
+      el('cp-status').textContent = 'Папка с базой Car DB ещё не выбрана.';
+      el('cp-connect').style.display = 'block';
+      el('cp-connect').textContent = 'Открыть папку с базой Car DB…';
+      el('cp-search').style.display = 'none';
+      el('cp-car-list').innerHTML = '';
+      cpCars = [];
+      return;
+    }
+    el('cp-status').textContent = 'Загрузка…';
+    cpCars = await App.CarDB.listCars();
+    if (cpCars === null) {
+      el('cp-status').textContent = 'В выбранной папке нет базы машин (нет cars/) — выбери папку data инструмента Car DB.';
+      el('cp-connect').style.display = 'block';
+      el('cp-connect').textContent = 'Выбрать другую папку…';
+      cpCars = [];
+    } else {
+      el('cp-status').textContent = cpCars.length ? (cpCars.length + ' машин в базе') : 'В базе пока нет ни одной машины.';
+      el('cp-connect').style.display = 'none';
+      el('cp-search').style.display = 'block';
+    }
+    cpRenderList(el('cp-search').value);
+  }
+
+  async function connectCarDb() {
+    try {
+      const handle = await App.FS.pickCarDbFolder();
+      App.State.carDbRootHandle = handle;
+      await cpRefresh();
+    } catch (e) { /* отменено пользователем */ }
+  }
+
+  async function openCarPicker() {
+    cpBackToList();
+    el('cp-search').value = '';
+    el('car-picker-modal').style.display = 'flex';
+    // при первом открытии в этой сессии пробуем молча восстановить ранее выбранную папку
+    if (!App.State.carDbRootHandle && !App.State._carDbTried) {
+      App.State._carDbTried = true;
+      const restored = await App.FS.restoreCarDbFolder();
+      if (restored && !restored.needsPermission) App.State.carDbRootHandle = restored;
+      else if (restored && restored.needsPermission) {
+        const ok = await App.FS.ensureReadPermission(restored.handle);
+        if (ok) App.State.carDbRootHandle = restored.handle;
+      }
+    }
+    await cpRefresh();
+  }
+  function closeCarPicker() { el('car-picker-modal').style.display = 'none'; }
+
+  function init() {
+    const dz = el('drop-zone');
+    dz.addEventListener('dragover', e => { e.preventDefault(); dz.classList.add('drag-over'); });
+    dz.addEventListener('dragleave', () => dz.classList.remove('drag-over'));
+    dz.addEventListener('drop', e => {
+      e.preventDefault(); dz.classList.remove('drag-over');
+      addFiles(e.dataTransfer.files);
+    });
+    dz.addEventListener('click', () => el('file-input-hidden').click());
+    el('file-input-hidden').addEventListener('change', e => { addFiles(e.target.files); e.target.value = ''; });
+
+    el('idea-cancel').addEventListener('click', close);
+    el('idea-modal').addEventListener('click', e => { if (e.target.id === 'idea-modal') close(); });
+
+    el('btn-pick-car').addEventListener('click', openCarPicker);
+    el('cp-connect').addEventListener('click', connectCarDb);
+    el('cp-cancel').addEventListener('click', closeCarPicker);
+    el('cp-back').addEventListener('click', cpBackToList);
+    el('car-picker-modal').addEventListener('click', e => { if (e.target.id === 'car-picker-modal') closeCarPicker(); });
+    el('cp-search').addEventListener('input', e => cpRenderList(e.target.value));
+
+    el('idea-delete').addEventListener('click', async () => {
+      if (!confirm('Удалить идею?')) return;
+      try {
+        await App.Data.deleteIdea(App.State.modal.record);
+        await App.Data.reloadIdeas();
+        App.UI.renderBlocks();
+        close();
+      } catch (e) { console.error(e); alert('Не удалось удалить идею: ' + e.message); }
+    });
+
+    el('idea-save').addEventListener('click', async () => {
+      const m = App.State.modal;
+      if (!m.images.length) { alert('Добавьте хотя бы одно фото.'); return; }
+      const text = el('idea-text').value.trim();
+      const button = el('idea-button').value.trim() || 'Create';
+      const count = parseInt(el('idea-count').value, 10) || 0;
+      const pending = m.images.map(im => ({ file: im.file, flag: im.flag, title: im.title, caption: im.caption }));
+      try {
+        if (m.mode === 'new') await App.Data.createIdea(m.style, m.block, m.row, text, button, count, pending);
+        else await App.Data.updateIdea(m.record, text, button, count, pending);
+        await App.Data.reloadIdeas();
+        App.UI.renderBlocks();
+        close();
+      } catch (e) { console.error(e); alert('Не удалось сохранить: ' + e.message); }
+    });
+  }
+
+  return { open, close, init };
+})();
+
+// ──────────────────────────────────────────────
+// Bootstrap
+// ──────────────────────────────────────────────
+async function loadFolder(handle) {
+  App.State.rootHandle = handle;
+  document.getElementById('folder-status').textContent = handle.name;
+  await App.Data.loadAll();
+  App.UI.renderAll();
+}
+
+document.getElementById('btn-open').addEventListener('click', async () => {
+  try {
+    const handle = await App.FS.pickFolder();
+    await loadFolder(handle);
+  } catch (e) { /* пользователь отменил */ }
+});
+
+App.Modal.init();
+
+(async function boot() {
+  const restored = await App.FS.restoreFolder();
+  if (!restored) return;
+  if (restored.needsPermission) {
+    const status = document.getElementById('folder-status');
+    status.textContent = 'нажмите «Открыть папку data», чтобы восстановить доступ';
+    return;
+  }
+  await loadFolder(restored);
+})();
+</script>
+</body>
+</html>

@@ -1,0 +1,5 @@
+key,value
+maxLevel,10
+votesRestToPublish,10
+initWorkRatingMin,400
+initWorkRatingMax,500

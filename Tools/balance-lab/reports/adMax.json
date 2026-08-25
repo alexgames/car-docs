@@ -1,0 +1,66 @@
+{
+  "profileId": "adMax",
+  "profileName": "АдМакс (стресс-тест источника)",
+  "generatedAt": "2026-08-11T08:43:28.542Z",
+  "daysSimulated": 730,
+  "styleOpenedDay": {
+    "style-urban": 1,
+    "style-amer": 6,
+    "style-gt": 18,
+    "style-wedge": 41,
+    "style-offroad": 83
+  },
+  "allStylesOpenedDay": 83,
+  "upgradeOwnedDay": {},
+  "allUpgradesOwnedDay": null,
+  "lineClosedDay": {},
+  "activeLines": [
+    "Софт: Стили",
+    "Хард: бесплатные кристаллы: Линия 1"
+  ],
+  "totalCoinsEarned": 620500,
+  "totalGemsEarned": 17520,
+  "totalCoinsSpent": 70269.06826773405,
+  "totalGemsSpent": 17511.674449633665,
+  "totalRealUsdSpent": 0,
+  "avgMonthlyRealSpend": 0,
+  "tierPurchaseCounts": {
+    "Хард: бесплатные кристаллы: Линия 1 — H1": 1575
+  },
+  "finalState": {
+    "coins": 550230.931732266,
+    "gems": 8.32555036691237
+  },
+  "trace": [
+    {
+      "day": 1,
+      "type": "styleOpened",
+      "styleId": "style-urban",
+      "line": "Софт: Стили"
+    },
+    {
+      "day": 6,
+      "type": "styleOpened",
+      "styleId": "style-amer",
+      "line": "Софт: Стили"
+    },
+    {
+      "day": 18,
+      "type": "styleOpened",
+      "styleId": "style-gt",
+      "line": "Софт: Стили"
+    },
+    {
+      "day": 41,
+      "type": "styleOpened",
+      "styleId": "style-wedge",
+      "line": "Софт: Стили"
+    },
+    {
+      "day": 83,
+      "type": "styleOpened",
+      "styleId": "style-offroad",
+      "line": "Софт: Стили"
+    }
+  ]
+}

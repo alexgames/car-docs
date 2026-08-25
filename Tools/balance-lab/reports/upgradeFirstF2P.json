@@ -1,0 +1,72 @@
+{
+  "profileId": "upgradeFirstF2P",
+  "profileName": "Upgrade-first F2P",
+  "generatedAt": "2026-08-11T08:43:28.535Z",
+  "daysSimulated": 730,
+  "styleOpenedDay": {
+    "style-urban": 1,
+    "style-amer": 6,
+    "style-gt": 18,
+    "style-wedge": 41,
+    "style-offroad": 83
+  },
+  "allStylesOpenedDay": 83,
+  "upgradeOwnedDay": {
+    "style-urban": 52,
+    "style-amer": 104,
+    "style-gt": 156,
+    "style-wedge": 208,
+    "style-offroad": 260
+  },
+  "allUpgradesOwnedDay": 260,
+  "lineClosedDay": {},
+  "activeLines": [
+    "Софт: Стили",
+    "Хард: апгрейды: Линия 1"
+  ],
+  "totalCoinsEarned": 620500,
+  "totalGemsEarned": 4380,
+  "totalCoinsSpent": 70269.06826773405,
+  "totalGemsSpent": 1556.59328441183,
+  "totalRealUsdSpent": 0,
+  "avgMonthlyRealSpend": 0,
+  "tierPurchaseCounts": {
+    "Хард: апгрейды: Линия 1 — upgrade": 5
+  },
+  "finalState": {
+    "coins": 550230.931732266,
+    "gems": 2823.4067155881703
+  },
+  "trace": [
+    {
+      "day": 1,
+      "type": "styleOpened",
+      "styleId": "style-urban",
+      "line": "Софт: Стили"
+    },
+    {
+      "day": 6,
+      "type": "styleOpened",
+      "styleId": "style-amer",
+      "line": "Софт: Стили"
+    },
+    {
+      "day": 18,
+      "type": "styleOpened",
+      "styleId": "style-gt",
+      "line": "Софт: Стили"
+    },
+    {
+      "day": 41,
+      "type": "styleOpened",
+      "styleId": "style-wedge",
+      "line": "Софт: Стили"
+    },
+    {
+      "day": 83,
+      "type": "styleOpened",
+      "styleId": "style-offroad",
+      "line": "Софт: Стили"
+    }
+  ]
+}

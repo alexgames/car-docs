@@ -1,0 +1,74 @@
+{
+  "profileId": "upgradeFirstDolphin",
+  "profileName": "Upgrade-first Dolphin",
+  "generatedAt": "2026-08-11T08:43:28.539Z",
+  "daysSimulated": 730,
+  "styleOpenedDay": {
+    "style-urban": 1,
+    "style-amer": 6,
+    "style-gt": 18,
+    "style-wedge": 41,
+    "style-offroad": 83
+  },
+  "allStylesOpenedDay": 83,
+  "upgradeOwnedDay": {
+    "style-urban": 30,
+    "style-amer": 30,
+    "style-gt": 30,
+    "style-wedge": 60,
+    "style-offroad": 90
+  },
+  "allUpgradesOwnedDay": 90,
+  "lineClosedDay": {},
+  "activeLines": [
+    "Софт: Стили",
+    "Хард: бесплатные кристаллы: Линия 1",
+    "Хард: апгрейды: Линия 1"
+  ],
+  "totalCoinsEarned": 620500,
+  "totalGemsEarned": 4380,
+  "totalCoinsSpent": 70269.06826773405,
+  "totalGemsSpent": 5926.173004224994,
+  "totalRealUsdSpent": 23.24,
+  "avgMonthlyRealSpend": 0.96,
+  "tierPurchaseCounts": {
+    "Хард: бесплатные кристаллы: Линия 1 — H1": 393,
+    "Хард: апгрейды: Линия 1 — upgrade": 5
+  },
+  "finalState": {
+    "coins": 550230.931732266,
+    "gems": 4.109406270847504
+  },
+  "trace": [
+    {
+      "day": 1,
+      "type": "styleOpened",
+      "styleId": "style-urban",
+      "line": "Софт: Стили"
+    },
+    {
+      "day": 6,
+      "type": "styleOpened",
+      "styleId": "style-amer",
+      "line": "Софт: Стили"
+    },
+    {
+      "day": 18,
+      "type": "styleOpened",
+      "styleId": "style-gt",
+      "line": "Софт: Стили"
+    },
+    {
+      "day": 41,
+      "type": "styleOpened",
+      "styleId": "style-wedge",
+      "line": "Софт: Стили"
+    },
+    {
+      "day": 83,
+      "type": "styleOpened",
+      "styleId": "style-offroad",
+      "line": "Софт: Стили"
+    }
+  ]
+}

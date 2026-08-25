@@ -1,0 +1,17 @@
+{
+  "id": "i0001",
+  "style": "style1",
+  "block": "recreate",
+  "text": "A hangover from the 1930s, the 103E\nhad rod brakes, a side-valve engine,\nthree gears, and pre-war styling.\nIt was basic and very cheap, and\nremained in production until 1959.",
+  "button": "Create",
+  "images": [
+    {
+      "file": "1.png",
+      "flag": "",
+      "title": "",
+      "caption": ""
+    }
+  ],
+  "order": 0,
+  "count": 1
+}
