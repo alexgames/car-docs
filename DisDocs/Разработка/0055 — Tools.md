@@ -54,4 +54,17 @@
 
 **Комментарии**
 
-Комментарий
+Clearance
+Decal - Check
+Wheel Size (and shape) - Check (можно ли заквадратить любой вырез и сместить вниз)
+**Width - ready**
+Deform X - Check
+Foto
+Gradient (H, V) следует линии плеч?
+Материалы (Вопрос про SkyShop)
+Crease - Check
+
+Scene
+
+Video generation
+

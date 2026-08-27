@@ -83,12 +83,12 @@
             "state": {
               "type": "markdown",
               "state": {
-                "file": "DisDocs/Разработка/0052 — Идеи дизайна.md",
+                "file": "DisDocs/Разработка/В работе/Архитектура уровней и конфигов v2.md",
                 "mode": "source",
                 "source": false
               },
               "icon": "lucide-file",
-              "title": "0052 — Идеи дизайна"
+              "title": "Архитектура уровней и конфигов v2"
             }
           },
           {
@@ -140,7 +140,7 @@
             "state": {
               "type": "search",
               "state": {
-                "query": "Дейли задания.md)",
+                "query": "",
                 "matchingCase": false,
                 "explainSearch": false,
                 "collapseAll": false,
@@ -168,7 +168,7 @@
       }
     ],
     "direction": "horizontal",
-    "width": 330.7109375
+    "width": 356.81640625
   },
   "right": {
     "id": "43901a2bea0d586c",
@@ -274,54 +274,54 @@
       "bases:Create new base": false
     }
   },
-  "active": "138511dce12722df",
+  "active": "b35ed3384afb3864",
   "lastOpenFiles": [
+    "DisDocs/Разработка/0058 — План качества продукта после URP.md",
+    "DisDocs/sprints/0001 — Текущий (Август) Версия 2.0.md",
+    "DisDocs/Разработка/0056 — Визуальные режимы Blueprint и Pencil.md",
+    "DisDocs/Разработка/0052 — Идеи дизайна.md",
+    "DisDocs/Разработка/В работе/0054 — Обвес новый.md",
+    "DisDocs/Разработка/Backlog/0053 — Дизайнерские ребра.md",
+    "DisDocs/Разработка/В работе/0052 — Android размер и запуск.md",
+    "DisDocs/Разработка/Backlog/0049 —  UI effects.md",
+    "DisDocs/Разработка/Сделано/0048 — OpenSubDiv GPU.md",
+    "DisDocs/Разработка/Backlog/0038 — Идея для творчества.md",
+    "DisDocs/Разработка/Backlog/0036 — Фотофон.md",
+    "DisDocs/Разработка/Backlog/0035 — Эффекты.md",
+    "DisDocs/Разработка/Backlog/0034 — Диски и шины.md",
+    "DisDocs/Разработка/Backlog/0033 — Зекрала.md",
+    "DisDocs/Разработка/Backlog/0032 — AR.md",
+    "DisDocs/Разработка/В работе/0016 — Декали.md",
+    "DisDocs/Разработка/0057 — Материалы.md",
+    "AI-детали/PART_TEMPLATE.md",
+    "AI-детали/README.md",
+    "AI-детали/04 Accepted",
+    "AI-детали/03 Generated Models",
+    "AI-детали/02 Prepared Images",
+    "AI-детали/01 References",
+    "AI-детали",
+    "DisDocs/Разработка/Backlog/0055 — Анализ Automation.md",
+    "Screenshot 2026-08-27 at 3.56.35 AM.png",
+    "Screenshot 2026-08-27 at 3.55.24 AM.png",
+    "DisDocs/Разработка/0055 — Tools.md",
+    "DisDocs/Разработка/В работе/Research — URP и система материалов.md",
     "Tools/car-db/photos/car0002/side/final.png",
     "Tools/car-db/photos/car0002/side/draft/2.png",
     "DisDocs/Разработка/0054 — Юнити 6.md",
     "Tools/car-db/guideDefaults.json",
     "Tools/car-db/cars/car0002.json.crswap",
     "DisDocs/Разработка/0001 — ШАБЛОН.md",
-    "DisDocs/Разработка/0052 — Идеи дизайна.md",
     "Tools/car-db/photos/car0002/side/export.png",
     "Tools/car-db/cardSizes.json",
     "DisDocs/books/лучшие/103 Car The Definitive Visual History of the Automobile by DK (z-lib.org)/220.jpg",
     "DisDocs/books/лучшие/103 Car The Definitive Visual History of the Automobile by DK (z-lib.org)",
     "DisDocs/books/лучшие/103 Car The Definitive Visual History of the Automobile by DK (z-lib.org).zip",
-    "DisDocs/books/лучшие/Unconfirmed 56915.crdownload",
     "Tools/car-db/photos/car0002/side/draft/1.png",
-    "Tools/car-db/photos/car0002/side/draft",
-    "Tools/car-db/photos/car0002/side",
-    "Tools/car-db/photos/car0002",
-    "Tools/car-db/photos",
-    "DisDocs/sprints/0001 — Текущий (Август) Версия 2.0.md",
     "DisDocs/Разработка/0052-3 — style-lab.md",
     "Tools/style-lab/data/images/Screenshot 2026-08-21 at 4.57.02 PM.png",
     "Screenshot 2026-08-23 at 9.39.37 PM.png",
-    "DisDocs/Разработка/0053 — Мини-игры на дизайн.md",
-    "DisDocs/Разработка/Backlog/Инструмент своя текстура.md",
+    "DisDocs/Разработка/Backlog/0053 — Мини-игры на дизайн.md",
     "BODY PROPORTIONS OF A LUXURY.jpg",
-    "f6602b12a4a227be7f6147414430fc70.jpg",
-    "dda71d7d18403805ace98724056a8b18.jpg",
-    "43654f03549cbc6da44d8efe46703697.jpg",
-    "DisDocs/Разработка/0050 — Референсы. Интересная история.md",
-    "DisDocs/Разработка/0051 — Профиль в игре.md",
-    "DisDocs/Разработка/0046 — Референсы игра-сайт-видео.md",
-    "DisDocs/Разработка/0045 — Референсы - лучшие работы.md",
-    "Tools/style-lab/README.md",
-    "DisDocs/Разработка/Архитектура уровней и конфигов v2.md",
-    "DisDocs/Разработка/0002 — Дейли задания.md",
-    "DisDocs/hypotheses/по стилям.md",
-    "DisDocs/hypotheses/15-референсы-urban-20-моделей.md",
-    "DisDocs/Разработка/0024 — Распределить контент.md",
-    "DisDocs/iCloud/Notes/Логи на андроиде logs.md",
-    "DisDocs/Разработка/0018 — Аддресаблы.md",
-    "DisDocs/00-описание-проекта.md",
-    "DisDocs/hypotheses/00-индекс.md",
-    "DisDocs/Бизнес/TODO — Надёжная архитектура резервного копирования.md",
-    "Untitled 2.md",
-    "Design/Истории для стилей.md",
-    "DisDocs/sprints/0000 — Шаблон Спринта.md",
     "Analytics/reviews/Untitled.canvas"
   ]
 }
