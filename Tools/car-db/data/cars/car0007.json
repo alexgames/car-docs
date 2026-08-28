@@ -1,24 +1,34 @@
 {
-  "id": "car0001",
-  "name": "Новая машина",
-  "style": "",
-  "substyle": "",
+  "id": "car0007",
+  "name": "Mazda Cosmo 110S",
+  "style": "Compact",
+  "substyle": "long-low",
   "usageLinks": [],
   "descShort": "",
   "descHistorical": "",
-  "country": "",
+  "country": "🇯🇵",
   "designer": "",
-  "cardWidth": 160,
+  "cardWidth": 1700,
   "views": {
     "side": {
-      "draft": [],
-      "activeSel": null,
+      "draft": [
+        {
+          "file": "1.png",
+          "x": 0.6727430555555556,
+          "y": 6.423611111111112,
+          "scale": 1.7032967032967032
+        }
+      ],
+      "activeSel": {
+        "kind": "draft",
+        "index": 0
+      },
       "final": null,
       "lastExport": null,
       "guides": {
         "vertical": {
           "head": {
-            "offsetX": -180,
+            "offsetX": -756.9259982638889,
             "visible": true
           },
           "cab1": {
@@ -26,34 +36,64 @@
             "visible": true
           },
           "center": {
-            "offsetX": 0,
+            "offsetX": 151.337890625,
             "visible": true
           },
           "cab2": {
-            "offsetX": 76.6640625,
+            "offsetX": 453.505859375,
             "visible": true
           },
           "trunk": {
-            "offsetX": 180,
+            "offsetX": 661.416015625,
             "visible": true
           }
         },
         "horizontal": {
           "ground": {
-            "offsetY": 0,
+            "offsetY": -85.6640625,
             "visible": true
           },
           "bottom": {
-            "offsetY": -30,
+            "offsetY": -161.337890625,
             "visible": true
           },
           "center": {
-            "offsetY": -140,
+            "offsetY": -399.12109375,
             "visible": true
           },
           "top": {
-            "offsetY": -280,
+            "offsetY": -541.181640625,
             "visible": true
+          }
+        },
+        "wheels": {
+          "front": {
+            "offsetX": -435.46875,
+            "visible": true
+          },
+          "rear": {
+            "offsetX": 376.064453125,
+            "visible": true
+          },
+          "radius": {
+            "offsetX": -633.9680989583334,
+            "visible": true
+          }
+        },
+        "rulers": {
+          "horizontal": {
+            "enabled": false,
+            "startOffsetX": -180,
+            "endOffsetX": 180,
+            "ratioKey": "gold",
+            "invert": false
+          },
+          "vertical": {
+            "enabled": false,
+            "startOffsetY": -280,
+            "endOffsetY": 0,
+            "ratioKey": "gold",
+            "invert": false
           }
         }
       }

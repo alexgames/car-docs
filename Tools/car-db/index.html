@@ -167,11 +167,13 @@ body {
 
 .canvas-area { display: flex; gap: 14px; }
 .canvas-scroll {
-  /* Высота контейнера на экране — фиксированная и небольшая (не должна занимать весь
-     экран). Сам холст (.canvas-inner) логически по-прежнему CANVAS_HEIGHT px, но
-     показывается через CSS zoom — пользователь подбирает масштаб кнопками +/-, чтобы
-     влезла и длинная «блинная» машина, и короткая. */
-  flex: 1; height: 300px; overflow-x: auto; overflow-y: auto; background: #ececea;
+  /* Высота контейнера на экране — по умолчанию небольшая (не должна занимать весь
+     экран сама), но растягивается вручную за правый нижний угол (resize: vertical) —
+     кому нужно больше места, тот сам её увеличивает, без переключения зума холста.
+     Сам холст (.canvas-inner) логически по-прежнему CANVAS_HEIGHT px, но показывается
+     через CSS zoom — пользователь подбирает масштаб кнопками +/-, чтобы влезла и
+     длинная «блинная» машина, и короткая. */
+  flex: 1; height: 300px; min-height: 150px; resize: vertical; overflow-x: auto; overflow-y: auto; background: #ececea;
   border-radius: 8px; position: relative; border: 1px solid #ccc;
   box-shadow: inset 0 0 0 1px #fff;
 }
@@ -217,6 +219,8 @@ body {
 }
 .canvas-photo { position: absolute; cursor: grab; user-select: none; -webkit-user-drag: none; }
 .canvas-photo:active { cursor: grabbing; }
+.canvas-photo.locked { cursor: default; }
+.canvas-photo.locked:active { cursor: default; }
 .canvas-photo-empty { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; color: #aaa; font-size: 12px; }
 .canvas-overlay-final { position: absolute; opacity: .5; pointer-events: none; outline: 1px dashed #6a5acd; }
 
@@ -338,7 +342,10 @@ App.State = {
   activeCarId: null,
   activeView: 'side',
   showOverlay: false,
+  photoLocked: false, // лок перемещения фото на холсте (drag выключен, пока true)
   canvasZoom: 0.5,  // масштаб показа холста (сам холст логически всегда CANVAS_HEIGHT px)
+  canvasScrollHeight: 300, // высота видимой области холста на экране — тянется за угол (resize: vertical), должна пережить renderAll
+
   lastFitKey: null, // под какое фото зум уже подгоняли — чтобы не подгонять повторно
   collapsedStyleGroups: new Set(), // какие папки-стили свёрнуты в списке машин
   sideTab: 'proportions', // правая панель вида «сбоку»: 'proportions' | 'rulers'
@@ -1028,6 +1035,11 @@ App.UI = (function () {
     overlayChk.onchange = () => { App.State.showOverlay = overlayChk.checked; renderAll(); };
     overlayLabel.appendChild(overlayChk); overlayLabel.appendChild(document.createTextNode(' показать экспортированный финал поверх'));
     toolbar.appendChild(overlayLabel);
+    const lockBtn = document.createElement('button');
+    lockBtn.textContent = App.State.photoLocked ? '🔒 Фото заблокировано' : '🔓 Лок перемещения фото';
+    lockBtn.title = 'Вкл/выкл перетаскивание фото на холсте — чтобы случайно не сдвинуть, когда позиция уже выставлена';
+    lockBtn.addEventListener('click', () => { App.State.photoLocked = !App.State.photoLocked; renderAll(); });
+    toolbar.appendChild(lockBtn);
     const status = document.createElement('span'); status.id = 'export-status';
     status.textContent = view.lastExport ? ('экспорт: ' + view.lastExport.width + 'px, ' + new Date(view.lastExport.at).toLocaleString('ru')) : 'ещё не экспортировано';
     toolbar.appendChild(status);
@@ -1035,6 +1047,15 @@ App.UI = (function () {
 
     const area = document.createElement('div'); area.className = 'canvas-area';
     const scroll = document.createElement('div'); scroll.className = 'canvas-scroll';
+    scroll.style.height = App.State.canvasScrollHeight + 'px';
+    // Элемент пересоздаётся на каждый renderAll — без этого ручной resize (угол снизу
+    // справа) сбрасывался бы обратно к дефолтной высоте при первом же клике/зуме/смене
+    // вкладки. ResizeObserver переживает пересоздание, т.к. навешивается заново на новый
+    // scroll и просто перечитывает App.State при следующем рендере.
+    new ResizeObserver(entries => {
+      const h = Math.round(entries[0].contentRect.height);
+      if (h > 0 && h !== App.State.canvasScrollHeight) App.State.canvasScrollHeight = h;
+    }).observe(scroll);
     const inner = document.createElement('div'); inner.className = 'canvas-inner';
     inner.style.zoom = App.State.canvasZoom;
 
@@ -1080,7 +1101,7 @@ App.UI = (function () {
     // и ползунки становятся недостижимы.
     const active = App.Data.activePhotoMeta(view);
     if (active) {
-      const img = document.createElement('img'); img.className = 'canvas-photo';
+      const img = document.createElement('img'); img.className = 'canvas-photo' + (App.State.photoLocked ? ' locked' : '');
       const sub = active.kind === 'draft' ? 'draft' : '';
       App.Data.getPhotoFile(car.id, viewKey, sub, active.meta.file).then(f => {
         if (!f) return;
@@ -1093,12 +1114,13 @@ App.UI = (function () {
       App.Drag(img, {
         scale: () => App.State.canvasZoom,
         onDrag: (dx, dy) => {
+          if (App.State.photoLocked) return;
           const w = parseFloat(img.dataset.w) || img.naturalWidth, h = parseFloat(img.dataset.h) || img.naturalHeight;
           const nx = origX + dx, ny = origY + dy;
           active.meta.x = nx; active.meta.y = ny;
           positionPhoto(img, active.meta, w, h);
         },
-        onEnd: () => App.Data.saveCar(car),
+        onEnd: () => { if (!App.State.photoLocked) App.Data.saveCar(car); },
       });
       var origX = active.meta.x, origY = active.meta.y;
       img.addEventListener('pointerdown', () => { origX = active.meta.x; origY = active.meta.y; });
@@ -1342,8 +1364,9 @@ App.UI = (function () {
     scroll.appendChild(inner);
     area.appendChild(scroll);
 
+    let legend = null;
     if (isSide) {
-      const legend = document.createElement('div'); legend.className = 'guide-legend';
+      legend = document.createElement('div'); legend.className = 'guide-legend';
 
       const tabsRow = document.createElement('div'); tabsRow.className = 'side-panel-tabs';
       [['proportions', 'Пропорции'], ['rulers', 'Линейки']].forEach(([key, label]) => {
@@ -1424,10 +1447,11 @@ App.UI = (function () {
         hint.style.cssText = 'font-size:10px;color:#999;margin-top:4px;line-height:1.4;';
         legend.appendChild(hint);
       }
-      area.appendChild(legend);
     }
 
     container.appendChild(area);
+    // Пропорции/линейки — под холстом, не сбоку: холст занимает всю доступную ширину.
+    if (legend) container.appendChild(legend);
     // Только теперь холст реально в DOM и имеет ширину — до этого clientWidth был 0
     // и центрирование скролла считалось неверно. scrollLeft у скролл-контейнера — в
     // экранных пикселях, а FIXED_CENTER_X — в логических пикселях .canvas-inner,

@@ -6,6 +6,12 @@
       "runtimeExecutable": "python3",
       "runtimeArgs": ["-m", "http.server", "8743", "--directory", "Tools/balance-lab"],
       "port": 8743
+    },
+    {
+      "name": "car-db",
+      "runtimeExecutable": "python3",
+      "runtimeArgs": ["-m", "http.server", "8744", "--directory", "Tools/car-db"],
+      "port": 8744
     }
   ]
 }
