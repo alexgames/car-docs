@@ -1,22 +1,22 @@
 {
-  "id": "car0007",
-  "name": "Mazda Cosmo 110S",
+  "id": "car0009",
+  "name": "Hillman Imp 1963",
   "style": "Compact",
   "substyle": "",
   "usageLinks": [],
-  "descShort": "острые края и углы, очень длинная, низкая",
+  "descShort": "квадратная, короткая, низкая",
   "descHistorical": "",
-  "country": "🇯🇵",
+  "country": "",
   "designer": "",
-  "cardWidth": 1700,
+  "cardWidth": 1400,
   "views": {
     "side": {
       "draft": [
         {
           "file": "1.png",
-          "x": 0.6727430555555556,
-          "y": 6.423611111111112,
-          "scale": 1.7032967032967032
+          "x": -9.269067796610173,
+          "y": -50.41710805084747,
+          "scale": 1.196911196911197
         }
       ],
       "activeSel": {
@@ -28,23 +28,23 @@
       "guides": {
         "vertical": {
           "head": {
-            "offsetX": -756.9259982638889,
+            "offsetX": -629.2090947210452,
             "visible": true
           },
           "cab1": {
-            "offsetX": -258.813164893617,
+            "offsetX": -318.06199240819217,
             "visible": true
           },
           "center": {
-            "offsetX": 186.01209275265956,
+            "offsetX": 71.97326315324858,
             "visible": true
           },
           "cab2": {
-            "offsetX": 419.50486203457444,
+            "offsetX": 499.5123256532486,
             "visible": true
           },
           "trunk": {
-            "offsetX": 771.3894198803191,
+            "offsetX": 622.8651902365821,
             "visible": true
           }
         },
@@ -54,29 +54,29 @@
             "visible": true
           },
           "bottom": {
-            "offsetY": -161.337890625,
+            "offsetY": -154.31988215042372,
             "visible": true
           },
           "center": {
-            "offsetY": -399.12109375,
+            "offsetY": -393.62232962570624,
             "visible": true
           },
           "top": {
-            "offsetY": -541.181640625,
+            "offsetY": -579.9055989583334,
             "visible": true
           }
         },
         "wheels": {
           "front": {
-            "offsetX": -514.8570478723404,
+            "offsetX": -436.13623322740114,
             "visible": true
           },
           "rear": {
-            "offsetX": 410.9464345079789,
+            "offsetX": 338.11082053319205,
             "visible": true
           },
           "radius": {
-            "offsetX": -632.3224872562057,
+            "offsetX": -537.332329184322,
             "visible": true
           }
         },

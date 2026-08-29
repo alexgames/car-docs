@@ -50,9 +50,14 @@ body {
 
 /* ── левая панель: список машин ─────────────────────────── */
 #car-list-panel {
-  width: 260px; flex: none; border-right: 1px solid #e2e2de; background: #faf9f6;
+  width: 260px; flex: none; background: #faf9f6;
   display: flex; flex-direction: column; overflow: hidden;
 }
+#car-list-resize-handle {
+  width: 6px; flex: none; cursor: col-resize; background: transparent;
+  border-right: 1px solid #e2e2de;
+}
+#car-list-resize-handle:hover, #car-list-resize-handle.dragging { background: #ddd; }
 #car-list-head { padding: 10px; border-bottom: 1px solid #e2e2de; }
 #btn-new-car {
   width: 100%; font-size: 12px; padding: 8px; border-radius: 8px; border: 1px dashed #ccc;
@@ -276,6 +281,7 @@ body {
     <div id="car-list-head"><button id="btn-new-car">+ Создать карточку</button></div>
     <div id="car-list"></div>
   </div>
+  <div id="car-list-resize-handle" title="Потяни, чтобы изменить ширину списка"></div>
   <div id="car-main">
     <div id="empty-state">Откройте (или создайте) папку data, чтобы начать.</div>
     <div id="car-content" style="display:none"></div>
@@ -1391,9 +1397,18 @@ App.UI = (function () {
         saveDefBtn.textContent = 'Сохранить линии по умолчанию';
         saveDefBtn.title = 'Эта разметка станет стартовой для всех НОВЫХ машин (общий конфиг на всю базу)';
         saveDefBtn.style.cssText = 'margin-top:12px;width:100%;font-size:10.5px;padding:6px 8px;border-radius:6px;border:1px dashed #ccc;background:#fff;color:#888;cursor:pointer;';
+        const saveDefBtnLabel = saveDefBtn.textContent;
         saveDefBtn.addEventListener('click', async () => {
           await App.Data.saveGuideDefaults(view.guides);
-          alert('Сохранено — новые машины будут стартовать с этой разметкой.');
+          saveDefBtn.textContent = '✓ Сохранено';
+          saveDefBtn.style.color = '#2e7d32';
+          saveDefBtn.style.borderColor = '#2e7d32';
+          clearTimeout(saveDefBtn._resetTimer);
+          saveDefBtn._resetTimer = setTimeout(() => {
+            saveDefBtn.textContent = saveDefBtnLabel;
+            saveDefBtn.style.color = '#888';
+            saveDefBtn.style.borderColor = '#ccc';
+          }, 1500);
         });
         legend.appendChild(saveDefBtn);
       } else {
@@ -1518,6 +1533,24 @@ async function loadFolder(handle) {
   await App.Data.loadAll();
   renderAll();
 }
+
+// Ширина списка машин — тянем за узкую полоску между списком и основной панелью.
+// #car-list-panel статичен (не пересоздаётся при renderAll, в отличие от .canvas-scroll),
+// поэтому inline-width, выставленный драгом, ничем не перебивается — ResizeObserver не нужен.
+(function () {
+  const panel = document.getElementById('car-list-panel');
+  const handle = document.getElementById('car-list-resize-handle');
+  const MIN_W = 180, MAX_W = 520;
+  let startW = panel.getBoundingClientRect().width;
+  handle.addEventListener('pointerdown', () => {
+    startW = panel.getBoundingClientRect().width;
+    handle.classList.add('dragging');
+  });
+  App.Drag(handle, {
+    onDrag: dx => { panel.style.width = Math.max(MIN_W, Math.min(MAX_W, startW + dx)) + 'px'; },
+    onEnd: () => handle.classList.remove('dragging'),
+  });
+})();
 
 document.getElementById('btn-open').addEventListener('click', async () => {
   try { const handle = await App.FS.pickFolder(); await loadFolder(handle); } catch (e) {}

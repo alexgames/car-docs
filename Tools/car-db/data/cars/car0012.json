@@ -1,22 +1,22 @@
 {
-  "id": "car0007",
-  "name": "Mazda Cosmo 110S",
+  "id": "car0012",
+  "name": "Fiat 500D 1960 ",
   "style": "Compact",
   "substyle": "",
   "usageLinks": [],
-  "descShort": "острые края и углы, очень длинная, низкая",
+  "descShort": "",
   "descHistorical": "",
-  "country": "🇯🇵",
+  "country": "",
   "designer": "",
-  "cardWidth": 1700,
+  "cardWidth": 1200,
   "views": {
     "side": {
       "draft": [
         {
           "file": "1.png",
-          "x": 0.6727430555555556,
-          "y": 6.423611111111112,
-          "scale": 1.7032967032967032
+          "x": -6.510416666666671,
+          "y": -30.879934210526315,
+          "scale": 1.11
         }
       ],
       "activeSel": {
@@ -28,23 +28,23 @@
       "guides": {
         "vertical": {
           "head": {
-            "offsetX": -756.9259982638889,
+            "offsetX": -523.1513070226324,
             "visible": true
           },
           "cab1": {
-            "offsetX": -258.813164893617,
+            "offsetX": -269.7360995510493,
             "visible": true
           },
           "center": {
-            "offsetX": 186.01209275265956,
+            "offsetX": 96.09900720086762,
             "visible": true
           },
           "cab2": {
-            "offsetX": 419.50486203457444,
+            "offsetX": 379.76406176435967,
             "visible": true
           },
           "trunk": {
-            "offsetX": 771.3894198803191,
+            "offsetX": 507.4634045222963,
             "visible": true
           }
         },
@@ -54,29 +54,29 @@
             "visible": true
           },
           "bottom": {
-            "offsetY": -161.337890625,
+            "offsetY": -167.76234246788403,
             "visible": true
           },
           "center": {
-            "offsetY": -399.12109375,
+            "offsetY": -414.3006530384047,
             "visible": true
           },
           "top": {
-            "offsetY": -541.181640625,
+            "offsetY": -579.9055989583334,
             "visible": true
           }
         },
         "wheels": {
           "front": {
-            "offsetX": -514.8570478723404,
+            "offsetX": -391.9894078305757,
             "visible": true
           },
           "rear": {
-            "offsetX": 410.9464345079789,
+            "offsetX": 321.35114791414435,
             "visible": true
           },
           "radius": {
-            "offsetX": -632.3224872562057,
+            "offsetX": -489.14904545416334,
             "visible": true
           }
         },
