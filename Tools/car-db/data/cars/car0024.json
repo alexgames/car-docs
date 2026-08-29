@@ -1,0 +1,140 @@
+{
+  "id": "car0024",
+  "name": "Broadspeed GT 1965",
+  "style": "Compact",
+  "substyle": "",
+  "usageLinks": [],
+  "descShort": "",
+  "descHistorical": "",
+  "country": "🇬🇧",
+  "designer": "",
+  "cardWidth": 1400,
+  "views": {
+    "side": {
+      "draft": [
+        {
+          "file": "1.png",
+          "x": -26.400881761695906,
+          "y": -33.55034722222222,
+          "scale": 2.4603174603174605
+        }
+      ],
+      "activeSel": {
+        "kind": "draft",
+        "index": 0
+      },
+      "final": null,
+      "lastExport": null,
+      "guides": {
+        "vertical": {
+          "head": {
+            "offsetX": -620.2278074744152,
+            "visible": true
+          },
+          "cab1": {
+            "offsetX": -258.813164893617,
+            "visible": true
+          },
+          "center": {
+            "offsetX": 57.551292314063176,
+            "visible": true
+          },
+          "cab2": {
+            "offsetX": 526.0289848415921,
+            "visible": true
+          },
+          "trunk": {
+            "offsetX": 617.0103080382139,
+            "visible": true
+          }
+        },
+        "horizontal": {
+          "ground": {
+            "offsetY": -85.6640625,
+            "visible": true
+          },
+          "bottom": {
+            "offsetY": -160.00839501096493,
+            "visible": true
+          },
+          "center": {
+            "offsetY": -395.4204358552631,
+            "visible": true
+          },
+          "top": {
+            "offsetY": -575.7827919407895,
+            "visible": true
+          }
+        },
+        "wheels": {
+          "front": {
+            "offsetX": -466.1591312056738,
+            "visible": true
+          },
+          "rear": {
+            "offsetX": 356.12872617464564,
+            "visible": true
+          },
+          "radius": {
+            "offsetX": -560.8586714667321,
+            "visible": true
+          }
+        },
+        "rulers": {
+          "horizontal": {
+            "enabled": false,
+            "startOffsetX": -180,
+            "endOffsetX": 180,
+            "ratioKey": "gold",
+            "invert": false
+          },
+          "vertical": {
+            "enabled": false,
+            "startOffsetY": -280,
+            "endOffsetY": 0,
+            "ratioKey": "gold",
+            "invert": false
+          }
+        }
+      }
+    },
+    "front": {
+      "draft": [],
+      "activeSel": null,
+      "final": null,
+      "lastExport": null
+    },
+    "34front": {
+      "draft": [],
+      "activeSel": null,
+      "final": null,
+      "lastExport": null
+    },
+    "34rear": {
+      "draft": [],
+      "activeSel": null,
+      "final": null,
+      "lastExport": null
+    },
+    "rear": {
+      "draft": [],
+      "activeSel": null,
+      "final": null,
+      "lastExport": null
+    },
+    "custom1": {
+      "draft": [],
+      "activeSel": null,
+      "final": null,
+      "lastExport": null,
+      "customLabel": "Доп. 1"
+    },
+    "custom2": {
+      "draft": [],
+      "activeSel": null,
+      "final": null,
+      "lastExport": null,
+      "customLabel": "Доп. 2"
+    }
+  }
+}

@@ -1,23 +1,23 @@
 {
   "vertical": {
     "head": {
-      "offsetX": -623.3285654259937,
+      "offsetX": -508.233972901484,
       "visible": true
     },
     "cab1": {
-      "offsetX": -292.8263773288271,
+      "offsetX": -237.4744318631408,
       "visible": true
     },
     "center": {
-      "offsetX": 29.90539433905633,
+      "offsetX": 138.42638085866406,
       "visible": true
     },
     "cab2": {
-      "offsetX": 429.7334245094578,
+      "offsetX": 321.00372169083016,
       "visible": true
     },
     "trunk": {
-      "offsetX": 627.5132994802796,
+      "offsetX": 497.42560033812265,
       "visible": true
     }
   },
@@ -27,11 +27,11 @@
       "visible": true
     },
     "bottom": {
-      "offsetY": -196.11821606732377,
+      "offsetY": -158.59906778301007,
       "visible": true
     },
     "center": {
-      "offsetY": -433.0502883091797,
+      "offsetY": -397.8231896572189,
       "visible": true
     },
     "top": {
@@ -41,15 +41,15 @@
   },
   "wheels": {
     "front": {
-      "offsetX": -442.50586441320877,
+      "offsetX": -329.63630252595385,
       "visible": true
     },
     "rear": {
-      "offsetX": 341.26244576661884,
+      "offsetX": 314.8952582666186,
       "visible": true
     },
     "radius": {
-      "offsetX": -546.346976709999,
+      "offsetX": -417.55178675901857,
       "visible": true
     }
   },

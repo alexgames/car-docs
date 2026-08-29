@@ -1,0 +1,140 @@
+{
+  "id": "car0022",
+  "name": "Nissan Figaro 1989",
+  "style": "Compact",
+  "substyle": "",
+  "usageLinks": [],
+  "descShort": "",
+  "descHistorical": "",
+  "country": "🇯🇵",
+  "designer": "",
+  "cardWidth": 1400,
+  "views": {
+    "side": {
+      "draft": [
+        {
+          "file": "1.png",
+          "x": 68.03728070175438,
+          "y": -25.753837719298247,
+          "scale": 2.41
+        }
+      ],
+      "activeSel": {
+        "kind": "draft",
+        "index": 0
+      },
+      "final": null,
+      "lastExport": null,
+      "guides": {
+        "vertical": {
+          "head": {
+            "offsetX": -594.2135530884503,
+            "visible": true
+          },
+          "cab1": {
+            "offsetX": -253.22105963045908,
+            "visible": true
+          },
+          "center": {
+            "offsetX": 230.8997024017824,
+            "visible": true
+          },
+          "cab2": {
+            "offsetX": 381.0591383503638,
+            "visible": true
+          },
+          "trunk": {
+            "offsetX": 630.0791128627752,
+            "visible": true
+          }
+        },
+        "horizontal": {
+          "ground": {
+            "offsetY": -85.6640625,
+            "visible": true
+          },
+          "bottom": {
+            "offsetY": -153.8817502741228,
+            "visible": true
+          },
+          "center": {
+            "offsetY": -399.12109375,
+            "visible": true
+          },
+          "top": {
+            "offsetY": -541.181640625,
+            "visible": true
+          }
+        },
+        "wheels": {
+          "front": {
+            "offsetX": -369.4006333986563,
+            "visible": true
+          },
+          "rear": {
+            "offsetX": 426.32472398166306,
+            "visible": true
+          },
+          "radius": {
+            "offsetX": -462.5102613790127,
+            "visible": true
+          }
+        },
+        "rulers": {
+          "horizontal": {
+            "enabled": false,
+            "startOffsetX": -180,
+            "endOffsetX": 180,
+            "ratioKey": "gold",
+            "invert": false
+          },
+          "vertical": {
+            "enabled": false,
+            "startOffsetY": -280,
+            "endOffsetY": 0,
+            "ratioKey": "gold",
+            "invert": false
+          }
+        }
+      }
+    },
+    "front": {
+      "draft": [],
+      "activeSel": null,
+      "final": null,
+      "lastExport": null
+    },
+    "34front": {
+      "draft": [],
+      "activeSel": null,
+      "final": null,
+      "lastExport": null
+    },
+    "34rear": {
+      "draft": [],
+      "activeSel": null,
+      "final": null,
+      "lastExport": null
+    },
+    "rear": {
+      "draft": [],
+      "activeSel": null,
+      "final": null,
+      "lastExport": null
+    },
+    "custom1": {
+      "draft": [],
+      "activeSel": null,
+      "final": null,
+      "lastExport": null,
+      "customLabel": "Доп. 1"
+    },
+    "custom2": {
+      "draft": [],
+      "activeSel": null,
+      "final": null,
+      "lastExport": null,
+      "customLabel": "Доп. 2"
+    }
+  }
+}
