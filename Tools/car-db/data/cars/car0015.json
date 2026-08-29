@@ -1,0 +1,140 @@
+{
+  "id": "car0015",
+  "name": "Fiat 1100 1953",
+  "style": "Compact",
+  "substyle": "",
+  "usageLinks": [],
+  "descShort": "",
+  "descHistorical": "",
+  "country": "🇮🇹",
+  "designer": "",
+  "cardWidth": 1300,
+  "views": {
+    "side": {
+      "draft": [
+        {
+          "file": "1.png",
+          "x": 24.325284090909086,
+          "y": -32.54261363636363,
+          "scale": 1.18
+        }
+      ],
+      "activeSel": {
+        "kind": "draft",
+        "index": 0
+      },
+      "final": null,
+      "lastExport": null,
+      "guides": {
+        "vertical": {
+          "head": {
+            "offsetX": -531.1907813350846,
+            "visible": true
+          },
+          "cab1": {
+            "offsetX": -227.79796823791798,
+            "visible": true
+          },
+          "center": {
+            "offsetX": 43.96079206632908,
+            "visible": true
+          },
+          "cab2": {
+            "offsetX": 397.34706087309405,
+            "visible": true
+          },
+          "trunk": {
+            "offsetX": 567.6482426620978,
+            "visible": true
+          }
+        },
+        "horizontal": {
+          "ground": {
+            "offsetY": -85.6640625,
+            "visible": true
+          },
+          "bottom": {
+            "offsetY": -186.5585569764147,
+            "visible": true
+          },
+          "center": {
+            "offsetY": -415.29460649099786,
+            "visible": true
+          },
+          "top": {
+            "offsetY": -579.9055989583334,
+            "visible": true
+          }
+        },
+        "wheels": {
+          "front": {
+            "offsetX": -394.01154623139064,
+            "visible": true
+          },
+          "rear": {
+            "offsetX": 367.7042071302551,
+            "visible": true
+          },
+          "radius": {
+            "offsetX": -490.0330562554535,
+            "visible": true
+          }
+        },
+        "rulers": {
+          "horizontal": {
+            "enabled": false,
+            "startOffsetX": -180,
+            "endOffsetX": 180,
+            "ratioKey": "gold",
+            "invert": false
+          },
+          "vertical": {
+            "enabled": false,
+            "startOffsetY": -280,
+            "endOffsetY": 0,
+            "ratioKey": "gold",
+            "invert": false
+          }
+        }
+      }
+    },
+    "front": {
+      "draft": [],
+      "activeSel": null,
+      "final": null,
+      "lastExport": null
+    },
+    "34front": {
+      "draft": [],
+      "activeSel": null,
+      "final": null,
+      "lastExport": null
+    },
+    "34rear": {
+      "draft": [],
+      "activeSel": null,
+      "final": null,
+      "lastExport": null
+    },
+    "rear": {
+      "draft": [],
+      "activeSel": null,
+      "final": null,
+      "lastExport": null
+    },
+    "custom1": {
+      "draft": [],
+      "activeSel": null,
+      "final": null,
+      "lastExport": null,
+      "customLabel": "Доп. 1"
+    },
+    "custom2": {
+      "draft": [],
+      "activeSel": null,
+      "final": null,
+      "lastExport": null,
+      "customLabel": "Доп. 2"
+    }
+  }
+}
