@@ -66,12 +66,19 @@ body {
 #btn-new-car:hover { background: #f0f0ec; border-color: #999; }
 #car-list { flex: 1; overflow-y: auto; padding: 6px; }
 .car-list-item {
-  padding: 8px 9px; border-radius: 7px; cursor: pointer; margin-bottom: 3px;
+  display: flex; align-items: center; gap: 8px;
+  padding: 6px 9px; border-radius: 7px; cursor: pointer; margin-bottom: 3px;
 }
 .car-list-item:hover { background: #efeee9; }
 .car-list-item.active { background: #333; }
 .car-list-item.active .car-item-name { color: #fff; }
 .car-list-item.active .car-item-sub { color: #ccc; }
+.car-item-thumb {
+  width: 64px; height: 32px; flex: none; border-radius: 6px; background: #ece9e3;
+  overflow: hidden; display: flex; align-items: center; justify-content: center;
+}
+.car-item-thumb img { width: 100%; height: 100%; object-fit: contain; display: block; }
+.car-item-info { min-width: 0; flex: 1; }
 .car-item-name { font-size: 13px; font-weight: 600; color: #333; }
 .car-item-sub { font-size: 11px; color: #999; margin-top: 1px; }
 .car-item-id { font-family: monospace; }
@@ -259,7 +266,10 @@ body {
 .legend-row input[type=checkbox] { margin: 0; }
 .legend-dot { width: 9px; height: 9px; border-radius: 50%; flex: none; }
 .legend-row .legend-name { flex: 1; }
-.legend-row .legend-val { font-size: 10px; color: #aaa; font-family: monospace; }
+.legend-row .legend-val {
+  width: 52px; flex: none; font-size: 10px; color: #888; font-family: monospace;
+  padding: 2px 4px; border: 1px solid #ddd; border-radius: 4px; background: #fff;
+}
 
 .drop-zone-wide {
   border: 2px dashed #ccc; border-radius: 8px; padding: 10px; text-align: center;
@@ -343,7 +353,7 @@ App.Const = {
 App.State = {
   rootHandle: null,
   cardSizes: [160, 220, 260, 320, 420],
-  guideDefaults: null, // {vertical,horizontal} — общая разметка по умолчанию для новых машин
+  cardDefaults: null, // {guides, cardWidth, style} — стартовые значения для новых машин
   cars: [],            // [{id, name, style, substyle, ...}]
   activeCarId: null,
   activeView: 'side',
@@ -442,17 +452,19 @@ App.Data = (function () {
     };
   }
   function defaultGuides() {
-    // Если кто-то уже сохранил разметку «по умолчанию» (кнопка в легенде) — берём её,
-    // иначе — встроенные константы. Общий конфиг на все машины (guideDefaults.json).
-    if (App.State.guideDefaults) return JSON.parse(JSON.stringify(App.State.guideDefaults));
+    // Если кто-то уже сохранил «карточку по умолчанию» (кнопка в легенде) — берём разметку
+    // оттуда, иначе — встроенные константы. Общий конфиг на все машины (cardDefaults.json).
+    if (App.State.cardDefaults && App.State.cardDefaults.guides) return JSON.parse(JSON.stringify(App.State.cardDefaults.guides));
     const vertical = {}; C.VERTICAL_LINES.forEach(k => vertical[k] = { offsetX: C.VERTICAL_DEFAULTS[k], visible: true });
     const horizontal = {}; C.HORIZONTAL_LINES.forEach(k => horizontal[k] = { offsetY: C.HORIZONTAL_DEFAULTS[k], visible: true });
     const wheels = {}; C.WHEEL_LINES.forEach(k => wheels[k] = { offsetX: C.WHEEL_DEFAULTS[k], visible: true });
     return { vertical, horizontal, wheels, rulers: defaultRulers() };
   }
-  async function saveGuideDefaults(guides) {
-    App.State.guideDefaults = JSON.parse(JSON.stringify(guides));
-    await App.FS.setJSON(App.State.rootHandle, 'guideDefaults.json', App.State.guideDefaults);
+  // Заменяет старую «Сохранить линии по умолчанию» — сохраняет сразу разметку, ширину
+  // карточки и базовый стиль как стартовые значения для НОВЫХ машин.
+  async function saveCardDefaults(guides, cardWidth, style) {
+    App.State.cardDefaults = { guides: JSON.parse(JSON.stringify(guides)), cardWidth, style };
+    await App.FS.setJSON(App.State.rootHandle, 'cardDefaults.json', App.State.cardDefaults);
   }
   function defaultView(key) {
     return {
@@ -464,10 +476,11 @@ App.Data = (function () {
   function defaultCar(id) {
     const views = {};
     C.VIEW_KEYS.forEach(k => views[k] = defaultView(k));
+    const d = App.State.cardDefaults;
     return {
-      id, name: 'Новая машина', style: '', substyle: '', usageLinks: [],
+      id, name: 'Новая машина', style: (d && d.style) || '', substyle: '', usageLinks: [],
       descShort: '', descHistorical: '', country: '', designer: '',
-      cardWidth: App.State.cardSizes[0] || 260, views,
+      cardWidth: (d && d.cardWidth) || App.State.cardSizes[0] || 260, views,
     };
   }
 
@@ -485,8 +498,14 @@ App.Data = (function () {
     const sizesCfg = await App.FS.getJSON(root, 'cardSizes.json', null);
     if (!sizesCfg) { App.State.cardSizes = C.DEFAULT_CARD_WIDTHS.slice(); await App.FS.setJSON(root, 'cardSizes.json', { sizes: App.State.cardSizes }); }
     else App.State.cardSizes = sizesCfg.sizes || C.DEFAULT_CARD_WIDTHS.slice();
-    // null, если ещё никто не сохранял — тогда defaultGuides() берёт встроенные константы.
-    App.State.guideDefaults = await App.FS.getJSON(root, 'guideDefaults.json', null);
+    // null, если ещё никто не сохранял — тогда defaultGuides()/defaultCar() берут встроенные
+    // константы. Миграция со старого guideDefaults.json (хранил только разметку, без
+    // ширины/стиля) — если нового файла ещё нет, но старый есть, оборачиваем его.
+    App.State.cardDefaults = await App.FS.getJSON(root, 'cardDefaults.json', null);
+    if (!App.State.cardDefaults) {
+      const legacyGuides = await App.FS.getJSON(root, 'guideDefaults.json', null);
+      if (legacyGuides) App.State.cardDefaults = { guides: legacyGuides, cardWidth: null, style: '' };
+    }
 
     App.State.cars = [];
     const carsDir = await App.FS.getDirOpt(root, 'cars');
@@ -507,7 +526,7 @@ App.Data = (function () {
         } catch (e) { console.warn('bad car file', name, e); }
       }
     }
-    App.State.cars.sort((a, b) => (a.name || '').localeCompare(b.name || '', 'ru'));
+    App.State.cars.sort((a, b) => (a.id || '').localeCompare(b.id || ''));
   }
 
   async function saveCardSizes() { await App.FS.setJSON(App.State.rootHandle, 'cardSizes.json', { sizes: App.State.cardSizes }); }
@@ -525,7 +544,7 @@ App.Data = (function () {
     const car = defaultCar(id);
     await saveCar(car);
     App.State.cars.push(car);
-    App.State.cars.sort((a, b) => (a.name || '').localeCompare(b.name || '', 'ru'));
+    App.State.cars.sort((a, b) => (a.id || '').localeCompare(b.id || ''));
     return car;
   }
 
@@ -675,7 +694,7 @@ App.Data = (function () {
   }
 
   return {
-    loadAll, saveCardSizes, saveGuideDefaults, saveCar, createCar, deleteCar, viewDirEnsure, getPhotoFile,
+    loadAll, saveCardSizes, saveCardDefaults, saveCar, createCar, deleteCar, viewDirEnsure, getPhotoFile,
     addDraftPhoto, removeDraftPhoto, setFinalPhoto, removeFinalPhoto, activePhotoMeta, exportView, flipPhotoHorizontal,
     defaultRulers,
   };
@@ -719,9 +738,32 @@ App.UI = (function () {
   function carListItem(car) {
     const div = document.createElement('div');
     div.className = 'car-list-item' + (car.id === App.State.activeCarId ? ' active' : '');
-    div.innerHTML = `<div class="car-item-name">${App.esc(car.name || '(без названия)')}</div>` +
+
+    const thumb = document.createElement('div'); thumb.className = 'car-item-thumb';
+    div.appendChild(thumb);
+
+    const info = document.createElement('div'); info.className = 'car-item-info';
+    info.innerHTML = `<div class="car-item-name">${App.esc(car.name || '(без названия)')}</div>` +
       `<div class="car-item-sub"><span class="car-item-id">${App.esc(car.id)}</span></div>`;
+    div.appendChild(info);
+
     div.addEventListener('click', () => { App.State.activeCarId = car.id; App.State.activeView = 'side'; renderAll(); });
+
+    // Превью — активное фото вида «сбоку» (финал в приоритете, иначе первый драфт).
+    // Загружается асинхронно поверх уже отрисованного списка, чтобы не тормозить
+    // рендер чтением файлов сразу по всем машинам.
+    const view = car.views && car.views.side;
+    const active = view && App.Data.activePhotoMeta(view);
+    if (active) {
+      const sub = active.kind === 'draft' ? 'draft' : '';
+      App.Data.getPhotoFile(car.id, 'side', sub, active.meta.file).then(f => {
+        if (!f) return;
+        const img = document.createElement('img');
+        img.src = URL.createObjectURL(f);
+        thumb.appendChild(img);
+      });
+    }
+
     return div;
   }
 
@@ -1394,12 +1436,12 @@ App.UI = (function () {
         legend.appendChild(wTitle);
         C_.WHEEL_LINES.forEach(key => legend.appendChild(legendRow('w-' + key, C_.WHEEL_LABELS[key], C_.WHEEL_COLORS[key], view.guides.wheels[key], 'offsetX', car, view)));
         const saveDefBtn = document.createElement('button');
-        saveDefBtn.textContent = 'Сохранить линии по умолчанию';
-        saveDefBtn.title = 'Эта разметка станет стартовой для всех НОВЫХ машин (общий конфиг на всю базу)';
+        saveDefBtn.textContent = 'Карточка по умолчанию';
+        saveDefBtn.title = 'Разметка, ширина карточки (' + (car.cardWidth || 260) + 'px) и стиль (' + (car.style || '—') + ') станут стартовыми для всех НОВЫХ машин';
         saveDefBtn.style.cssText = 'margin-top:12px;width:100%;font-size:10.5px;padding:6px 8px;border-radius:6px;border:1px dashed #ccc;background:#fff;color:#888;cursor:pointer;';
         const saveDefBtnLabel = saveDefBtn.textContent;
         saveDefBtn.addEventListener('click', async () => {
-          await App.Data.saveGuideDefaults(view.guides);
+          await App.Data.saveCardDefaults(view.guides, car.cardWidth, car.style);
           saveDefBtn.textContent = '✓ Сохранено';
           saveDefBtn.style.color = '#2e7d32';
           saveDefBtn.style.borderColor = '#2e7d32';
@@ -1489,12 +1531,24 @@ App.UI = (function () {
     row.appendChild(chk);
     const dot = document.createElement('span'); dot.className = 'legend-dot'; dot.style.background = color; row.appendChild(dot);
     const name = document.createElement('span'); name.className = 'legend-name'; name.textContent = label; row.appendChild(name);
-    const val = document.createElement('span'); val.className = 'legend-val'; val.id = 'legend-val-' + id; val.textContent = Math.round(g[offsetKey]); row.appendChild(val);
+    // Поле ввода вместо просто текста — можно вбить точное число руками, не только
+    // тащить хендл на холсте. updateLegendVal (вызывается из драга на холсте) пишет
+    // сюда же во время перетаскивания, чтобы значения были синхронны в обе стороны.
+    const val = document.createElement('input'); val.type = 'number'; val.className = 'legend-val'; val.id = 'legend-val-' + id;
+    val.value = Math.round(g[offsetKey]);
+    val.addEventListener('change', () => {
+      const v = parseFloat(val.value);
+      if (isNaN(v)) { val.value = Math.round(g[offsetKey]); return; }
+      g[offsetKey] = v;
+      App.Data.saveCar(car);
+      renderAll();
+    });
+    row.appendChild(val);
     return row;
   }
   function updateLegendVal(id, val) {
     const el = document.getElementById('legend-val-' + id);
-    if (el) el.textContent = Math.round(val);
+    if (el) el.value = Math.round(val);
   }
 
   function renderCarContent() {
