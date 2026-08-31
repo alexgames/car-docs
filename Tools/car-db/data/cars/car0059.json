@@ -1,0 +1,140 @@
+{
+  "id": "car0059",
+  "name": "Chrysler New Yorker 1957",
+  "style": "America",
+  "substyle": "fintail",
+  "usageLinks": [],
+  "descShort": "",
+  "descHistorical": "",
+  "country": "",
+  "designer": "",
+  "cardWidth": 1800,
+  "views": {
+    "side": {
+      "draft": [
+        {
+          "file": "1.png",
+          "x": 38.54469476744186,
+          "y": -29.387718023255815,
+          "scale": 2.97
+        }
+      ],
+      "activeSel": {
+        "kind": "draft",
+        "index": 0
+      },
+      "final": null,
+      "lastExport": null,
+      "guides": {
+        "vertical": {
+          "head": {
+            "offsetX": -804.7020752333698,
+            "visible": true
+          },
+          "cab1": {
+            "offsetX": -348.03301964484444,
+            "visible": true
+          },
+          "center": {
+            "offsetX": 3.620309662347381,
+            "visible": true
+          },
+          "cab2": {
+            "offsetX": 394.04151200295587,
+            "visible": true
+          },
+          "trunk": {
+            "offsetX": 819.404933716118,
+            "visible": true
+          }
+        },
+        "horizontal": {
+          "ground": {
+            "offsetY": -85.6640625,
+            "visible": true
+          },
+          "bottom": {
+            "offsetY": -183.15003039519553,
+            "visible": true
+          },
+          "center": {
+            "offsetY": -412.60887117899074,
+            "visible": true
+          },
+          "top": {
+            "offsetY": -550.280243844697,
+            "visible": true
+          }
+        },
+        "wheels": {
+          "front": {
+            "offsetX": -590.2785488206133,
+            "visible": true
+          },
+          "rear": {
+            "offsetX": 392.78880846440234,
+            "visible": true
+          },
+          "radius": {
+            "offsetX": -692.459730991812,
+            "visible": true
+          }
+        },
+        "rulers": {
+          "horizontal": {
+            "enabled": false,
+            "startOffsetX": -180,
+            "endOffsetX": 180,
+            "ratioKey": "gold",
+            "invert": false
+          },
+          "vertical": {
+            "enabled": false,
+            "startOffsetY": -280,
+            "endOffsetY": 0,
+            "ratioKey": "gold",
+            "invert": false
+          }
+        }
+      }
+    },
+    "front": {
+      "draft": [],
+      "activeSel": null,
+      "final": null,
+      "lastExport": null
+    },
+    "34front": {
+      "draft": [],
+      "activeSel": null,
+      "final": null,
+      "lastExport": null
+    },
+    "34rear": {
+      "draft": [],
+      "activeSel": null,
+      "final": null,
+      "lastExport": null
+    },
+    "rear": {
+      "draft": [],
+      "activeSel": null,
+      "final": null,
+      "lastExport": null
+    },
+    "custom1": {
+      "draft": [],
+      "activeSel": null,
+      "final": null,
+      "lastExport": null,
+      "customLabel": "Доп. 1"
+    },
+    "custom2": {
+      "draft": [],
+      "activeSel": null,
+      "final": null,
+      "lastExport": null,
+      "customLabel": "Доп. 2"
+    }
+  }
+}

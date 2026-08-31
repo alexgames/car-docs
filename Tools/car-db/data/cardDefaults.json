@@ -2,23 +2,23 @@
   "guides": {
     "vertical": {
       "head": {
-        "offsetX": -510.9429909310443,
+        "offsetX": -847.6617409310443,
         "visible": true
       },
       "cab1": {
-        "offsetX": -127.66725259938994,
+        "offsetX": -348.03301964484444,
         "visible": true
       },
       "center": {
-        "offsetX": 155.56827312693508,
+        "offsetX": 58.47132710420783,
         "visible": true
       },
       "cab2": {
-        "offsetX": 437.8759547223003,
+        "offsetX": 409.47574165411856,
         "visible": true
       },
       "trunk": {
-        "offsetX": 527.7556786289088,
+        "offsetX": 822.7752098789088,
         "visible": true
       }
     },
@@ -28,29 +28,29 @@
         "visible": true
       },
       "bottom": {
-        "offsetY": -168.99937137035408,
+        "offsetY": -170.28665830217227,
         "visible": true
       },
       "center": {
-        "offsetY": -447.0144274686313,
+        "offsetY": -416.29709792317675,
         "visible": true
       },
       "top": {
-        "offsetY": -579.9055989583334,
+        "offsetY": -550.280243844697,
         "visible": true
       }
     },
     "wheels": {
       "front": {
-        "offsetX": -390.2593479088797,
+        "offsetX": -596.0743337043342,
         "visible": true
       },
       "rear": {
-        "offsetX": 293.4401942334298,
+        "offsetX": 403.09040730161155,
         "visible": true
       },
       "radius": {
-        "offsetX": -497.40386253250983,
+        "offsetX": -712.7358937825097,
         "visible": true
       }
     },
@@ -71,6 +71,7 @@
       }
     }
   },
-  "cardWidth": 1200,
-  "style": "Compact"
+  "cardWidth": 1800,
+  "style": "America",
+  "substyle": "fintail"
 }

@@ -1,0 +1,140 @@
+{
+  "id": "car0048",
+  "name": "1957 Ford Fairlane ",
+  "style": "America",
+  "substyle": "fintail",
+  "usageLinks": [],
+  "descShort": "",
+  "descHistorical": "",
+  "country": "",
+  "designer": "",
+  "cardWidth": 1800,
+  "views": {
+    "side": {
+      "draft": [
+        {
+          "file": "1.jpg",
+          "x": -7.882612179487181,
+          "y": 322.09535256410254,
+          "scale": 1.9
+        }
+      ],
+      "activeSel": {
+        "kind": "draft",
+        "index": 0
+      },
+      "final": null,
+      "lastExport": null,
+      "guides": {
+        "vertical": {
+          "head": {
+            "offsetX": -878.0503627259161,
+            "visible": true
+          },
+          "cab1": {
+            "offsetX": -399.99616067048544,
+            "visible": true
+          },
+          "center": {
+            "offsetX": 2.411631591387277,
+            "visible": true
+          },
+          "cab2": {
+            "offsetX": 345.45330575668277,
+            "visible": true
+          },
+          "trunk": {
+            "offsetX": 768.6786553917293,
+            "visible": true
+          }
+        },
+        "horizontal": {
+          "ground": {
+            "offsetY": -85.6640625,
+            "visible": true
+          },
+          "bottom": {
+            "offsetY": -170.28665830217227,
+            "visible": true
+          },
+          "center": {
+            "offsetY": -416.29709792317675,
+            "visible": true
+          },
+          "top": {
+            "offsetY": -550.280243844697,
+            "visible": true
+          }
+        },
+        "wheels": {
+          "front": {
+            "offsetX": -621.5150388325393,
+            "visible": true
+          },
+          "rear": {
+            "offsetX": 376.6881637118679,
+            "visible": true
+          },
+          "radius": {
+            "offsetX": -720.4382175004584,
+            "visible": true
+          }
+        },
+        "rulers": {
+          "horizontal": {
+            "enabled": false,
+            "startOffsetX": -180,
+            "endOffsetX": 180,
+            "ratioKey": "gold",
+            "invert": false
+          },
+          "vertical": {
+            "enabled": false,
+            "startOffsetY": -280,
+            "endOffsetY": 0,
+            "ratioKey": "gold",
+            "invert": false
+          }
+        }
+      }
+    },
+    "front": {
+      "draft": [],
+      "activeSel": null,
+      "final": null,
+      "lastExport": null
+    },
+    "34front": {
+      "draft": [],
+      "activeSel": null,
+      "final": null,
+      "lastExport": null
+    },
+    "34rear": {
+      "draft": [],
+      "activeSel": null,
+      "final": null,
+      "lastExport": null
+    },
+    "rear": {
+      "draft": [],
+      "activeSel": null,
+      "final": null,
+      "lastExport": null
+    },
+    "custom1": {
+      "draft": [],
+      "activeSel": null,
+      "final": null,
+      "lastExport": null,
+      "customLabel": "Доп. 1"
+    },
+    "custom2": {
+      "draft": [],
+      "activeSel": null,
+      "final": null,
+      "lastExport": null,
+      "customLabel": "Доп. 2"
+    }
+  }
+}

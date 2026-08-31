@@ -97,7 +97,7 @@
             "state": {
               "type": "markdown",
               "state": {
-                "file": "DisDocs/18-пул-разработки-2.0-и-2.1.md",
+                "file": "DisDocs/Разработка/0057 — Материалы.md",
                 "mode": "source",
                 "source": false,
                 "backlinks": true,
@@ -112,7 +112,7 @@
                 }
               },
               "icon": "lucide-file",
-              "title": "18-пул-разработки-2.0-и-2.1"
+              "title": "0057 — Материалы"
             }
           },
           {
@@ -188,8 +188,7 @@
               "title": "Bookmarks"
             }
           }
-        ],
-        "currentTab": 2
+        ]
       }
     ],
     "direction": "horizontal",
@@ -301,39 +300,40 @@
   },
   "active": "17cc1349027cd935",
   "lastOpenFiles": [
+    "Tools/car-db/data/photos/car0060/side/draft/1.png",
+    "Tools/car-db/data/photos/car0060/side/draft",
+    "Tools/car-db/data/photos/car0060/side",
+    "Tools/car-db/data/photos/car0060",
+    "Tools/car-db/data/cars/car0060.json",
+    "Tools/car-db/data/photos/car0059/side/draft/1.png",
+    "Tools/car-db/data/photos/car0059/side/draft",
+    "Tools/car-db/data/photos/car0059/side",
+    "Tools/car-db/data/photos/car0059",
+    "Tools/car-db/data/cars/car0059.json",
+    "Tools/car-db/data/photos/car0058/side/draft/1.png",
+    "Tools/car-db/data/photos/car0058/side/draft",
+    "Tools/car-db/data/photos/car0058/side",
+    "Tools/car-db/data/photos/car0057/side/draft/1.png",
+    "Tools/car-db/data/photos/car0056/side/draft/1.png",
+    "Tools/car-db/data/photos/car0055/side/draft/1.png",
+    "Tools/car-db/data/photos/car0054/side/draft/1.png",
+    "Tools/car-db/data/photos/car0053/side/draft/1.png",
+    "Tools/car-db/data/photos/car0052/side/draft/1.jpg",
+    "Tools/car-db/data/photos/car0051/side/draft/1.png",
+    "Tools/car-db/data/photos/car0050/side/draft/1.png",
+    "DisDocs/18-пул-разработки-2.0-и-2.1.md",
     "DisDocs/16-кризисный-роадмап-релиз-2.0.md",
     "DisDocs/08-маркетинг-план.md",
     "DisDocs/13-концепция-версии-2.0.md",
     "DisDocs/17-scope-версии-2.1.md",
     "DisDocs/Разработка/В работе/Архитектура уровней и конфигов v2.md",
-    "DisDocs/18-пул-разработки-2.0-и-2.1.md",
     "DisDocs/sprints/0001 — Текущий (Август) Версия 2.0.md",
     "DisDocs/Разработка/0084 — Аудит текущего деформа Compact.md",
     "DisDocs/Разработка/0083 — Игровая карточка стиля Compact.md",
     "DisDocs/Разработка/0082 — Пропорции и сегменты Compact.md",
     "DisDocs/Разработка/0052 — Идеи дизайна.md",
     "DisDocs/Разработка/0081 — Генератор решёток и UGC.md",
-    "Tools/car-db/analysis/proportions.csv",
-    "Tools/car-db/analysis/proportions.json",
-    "Tools/car-db/analysis",
-    "Tools/car-db/analyze-proportions.mjs",
     "DisDocs/Разработка/0078 — Редактор решеток-фар-баиперов.md",
-    "Tools/car-db/data/photos/car0044/side/draft/1.png",
-    "Tools/car-db/data/photos/car0044/side/draft",
-    "Tools/car-db/data/photos/car0044/side",
-    "Tools/car-db/data/photos/car0044",
-    "Tools/car-db/data/cars/car0044.json",
-    "Tools/car-db/data/photos/car0043/side/draft/1.png",
-    "Tools/car-db/data/photos/car0043/side/draft",
-    "Tools/car-db/data/photos/car0043/side",
-    "Tools/car-db/data/photos/car0042/side/draft/1.png",
-    "Tools/car-db/data/photos/car0041/side/draft/1.png",
-    "Tools/car-db/data/photos/car0040/side/draft/1.png",
-    "Tools/car-db/data/photos/car0039/side/draft/1.png",
-    "Tools/car-db/data/photos/car0038/side/draft/1.png",
-    "Tools/car-db/data/photos/car0037/side/draft/1.png",
-    "Tools/car-db/data/photos/car0036/side/draft/1.png",
-    "Tools/car-db/data/photos/car0035/side/draft/1.png",
     "DisDocs/Разработка/0080 — Генератор фар.md",
     "DisDocs/Разработка/Backlog/0079 — Автоматические UV кузова.md",
     "DisDocs/Разработка/0001 — ШАБЛОН.md",
@@ -346,7 +346,6 @@
     "DisDocs/Разработка/0056 — режимы Blueprint-Pencil-силуэт-wireframe.md",
     "DisDocs/Разработка/Backlog/0032 — AR.md",
     "DisDocs/Разработка/0074 — megafiers.md",
-    "0070 — Общие деформации.md",
     "Analytics/reviews/Untitled.canvas"
   ]
 }

@@ -1,0 +1,140 @@
+{
+  "id": "car0051",
+  "name": "Chrysler 300F 1960",
+  "style": "America",
+  "substyle": "fintail",
+  "usageLinks": [],
+  "descShort": "",
+  "descHistorical": "",
+  "country": "",
+  "designer": "",
+  "cardWidth": 1900,
+  "views": {
+    "side": {
+      "draft": [
+        {
+          "file": "1.png",
+          "x": -10.183502906976742,
+          "y": -10.546874999999996,
+          "scale": 1.64
+        }
+      ],
+      "activeSel": {
+        "kind": "draft",
+        "index": 0
+      },
+      "final": null,
+      "lastExport": null,
+      "guides": {
+        "vertical": {
+          "head": {
+            "offsetX": -867.7925548845326,
+            "visible": true
+          },
+          "cab1": {
+            "offsetX": -366.4196475518212,
+            "visible": true
+          },
+          "center": {
+            "offsetX": 57.33578931351008,
+            "visible": true
+          },
+          "cab2": {
+            "offsetX": 432.18649746807205,
+            "visible": true
+          },
+          "trunk": {
+            "offsetX": 869.0324773207694,
+            "visible": true
+          }
+        },
+        "horizontal": {
+          "ground": {
+            "offsetY": -85.6640625,
+            "visible": true
+          },
+          "bottom": {
+            "offsetY": -160.2757571393816,
+            "visible": true
+          },
+          "center": {
+            "offsetY": -416.29709792317675,
+            "visible": true
+          },
+          "top": {
+            "offsetY": -550.280243844697,
+            "visible": true
+          }
+        },
+        "wheels": {
+          "front": {
+            "offsetX": -612.7621970764272,
+            "visible": true
+          },
+          "rear": {
+            "offsetX": 421.18633753416975,
+            "visible": true
+          },
+          "radius": {
+            "offsetX": -719.1675798290214,
+            "visible": true
+          }
+        },
+        "rulers": {
+          "horizontal": {
+            "enabled": false,
+            "startOffsetX": -180,
+            "endOffsetX": 180,
+            "ratioKey": "gold",
+            "invert": false
+          },
+          "vertical": {
+            "enabled": false,
+            "startOffsetY": -280,
+            "endOffsetY": 0,
+            "ratioKey": "gold",
+            "invert": false
+          }
+        }
+      }
+    },
+    "front": {
+      "draft": [],
+      "activeSel": null,
+      "final": null,
+      "lastExport": null
+    },
+    "34front": {
+      "draft": [],
+      "activeSel": null,
+      "final": null,
+      "lastExport": null
+    },
+    "34rear": {
+      "draft": [],
+      "activeSel": null,
+      "final": null,
+      "lastExport": null
+    },
+    "rear": {
+      "draft": [],
+      "activeSel": null,
+      "final": null,
+      "lastExport": null
+    },
+    "custom1": {
+      "draft": [],
+      "activeSel": null,
+      "final": null,
+      "lastExport": null,
+      "customLabel": "Доп. 1"
+    },
+    "custom2": {
+      "draft": [],
+      "activeSel": null,
+      "final": null,
+      "lastExport": null,
+      "customLabel": "Доп. 2"
+    }
+  }
+}

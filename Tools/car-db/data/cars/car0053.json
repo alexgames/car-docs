@@ -1,0 +1,140 @@
+{
+  "id": "car0053",
+  "name": "Chevrolet Bel Air Nomad 1956",
+  "style": "America",
+  "substyle": "fintail",
+  "usageLinks": [],
+  "descShort": "",
+  "descHistorical": "",
+  "country": "",
+  "designer": "",
+  "cardWidth": 1700,
+  "views": {
+    "side": {
+      "draft": [
+        {
+          "file": "1.png",
+          "x": 3.525904605263157,
+          "y": 69.83963815789474,
+          "scale": 2.6
+        }
+      ],
+      "activeSel": {
+        "kind": "draft",
+        "index": 0
+      },
+      "final": null,
+      "lastExport": null,
+      "guides": {
+        "vertical": {
+          "head": {
+            "offsetX": -762.7624810626232,
+            "visible": true
+          },
+          "cab1": {
+            "offsetX": -339.6551413553708,
+            "visible": true
+          },
+          "center": {
+            "offsetX": 55.130455393681586,
+            "visible": true
+          },
+          "cab2": {
+            "offsetX": 604.7265640225396,
+            "visible": true
+          },
+          "trunk": {
+            "offsetX": 741.1448644841719,
+            "visible": true
+          }
+        },
+        "horizontal": {
+          "ground": {
+            "offsetY": -85.6640625,
+            "visible": true
+          },
+          "bottom": {
+            "offsetY": -132.03624711796175,
+            "visible": true
+          },
+          "center": {
+            "offsetY": -385.05737752843993,
+            "visible": true
+          },
+          "top": {
+            "offsetY": -550.280243844697,
+            "visible": true
+          }
+        },
+        "wheels": {
+          "front": {
+            "offsetX": -551.5328040990711,
+            "visible": true
+          },
+          "rear": {
+            "offsetX": 369.30134480161155,
+            "visible": true
+          },
+          "radius": {
+            "offsetX": -655.9205154930361,
+            "visible": true
+          }
+        },
+        "rulers": {
+          "horizontal": {
+            "enabled": false,
+            "startOffsetX": -180,
+            "endOffsetX": 180,
+            "ratioKey": "gold",
+            "invert": false
+          },
+          "vertical": {
+            "enabled": false,
+            "startOffsetY": -280,
+            "endOffsetY": 0,
+            "ratioKey": "gold",
+            "invert": false
+          }
+        }
+      }
+    },
+    "front": {
+      "draft": [],
+      "activeSel": null,
+      "final": null,
+      "lastExport": null
+    },
+    "34front": {
+      "draft": [],
+      "activeSel": null,
+      "final": null,
+      "lastExport": null
+    },
+    "34rear": {
+      "draft": [],
+      "activeSel": null,
+      "final": null,
+      "lastExport": null
+    },
+    "rear": {
+      "draft": [],
+      "activeSel": null,
+      "final": null,
+      "lastExport": null
+    },
+    "custom1": {
+      "draft": [],
+      "activeSel": null,
+      "final": null,
+      "lastExport": null,
+      "customLabel": "Доп. 1"
+    },
+    "custom2": {
+      "draft": [],
+      "activeSel": null,
+      "final": null,
+      "lastExport": null,
+      "customLabel": "Доп. 2"
+    }
+  }
+}

@@ -1,0 +1,140 @@
+{
+  "id": "car0049",
+  "name": "Plymouth Fury 1959",
+  "style": "America",
+  "substyle": "fintail",
+  "usageLinks": [],
+  "descShort": "",
+  "descHistorical": "",
+  "country": "",
+  "designer": "",
+  "cardWidth": 1800,
+  "views": {
+    "side": {
+      "draft": [
+        {
+          "file": "1.jpg",
+          "x": 8.835655275041052,
+          "y": 320.84371151477836,
+          "scale": 2.86
+        }
+      ],
+      "activeSel": {
+        "kind": "draft",
+        "index": 0
+      },
+      "final": null,
+      "lastExport": null,
+      "guides": {
+        "vertical": {
+          "head": {
+            "offsetX": -833.0598064072348,
+            "visible": true
+          },
+          "cab1": {
+            "offsetX": -353.41806428770155,
+            "visible": true
+          },
+          "center": {
+            "offsetX": 58.09930329468398,
+            "visible": true
+          },
+          "cab2": {
+            "offsetX": 398.4917386779282,
+            "visible": true
+          },
+          "trunk": {
+            "offsetX": 824.765537259861,
+            "visible": true
+          }
+        },
+        "horizontal": {
+          "ground": {
+            "offsetY": -85.6640625,
+            "visible": true
+          },
+          "bottom": {
+            "offsetY": -170.28665830217227,
+            "visible": true
+          },
+          "center": {
+            "offsetY": -416.29709792317675,
+            "visible": true
+          },
+          "top": {
+            "offsetY": -550.280243844697,
+            "visible": true
+          }
+        },
+        "wheels": {
+          "front": {
+            "offsetX": -588.5036491805247,
+            "visible": true
+          },
+          "rear": {
+            "offsetX": 396.64509480161155,
+            "visible": true
+          },
+          "radius": {
+            "offsetX": -700.3382003301288,
+            "visible": true
+          }
+        },
+        "rulers": {
+          "horizontal": {
+            "enabled": false,
+            "startOffsetX": -180,
+            "endOffsetX": 180,
+            "ratioKey": "gold",
+            "invert": false
+          },
+          "vertical": {
+            "enabled": false,
+            "startOffsetY": -280,
+            "endOffsetY": 0,
+            "ratioKey": "gold",
+            "invert": false
+          }
+        }
+      }
+    },
+    "front": {
+      "draft": [],
+      "activeSel": null,
+      "final": null,
+      "lastExport": null
+    },
+    "34front": {
+      "draft": [],
+      "activeSel": null,
+      "final": null,
+      "lastExport": null
+    },
+    "34rear": {
+      "draft": [],
+      "activeSel": null,
+      "final": null,
+      "lastExport": null
+    },
+    "rear": {
+      "draft": [],
+      "activeSel": null,
+      "final": null,
+      "lastExport": null
+    },
+    "custom1": {
+      "draft": [],
+      "activeSel": null,
+      "final": null,
+      "lastExport": null,
+      "customLabel": "Доп. 1"
+    },
+    "custom2": {
+      "draft": [],
+      "activeSel": null,
+      "final": null,
+      "lastExport": null,
+      "customLabel": "Доп. 2"
+    }
+  }
+}

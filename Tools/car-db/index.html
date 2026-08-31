@@ -461,9 +461,9 @@ App.Data = (function () {
     return { vertical, horizontal, wheels, rulers: defaultRulers() };
   }
   // Заменяет старую «Сохранить линии по умолчанию» — сохраняет сразу разметку, ширину
-  // карточки и базовый стиль как стартовые значения для НОВЫХ машин.
-  async function saveCardDefaults(guides, cardWidth, style) {
-    App.State.cardDefaults = { guides: JSON.parse(JSON.stringify(guides)), cardWidth, style };
+  // карточки, базовый стиль и подстиль как стартовые значения для НОВЫХ машин.
+  async function saveCardDefaults(guides, cardWidth, style, substyle) {
+    App.State.cardDefaults = { guides: JSON.parse(JSON.stringify(guides)), cardWidth, style, substyle };
     await App.FS.setJSON(App.State.rootHandle, 'cardDefaults.json', App.State.cardDefaults);
   }
   function defaultView(key) {
@@ -478,7 +478,7 @@ App.Data = (function () {
     C.VIEW_KEYS.forEach(k => views[k] = defaultView(k));
     const d = App.State.cardDefaults;
     return {
-      id, name: 'Новая машина', style: (d && d.style) || '', substyle: '', usageLinks: [],
+      id, name: 'Новая машина', style: (d && d.style) || '', substyle: (d && d.substyle) || '', usageLinks: [],
       descShort: '', descHistorical: '', country: '', designer: '',
       cardWidth: (d && d.cardWidth) || App.State.cardSizes[0] || 260, views,
     };
@@ -504,7 +504,7 @@ App.Data = (function () {
     App.State.cardDefaults = await App.FS.getJSON(root, 'cardDefaults.json', null);
     if (!App.State.cardDefaults) {
       const legacyGuides = await App.FS.getJSON(root, 'guideDefaults.json', null);
-      if (legacyGuides) App.State.cardDefaults = { guides: legacyGuides, cardWidth: null, style: '' };
+      if (legacyGuides) App.State.cardDefaults = { guides: legacyGuides, cardWidth: null, style: '', substyle: '' };
     }
 
     App.State.cars = [];
@@ -1437,11 +1437,11 @@ App.UI = (function () {
         C_.WHEEL_LINES.forEach(key => legend.appendChild(legendRow('w-' + key, C_.WHEEL_LABELS[key], C_.WHEEL_COLORS[key], view.guides.wheels[key], 'offsetX', car, view)));
         const saveDefBtn = document.createElement('button');
         saveDefBtn.textContent = 'Карточка по умолчанию';
-        saveDefBtn.title = 'Разметка, ширина карточки (' + (car.cardWidth || 260) + 'px) и стиль (' + (car.style || '—') + ') станут стартовыми для всех НОВЫХ машин';
+        saveDefBtn.title = 'Разметка, ширина карточки (' + (car.cardWidth || 260) + 'px), стиль (' + (car.style || '—') + ') и подстиль (' + (car.substyle || '—') + ') станут стартовыми для всех НОВЫХ машин';
         saveDefBtn.style.cssText = 'margin-top:12px;width:100%;font-size:10.5px;padding:6px 8px;border-radius:6px;border:1px dashed #ccc;background:#fff;color:#888;cursor:pointer;';
         const saveDefBtnLabel = saveDefBtn.textContent;
         saveDefBtn.addEventListener('click', async () => {
-          await App.Data.saveCardDefaults(view.guides, car.cardWidth, car.style);
+          await App.Data.saveCardDefaults(view.guides, car.cardWidth, car.style, car.substyle);
           saveDefBtn.textContent = '✓ Сохранено';
           saveDefBtn.style.color = '#2e7d32';
           saveDefBtn.style.borderColor = '#2e7d32';
