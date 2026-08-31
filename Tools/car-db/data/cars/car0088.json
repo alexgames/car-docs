@@ -1,0 +1,140 @@
+{
+  "id": "car0088",
+  "name": "Facel Vega FVS 1954",
+  "style": "Sport GT",
+  "substyle": "",
+  "usageLinks": [],
+  "descShort": "",
+  "descHistorical": "",
+  "country": "",
+  "designer": "",
+  "cardWidth": 1700,
+  "views": {
+    "side": {
+      "draft": [
+        {
+          "file": "1.png",
+          "x": -3.8789970930232553,
+          "y": -13.426598837209303,
+          "scale": 1.4691943127962086
+        }
+      ],
+      "activeSel": {
+        "kind": "draft",
+        "index": 0
+      },
+      "final": null,
+      "lastExport": null,
+      "guides": {
+        "vertical": {
+          "head": {
+            "offsetX": -738.7309352385797,
+            "visible": true
+          },
+          "cab1": {
+            "offsetX": -243.1766362302867,
+            "visible": true
+          },
+          "center": {
+            "offsetX": 152.28461663695407,
+            "visible": true
+          },
+          "cab2": {
+            "offsetX": 450.5199302356327,
+            "visible": true
+          },
+          "trunk": {
+            "offsetX": 764.0144616960297,
+            "visible": true
+          }
+        },
+        "horizontal": {
+          "ground": {
+            "offsetY": -85.6640625,
+            "visible": true
+          },
+          "bottom": {
+            "offsetY": -154.71805667911025,
+            "visible": true
+          },
+          "center": {
+            "offsetY": -399.5283621035511,
+            "visible": true
+          },
+          "top": {
+            "offsetY": -550.280243844697,
+            "visible": true
+          }
+        },
+        "wheels": {
+          "front": {
+            "offsetX": -524.8130840058409,
+            "visible": true
+          },
+          "rear": {
+            "offsetX": 388.75678231264646,
+            "visible": true
+          },
+          "radius": {
+            "offsetX": -639.1400647328312,
+            "visible": true
+          }
+        },
+        "rulers": {
+          "horizontal": {
+            "enabled": false,
+            "startOffsetX": -180,
+            "endOffsetX": 180,
+            "ratioKey": "gold",
+            "invert": false
+          },
+          "vertical": {
+            "enabled": false,
+            "startOffsetY": -280,
+            "endOffsetY": 0,
+            "ratioKey": "gold",
+            "invert": false
+          }
+        }
+      }
+    },
+    "front": {
+      "draft": [],
+      "activeSel": null,
+      "final": null,
+      "lastExport": null
+    },
+    "34front": {
+      "draft": [],
+      "activeSel": null,
+      "final": null,
+      "lastExport": null
+    },
+    "34rear": {
+      "draft": [],
+      "activeSel": null,
+      "final": null,
+      "lastExport": null
+    },
+    "rear": {
+      "draft": [],
+      "activeSel": null,
+      "final": null,
+      "lastExport": null
+    },
+    "custom1": {
+      "draft": [],
+      "activeSel": null,
+      "final": null,
+      "lastExport": null,
+      "customLabel": "Доп. 1"
+    },
+    "custom2": {
+      "draft": [],
+      "activeSel": null,
+      "final": null,
+      "lastExport": null,
+      "customLabel": "Доп. 2"
+    }
+  }
+}

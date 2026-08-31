@@ -1,0 +1,140 @@
+{
+  "id": "car0085",
+  "name": "Ferrari 250 GT Coupe Pinin Farina Coupe 1960",
+  "style": "Sport GT",
+  "substyle": "",
+  "usageLinks": [],
+  "descShort": "",
+  "descHistorical": "",
+  "country": "",
+  "designer": "",
+  "cardWidth": 1800,
+  "views": {
+    "side": {
+      "draft": [
+        {
+          "file": "1.webp",
+          "x": -1.753656914893618,
+          "y": -36.83510638297873,
+          "scale": 1.9
+        }
+      ],
+      "activeSel": {
+        "kind": "draft",
+        "index": 0
+      },
+      "final": null,
+      "lastExport": null,
+      "guides": {
+        "vertical": {
+          "head": {
+            "offsetX": -748.1015095528314,
+            "visible": true
+          },
+          "cab1": {
+            "offsetX": -194.33337072641075,
+            "visible": true
+          },
+          "center": {
+            "offsetX": 201.10971353617902,
+            "visible": true
+          },
+          "cab2": {
+            "offsetX": 415.58612917719506,
+            "visible": true
+          },
+          "trunk": {
+            "offsetX": 717.6880137979974,
+            "visible": true
+          }
+        },
+        "horizontal": {
+          "ground": {
+            "offsetY": -85.6640625,
+            "visible": true
+          },
+          "bottom": {
+            "offsetY": -169.48726881387472,
+            "visible": true
+          },
+          "center": {
+            "offsetY": -399.5283621035511,
+            "visible": true
+          },
+          "top": {
+            "offsetY": -550.280243844697,
+            "visible": true
+          }
+        },
+        "wheels": {
+          "front": {
+            "offsetX": -540.3963893874748,
+            "visible": true
+          },
+          "rear": {
+            "offsetX": 340.95634812958156,
+            "visible": true
+          },
+          "radius": {
+            "offsetX": -665.4640435640775,
+            "visible": true
+          }
+        },
+        "rulers": {
+          "horizontal": {
+            "enabled": false,
+            "startOffsetX": -180,
+            "endOffsetX": 180,
+            "ratioKey": "gold",
+            "invert": false
+          },
+          "vertical": {
+            "enabled": false,
+            "startOffsetY": -280,
+            "endOffsetY": 0,
+            "ratioKey": "gold",
+            "invert": false
+          }
+        }
+      }
+    },
+    "front": {
+      "draft": [],
+      "activeSel": null,
+      "final": null,
+      "lastExport": null
+    },
+    "34front": {
+      "draft": [],
+      "activeSel": null,
+      "final": null,
+      "lastExport": null
+    },
+    "34rear": {
+      "draft": [],
+      "activeSel": null,
+      "final": null,
+      "lastExport": null
+    },
+    "rear": {
+      "draft": [],
+      "activeSel": null,
+      "final": null,
+      "lastExport": null
+    },
+    "custom1": {
+      "draft": [],
+      "activeSel": null,
+      "final": null,
+      "lastExport": null,
+      "customLabel": "Доп. 1"
+    },
+    "custom2": {
+      "draft": [],
+      "activeSel": null,
+      "final": null,
+      "lastExport": null,
+      "customLabel": "Доп. 2"
+    }
+  }
+}

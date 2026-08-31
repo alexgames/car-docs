@@ -2,23 +2,23 @@
   "guides": {
     "vertical": {
       "head": {
-        "offsetX": -756.1637114013704,
+        "offsetX": -828.1295544246262,
         "visible": true
       },
       "cab1": {
-        "offsetX": -239.70643274191457,
+        "offsetX": -301.2344123930774,
         "visible": true
       },
       "center": {
-        "offsetX": 187.1865061718379,
+        "offsetX": 199.67742186951227,
         "visible": true
       },
       "cab2": {
-        "offsetX": 496.2048866309815,
+        "offsetX": 606.2612093054001,
         "visible": true
       },
       "trunk": {
-        "offsetX": 768.9018163471924,
+        "offsetX": 830.2481099518436,
         "visible": true
       }
     },
@@ -28,11 +28,11 @@
         "visible": true
       },
       "bottom": {
-        "offsetY": -196.26057121399396,
+        "offsetY": -157.78855086515676,
         "visible": true
       },
       "center": {
-        "offsetY": -410.06615280122554,
+        "offsetY": -399.5283621035511,
         "visible": true
       },
       "top": {
@@ -42,15 +42,15 @@
     },
     "wheels": {
       "front": {
-        "offsetX": -481.29019156398044,
+        "offsetX": -538.0125752849107,
         "visible": true
       },
       "rear": {
-        "offsetX": 440.22843928939074,
+        "offsetX": 444.3617968475303,
         "visible": true
       },
       "radius": {
-        "offsetX": -593.527782756087,
+        "offsetX": -662.5593961281801,
         "visible": true
       }
     },
@@ -71,7 +71,7 @@
       }
     }
   },
-  "cardWidth": 1700,
-  "style": "America",
-  "substyle": "muscle"
+  "cardWidth": 1800,
+  "style": "Sport GT",
+  "substyle": ""
 }
