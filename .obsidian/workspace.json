@@ -97,7 +97,7 @@
             "state": {
               "type": "markdown",
               "state": {
-                "file": "DisDocs/Разработка/0078 — Редактор решеток-фар-баиперов.md",
+                "file": "DisDocs/18-пул-разработки-2.0-и-2.1.md",
                 "mode": "source",
                 "source": false,
                 "backlinks": true,
@@ -108,11 +108,11 @@
                   "showSearch": false,
                   "searchQuery": "",
                   "backlinkCollapsed": false,
-                  "unlinkedCollapsed": true
+                  "unlinkedCollapsed": false
                 }
               },
               "icon": "lucide-file",
-              "title": "0078 — Редактор решеток-фар-баиперов"
+              "title": "18-пул-разработки-2.0-и-2.1"
             }
           },
           {
@@ -131,26 +131,6 @@
           }
         ],
         "currentTab": 6
-      },
-      {
-        "id": "6043f9506f9e51cb",
-        "type": "tabs",
-        "children": [
-          {
-            "id": "53085408de80946c",
-            "type": "leaf",
-            "state": {
-              "type": "markdown",
-              "state": {
-                "file": "DisDocs/sprints/0002 — Спринт Чеклист.md",
-                "mode": "source",
-                "source": false
-              },
-              "icon": "lucide-file",
-              "title": "0002 — Спринт Чеклист"
-            }
-          }
-        ]
       }
     ],
     "direction": "vertical"
@@ -208,11 +188,12 @@
               "title": "Bookmarks"
             }
           }
-        ]
+        ],
+        "currentTab": 2
       }
     ],
     "direction": "horizontal",
-    "width": 267.17578125
+    "width": 276.51953125
   },
   "right": {
     "id": "43901a2bea0d586c",
@@ -320,32 +301,41 @@
   },
   "active": "17cc1349027cd935",
   "lastOpenFiles": [
-    "Tools/car-db/data/photos/car0030/side/draft/1.png",
-    "Tools/car-db/data/photos/car0030/side/draft",
-    "Tools/car-db/data/photos/car0030/side",
-    "Tools/car-db/data/photos/car0030",
-    "Tools/car-db/data/cars/car0030.json",
-    "Design/grills/1971 Chrysler Imperial LeBaron.png",
-    "Design/grills/1971 Chrysler Imperial Crown .png",
-    "Design/grills/Screenshot 2026-08-30 at 9.31.14 PM.png",
-    "Design/grills/1958 Chrysler Imperial Crown .png",
-    "Design/grills/Screenshot 2026-08-30 at 9.29.47 PM.png",
-    "Design/grills/1961 Chrysler Imperial Crown .jpg",
-    "Design/grills/images.jpg",
-    "Design/grills/1961 Lincoln Continental3.jpg",
-    "Design/grills/1961 Lincoln Continental2.png",
-    "Design/grills/Screenshot 2026-08-30 at 9.24.38 PM.png",
-    "Design/grills",
-    "Design/untitled folder",
-    "Design/normal maps",
+    "DisDocs/16-кризисный-роадмап-релиз-2.0.md",
+    "DisDocs/08-маркетинг-план.md",
+    "DisDocs/13-концепция-версии-2.0.md",
+    "DisDocs/17-scope-версии-2.1.md",
+    "DisDocs/Разработка/В работе/Архитектура уровней и конфигов v2.md",
+    "DisDocs/18-пул-разработки-2.0-и-2.1.md",
+    "DisDocs/sprints/0001 — Текущий (Август) Версия 2.0.md",
+    "DisDocs/Разработка/0084 — Аудит текущего деформа Compact.md",
+    "DisDocs/Разработка/0083 — Игровая карточка стиля Compact.md",
+    "DisDocs/Разработка/0082 — Пропорции и сегменты Compact.md",
+    "DisDocs/Разработка/0052 — Идеи дизайна.md",
     "DisDocs/Разработка/0081 — Генератор решёток и UGC.md",
+    "Tools/car-db/analysis/proportions.csv",
+    "Tools/car-db/analysis/proportions.json",
+    "Tools/car-db/analysis",
+    "Tools/car-db/analyze-proportions.mjs",
+    "DisDocs/Разработка/0078 — Редактор решеток-фар-баиперов.md",
+    "Tools/car-db/data/photos/car0044/side/draft/1.png",
+    "Tools/car-db/data/photos/car0044/side/draft",
+    "Tools/car-db/data/photos/car0044/side",
+    "Tools/car-db/data/photos/car0044",
+    "Tools/car-db/data/cars/car0044.json",
+    "Tools/car-db/data/photos/car0043/side/draft/1.png",
+    "Tools/car-db/data/photos/car0043/side/draft",
+    "Tools/car-db/data/photos/car0043/side",
+    "Tools/car-db/data/photos/car0042/side/draft/1.png",
+    "Tools/car-db/data/photos/car0041/side/draft/1.png",
+    "Tools/car-db/data/photos/car0040/side/draft/1.png",
+    "Tools/car-db/data/photos/car0039/side/draft/1.png",
+    "Tools/car-db/data/photos/car0038/side/draft/1.png",
+    "Tools/car-db/data/photos/car0037/side/draft/1.png",
+    "Tools/car-db/data/photos/car0036/side/draft/1.png",
+    "Tools/car-db/data/photos/car0035/side/draft/1.png",
     "DisDocs/Разработка/0080 — Генератор фар.md",
     "DisDocs/Разработка/Backlog/0079 — Автоматические UV кузова.md",
-    "Tools/car-db/data/photos/car0029/side/draft",
-    "Tools/car-db/data/photos/car0029/side",
-    "Tools/car-db/data/photos/car0029",
-    "DisDocs/sprints/0001 — Текущий (Август) Версия 2.0.md",
-    "DisDocs/Разработка/0078 — Редактор решеток-фар-баиперов.md",
     "DisDocs/Разработка/0001 — ШАБЛОН.md",
     "DisDocs/sprints/0002 — Спринт Чеклист.md",
     "DisDocs/Разработка/0073 — deformX deformZ.md",
@@ -357,15 +347,6 @@
     "DisDocs/Разработка/Backlog/0032 — AR.md",
     "DisDocs/Разработка/0074 — megafiers.md",
     "0070 — Общие деформации.md",
-    "DisDocs/Разработка/0070 — Общие деформации.md",
-    "DisDocs/Разработка/0072 — Видео: сводный чек-лист.md",
-    "DisDocs/Разработка/0020 — Запись видео (инструмент).md",
-    "DisDocs/Разработка/0019 — Видео-дейлики-рефералы.md",
-    "DisDocs/Разработка/Сделано/0054 — Юнити 6.md",
-    "DisDocs/Разработка/0075 — 3d models.md",
-    "DisDocs/Разработка/0076 — Зеркала пол и стены.md",
-    "DisDocs/Разработка/Backlog/0068 — Новый тип обвеса.md",
-    "DisDocs/Разработка/В работе/0054 — Обвес новый.md",
     "Analytics/reviews/Untitled.canvas"
   ]
 }

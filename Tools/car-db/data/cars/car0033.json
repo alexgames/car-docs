@@ -1,0 +1,140 @@
+{
+  "id": "car0033",
+  "name": "Lancia Flavia 1961",
+  "style": "Compact",
+  "substyle": "",
+  "usageLinks": [],
+  "descShort": "",
+  "descHistorical": "",
+  "country": "",
+  "designer": "",
+  "cardWidth": 1400,
+  "views": {
+    "side": {
+      "draft": [
+        {
+          "file": "1.png",
+          "x": -11.53041294642857,
+          "y": -20.047433035714285,
+          "scale": 2.5833333333333335
+        }
+      ],
+      "activeSel": {
+        "kind": "draft",
+        "index": 0
+      },
+      "final": null,
+      "lastExport": null,
+      "guides": {
+        "vertical": {
+          "head": {
+            "offsetX": -641.0252730152794,
+            "visible": true
+          },
+          "cab1": {
+            "offsetX": -274.83670098954144,
+            "visible": true
+          },
+          "center": {
+            "offsetX": 29.90539433905633,
+            "visible": true
+          },
+          "cab2": {
+            "offsetX": 373.5741053130291,
+            "visible": true
+          },
+          "trunk": {
+            "offsetX": 621.3121276052796,
+            "visible": true
+          }
+        },
+        "horizontal": {
+          "ground": {
+            "offsetY": -85.6640625,
+            "visible": true
+          },
+          "bottom": {
+            "offsetY": -168.6977361566095,
+            "visible": true
+          },
+          "center": {
+            "offsetY": -433.0502883091797,
+            "visible": true
+          },
+          "top": {
+            "offsetY": -527.6943824404763,
+            "visible": true
+          }
+        },
+        "wheels": {
+          "front": {
+            "offsetX": -429.58733762749443,
+            "visible": true
+          },
+          "rear": {
+            "offsetX": 358.29648594519017,
+            "visible": true
+          },
+          "radius": {
+            "offsetX": -513.9390526028561,
+            "visible": true
+          }
+        },
+        "rulers": {
+          "horizontal": {
+            "enabled": false,
+            "startOffsetX": -180,
+            "endOffsetX": 180,
+            "ratioKey": "gold",
+            "invert": false
+          },
+          "vertical": {
+            "enabled": false,
+            "startOffsetY": -280,
+            "endOffsetY": 0,
+            "ratioKey": "gold",
+            "invert": false
+          }
+        }
+      }
+    },
+    "front": {
+      "draft": [],
+      "activeSel": null,
+      "final": null,
+      "lastExport": null
+    },
+    "34front": {
+      "draft": [],
+      "activeSel": null,
+      "final": null,
+      "lastExport": null
+    },
+    "34rear": {
+      "draft": [],
+      "activeSel": null,
+      "final": null,
+      "lastExport": null
+    },
+    "rear": {
+      "draft": [],
+      "activeSel": null,
+      "final": null,
+      "lastExport": null
+    },
+    "custom1": {
+      "draft": [],
+      "activeSel": null,
+      "final": null,
+      "lastExport": null,
+      "customLabel": "Доп. 1"
+    },
+    "custom2": {
+      "draft": [],
+      "activeSel": null,
+      "final": null,
+      "lastExport": null,
+      "customLabel": "Доп. 2"
+    }
+  }
+}

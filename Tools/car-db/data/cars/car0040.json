@@ -1,0 +1,140 @@
+{
+  "id": "car0040",
+  "name": "Holden 48-215 FX 1948",
+  "style": "Compact",
+  "substyle": "",
+  "usageLinks": [],
+  "descShort": "",
+  "descHistorical": "",
+  "country": "",
+  "designer": "",
+  "cardWidth": 1400,
+  "views": {
+    "side": {
+      "draft": [
+        {
+          "file": "1.png",
+          "x": 56.12444196428572,
+          "y": 28.02734375,
+          "scale": 2.7
+        }
+      ],
+      "activeSel": {
+        "kind": "draft",
+        "index": 0
+      },
+      "final": null,
+      "lastExport": null,
+      "guides": {
+        "vertical": {
+          "head": {
+            "offsetX": -606.7828064974223,
+            "visible": true
+          },
+          "cab1": {
+            "offsetX": -229.13357598954144,
+            "visible": true
+          },
+          "center": {
+            "offsetX": 46.96036085691344,
+            "visible": true
+          },
+          "cab2": {
+            "offsetX": 428.3801879023149,
+            "visible": true
+          },
+          "trunk": {
+            "offsetX": 625.7066588552796,
+            "visible": true
+          }
+        },
+        "horizontal": {
+          "ground": {
+            "offsetY": -85.6640625,
+            "visible": true
+          },
+          "bottom": {
+            "offsetY": -168.58612901375233,
+            "visible": true
+          },
+          "center": {
+            "offsetY": -447.77545571989396,
+            "visible": true
+          },
+          "top": {
+            "offsetY": -579.9055989583334,
+            "visible": true
+          }
+        },
+        "wheels": {
+          "front": {
+            "offsetX": -447.8560318239231,
+            "visible": true
+          },
+          "rear": {
+            "offsetX": 362.00044799876173,
+            "visible": true
+          },
+          "radius": {
+            "offsetX": -549.227836084999,
+            "visible": true
+          }
+        },
+        "rulers": {
+          "horizontal": {
+            "enabled": false,
+            "startOffsetX": -180,
+            "endOffsetX": 180,
+            "ratioKey": "gold",
+            "invert": false
+          },
+          "vertical": {
+            "enabled": false,
+            "startOffsetY": -280,
+            "endOffsetY": 0,
+            "ratioKey": "gold",
+            "invert": false
+          }
+        }
+      }
+    },
+    "front": {
+      "draft": [],
+      "activeSel": null,
+      "final": null,
+      "lastExport": null
+    },
+    "34front": {
+      "draft": [],
+      "activeSel": null,
+      "final": null,
+      "lastExport": null
+    },
+    "34rear": {
+      "draft": [],
+      "activeSel": null,
+      "final": null,
+      "lastExport": null
+    },
+    "rear": {
+      "draft": [],
+      "activeSel": null,
+      "final": null,
+      "lastExport": null
+    },
+    "custom1": {
+      "draft": [],
+      "activeSel": null,
+      "final": null,
+      "lastExport": null,
+      "customLabel": "Доп. 1"
+    },
+    "custom2": {
+      "draft": [],
+      "activeSel": null,
+      "final": null,
+      "lastExport": null,
+      "customLabel": "Доп. 2"
+    }
+  }
+}

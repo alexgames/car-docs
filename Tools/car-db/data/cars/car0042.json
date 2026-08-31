@@ -1,0 +1,140 @@
+{
+  "id": "car0042",
+  "name": "Toyota Model SA 1947",
+  "style": "Compact",
+  "substyle": "",
+  "usageLinks": [],
+  "descShort": "",
+  "descHistorical": "",
+  "country": "",
+  "designer": "",
+  "cardWidth": 1200,
+  "views": {
+    "side": {
+      "draft": [
+        {
+          "file": "1.png",
+          "x": 17.528521825396826,
+          "y": 23.449900793650794,
+          "scale": 2.26
+        }
+      ],
+      "activeSel": {
+        "kind": "draft",
+        "index": 0
+      },
+      "final": null,
+      "lastExport": null,
+      "guides": {
+        "vertical": {
+          "head": {
+            "offsetX": -510.9429909310443,
+            "visible": true
+          },
+          "cab1": {
+            "offsetX": -127.66725259938994,
+            "visible": true
+          },
+          "center": {
+            "offsetX": 155.56827312693508,
+            "visible": true
+          },
+          "cab2": {
+            "offsetX": 437.8759547223003,
+            "visible": true
+          },
+          "trunk": {
+            "offsetX": 527.7556786289088,
+            "visible": true
+          }
+        },
+        "horizontal": {
+          "ground": {
+            "offsetY": -85.6640625,
+            "visible": true
+          },
+          "bottom": {
+            "offsetY": -168.99937137035408,
+            "visible": true
+          },
+          "center": {
+            "offsetY": -447.0144274686313,
+            "visible": true
+          },
+          "top": {
+            "offsetY": -579.9055989583334,
+            "visible": true
+          }
+        },
+        "wheels": {
+          "front": {
+            "offsetX": -390.2593479088797,
+            "visible": true
+          },
+          "rear": {
+            "offsetX": 293.4401942334298,
+            "visible": true
+          },
+          "radius": {
+            "offsetX": -497.40386253250983,
+            "visible": true
+          }
+        },
+        "rulers": {
+          "horizontal": {
+            "enabled": false,
+            "startOffsetX": -180,
+            "endOffsetX": 180,
+            "ratioKey": "gold",
+            "invert": false
+          },
+          "vertical": {
+            "enabled": false,
+            "startOffsetY": -280,
+            "endOffsetY": 0,
+            "ratioKey": "gold",
+            "invert": false
+          }
+        }
+      }
+    },
+    "front": {
+      "draft": [],
+      "activeSel": null,
+      "final": null,
+      "lastExport": null
+    },
+    "34front": {
+      "draft": [],
+      "activeSel": null,
+      "final": null,
+      "lastExport": null
+    },
+    "34rear": {
+      "draft": [],
+      "activeSel": null,
+      "final": null,
+      "lastExport": null
+    },
+    "rear": {
+      "draft": [],
+      "activeSel": null,
+      "final": null,
+      "lastExport": null
+    },
+    "custom1": {
+      "draft": [],
+      "activeSel": null,
+      "final": null,
+      "lastExport": null,
+      "customLabel": "Доп. 1"
+    },
+    "custom2": {
+      "draft": [],
+      "activeSel": null,
+      "final": null,
+      "lastExport": null,
+      "customLabel": "Доп. 2"
+    }
+  }
+}

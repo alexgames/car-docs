@@ -1,0 +1,140 @@
+{
+  "id": "car0032",
+  "name": "Austin Mini Seven 1959",
+  "style": "Compact",
+  "substyle": "",
+  "usageLinks": [],
+  "descShort": "",
+  "descHistorical": "",
+  "country": "",
+  "designer": "",
+  "cardWidth": 1200,
+  "views": {
+    "side": {
+      "draft": [
+        {
+          "file": "1.png",
+          "x": 4.885912698412699,
+          "y": -50.99206349206351,
+          "scale": 0.81
+        }
+      ],
+      "activeSel": {
+        "kind": "draft",
+        "index": 0
+      },
+      "final": null,
+      "lastExport": null,
+      "guides": {
+        "vertical": {
+          "head": {
+            "offsetX": -531.8755024299619,
+            "visible": true
+          },
+          "cab1": {
+            "offsetX": -278.0957845708907,
+            "visible": true
+          },
+          "center": {
+            "offsetX": 101.17399552953248,
+            "visible": true
+          },
+          "cab2": {
+            "offsetX": 473.1244215332672,
+            "visible": true
+          },
+          "trunk": {
+            "offsetX": 548.8935078136128,
+            "visible": true
+          }
+        },
+        "horizontal": {
+          "ground": {
+            "offsetY": -85.6640625,
+            "visible": true
+          },
+          "bottom": {
+            "offsetY": -162.26590951970468,
+            "visible": true
+          },
+          "center": {
+            "offsetY": -405.4011687655289,
+            "visible": true
+          },
+          "top": {
+            "offsetY": -579.9055989583334,
+            "visible": true
+          }
+        },
+        "wheels": {
+          "front": {
+            "offsetX": -388.2235603457485,
+            "visible": true
+          },
+          "rear": {
+            "offsetX": 386.2212131277299,
+            "visible": true
+          },
+          "radius": {
+            "offsetX": -478.448291194126,
+            "visible": true
+          }
+        },
+        "rulers": {
+          "horizontal": {
+            "enabled": false,
+            "startOffsetX": -180,
+            "endOffsetX": 180,
+            "ratioKey": "gold",
+            "invert": false
+          },
+          "vertical": {
+            "enabled": false,
+            "startOffsetY": -280,
+            "endOffsetY": 0,
+            "ratioKey": "gold",
+            "invert": false
+          }
+        }
+      }
+    },
+    "front": {
+      "draft": [],
+      "activeSel": null,
+      "final": null,
+      "lastExport": null
+    },
+    "34front": {
+      "draft": [],
+      "activeSel": null,
+      "final": null,
+      "lastExport": null
+    },
+    "34rear": {
+      "draft": [],
+      "activeSel": null,
+      "final": null,
+      "lastExport": null
+    },
+    "rear": {
+      "draft": [],
+      "activeSel": null,
+      "final": null,
+      "lastExport": null
+    },
+    "custom1": {
+      "draft": [],
+      "activeSel": null,
+      "final": null,
+      "lastExport": null,
+      "customLabel": "Доп. 1"
+    },
+    "custom2": {
+      "draft": [],
+      "activeSel": null,
+      "final": null,
+      "lastExport": null,
+      "customLabel": "Доп. 2"
+    }
+  }
+}

@@ -1,0 +1,140 @@
+{
+  "id": "car0041",
+  "name": "Austin A40 Devon 1947",
+  "style": "Compact",
+  "substyle": "",
+  "usageLinks": [],
+  "descShort": "",
+  "descHistorical": "",
+  "country": "",
+  "designer": "",
+  "cardWidth": 1200,
+  "views": {
+    "side": {
+      "draft": [
+        {
+          "file": "1.png",
+          "x": 14.358428030303031,
+          "y": -20.081676136363633,
+          "scale": 1.67
+        }
+      ],
+      "activeSel": {
+        "kind": "draft",
+        "index": 0
+      },
+      "final": null,
+      "lastExport": null,
+      "guides": {
+        "vertical": {
+          "head": {
+            "offsetX": -515.5870881532664,
+            "visible": true
+          },
+          "cab1": {
+            "offsetX": -179.91799664700898,
+            "visible": true
+          },
+          "center": {
+            "offsetX": 50.22973146026834,
+            "visible": true
+          },
+          "cab2": {
+            "offsetX": 397.54237337309405,
+            "visible": true
+          },
+          "trunk": {
+            "offsetX": 524.6368790257341,
+            "visible": true
+          }
+        },
+        "horizontal": {
+          "ground": {
+            "offsetY": -85.6640625,
+            "visible": true
+          },
+          "bottom": {
+            "offsetY": -168.99937137035408,
+            "visible": true
+          },
+          "center": {
+            "offsetY": -450.0898242940282,
+            "visible": true
+          },
+          "top": {
+            "offsetY": -579.9055989583334,
+            "visible": true
+          }
+        },
+        "wheels": {
+          "front": {
+            "offsetX": -380.9587526707845,
+            "visible": true
+          },
+          "rear": {
+            "offsetX": 327.30056129692184,
+            "visible": true
+          },
+          "radius": {
+            "offsetX": -483.13674943727176,
+            "visible": true
+          }
+        },
+        "rulers": {
+          "horizontal": {
+            "enabled": false,
+            "startOffsetX": -180,
+            "endOffsetX": 180,
+            "ratioKey": "gold",
+            "invert": false
+          },
+          "vertical": {
+            "enabled": false,
+            "startOffsetY": -280,
+            "endOffsetY": 0,
+            "ratioKey": "gold",
+            "invert": false
+          }
+        }
+      }
+    },
+    "front": {
+      "draft": [],
+      "activeSel": null,
+      "final": null,
+      "lastExport": null
+    },
+    "34front": {
+      "draft": [],
+      "activeSel": null,
+      "final": null,
+      "lastExport": null
+    },
+    "34rear": {
+      "draft": [],
+      "activeSel": null,
+      "final": null,
+      "lastExport": null
+    },
+    "rear": {
+      "draft": [],
+      "activeSel": null,
+      "final": null,
+      "lastExport": null
+    },
+    "custom1": {
+      "draft": [],
+      "activeSel": null,
+      "final": null,
+      "lastExport": null,
+      "customLabel": "Доп. 1"
+    },
+    "custom2": {
+      "draft": [],
+      "activeSel": null,
+      "final": null,
+      "lastExport": null,
+      "customLabel": "Доп. 2"
+    }
+  }
+}

@@ -1,6 +1,6 @@
 {
-  "id": "car0028",
-  "name": "Toyota Corolla 1966",
+  "id": "car0044",
+  "name": "Renault Dauphine (1956)",
   "style": "Compact",
   "substyle": "",
   "usageLinks": [],
@@ -8,15 +8,15 @@
   "descHistorical": "",
   "country": "",
   "designer": "",
-  "cardWidth": 1500,
+  "cardWidth": 1400,
   "views": {
     "side": {
       "draft": [
         {
           "file": "1.png",
-          "x": 8.541165865384613,
-          "y": -14.74609375,
-          "scale": 1.58
+          "x": 10.10561342592593,
+          "y": -78.29137731481481,
+          "scale": 1.05
         }
       ],
       "activeSel": {
@@ -28,23 +28,23 @@
       "guides": {
         "vertical": {
           "head": {
-            "offsetX": -612.0650540865385,
+            "offsetX": -619.8405603754887,
             "visible": true
           },
           "cab1": {
-            "offsetX": -251.58804086538464,
+            "offsetX": -258.31684750679733,
             "visible": true
           },
           "center": {
-            "offsetX": 90.76847956730785,
+            "offsetX": 30.980599515823997,
             "visible": true
           },
           "cab2": {
-            "offsetX": 484.4553786057693,
+            "offsetX": 405.4396121297077,
             "visible": true
           },
           "trunk": {
-            "offsetX": 646.7074819711538,
+            "offsetX": 643.4168476103903,
             "visible": true
           }
         },
@@ -54,29 +54,29 @@
             "visible": true
           },
           "bottom": {
-            "offsetY": -163.99714543269232,
+            "offsetY": -169.86019312961332,
             "visible": true
           },
           "center": {
-            "offsetY": -397.3933293269231,
+            "offsetY": -411.61946219085354,
             "visible": true
           },
           "top": {
-            "offsetY": -542.9544771634615,
+            "offsetY": -579.9055989583334,
             "visible": true
           }
         },
         "wheels": {
           "front": {
-            "offsetX": -430.2854567307693,
+            "offsetX": -405.19713726073155,
             "visible": true
           },
           "rear": {
-            "offsetX": 356.923828125,
+            "offsetX": 389.07098127046675,
             "visible": true
           },
           "radius": {
-            "offsetX": -524.2750901442307,
+            "offsetX": -508.4860384584357,
             "visible": true
           }
         },

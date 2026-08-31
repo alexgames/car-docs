@@ -1,0 +1,140 @@
+{
+  "id": "car0043",
+  "name": "Morris Eight Series E 1938",
+  "style": "Compact",
+  "substyle": "",
+  "usageLinks": [],
+  "descShort": "",
+  "descHistorical": "",
+  "country": "",
+  "designer": "",
+  "cardWidth": 1200,
+  "views": {
+    "side": {
+      "draft": [
+        {
+          "file": "1.png",
+          "x": -11.9140625,
+          "y": -21.86279296875,
+          "scale": 2.28
+        }
+      ],
+      "activeSel": {
+        "kind": "draft",
+        "index": 0
+      },
+      "final": null,
+      "lastExport": null,
+      "guides": {
+        "vertical": {
+          "head": {
+            "offsetX": -544.0179421029193,
+            "visible": true
+          },
+          "cab1": {
+            "offsetX": -185.57130533376494,
+            "visible": true
+          },
+          "center": {
+            "offsetX": 95.18008953318508,
+            "visible": true
+          },
+          "cab2": {
+            "offsetX": 393.7048121441753,
+            "visible": true
+          },
+          "trunk": {
+            "offsetX": 527.7556786289088,
+            "visible": true
+          }
+        },
+        "horizontal": {
+          "ground": {
+            "offsetY": -85.6640625,
+            "visible": true
+          },
+          "bottom": {
+            "offsetY": -168.99937137035408,
+            "visible": true
+          },
+          "center": {
+            "offsetY": -434.1176989530063,
+            "visible": true
+          },
+          "top": {
+            "offsetY": -579.9055989583334,
+            "visible": true
+          }
+        },
+        "wheels": {
+          "front": {
+            "offsetX": -401.4959201745047,
+            "visible": true
+          },
+          "rear": {
+            "offsetX": 318.6416102490548,
+            "visible": true
+          },
+          "radius": {
+            "offsetX": -505.83892112625983,
+            "visible": true
+          }
+        },
+        "rulers": {
+          "horizontal": {
+            "enabled": false,
+            "startOffsetX": -180,
+            "endOffsetX": 180,
+            "ratioKey": "gold",
+            "invert": false
+          },
+          "vertical": {
+            "enabled": false,
+            "startOffsetY": -280,
+            "endOffsetY": 0,
+            "ratioKey": "gold",
+            "invert": false
+          }
+        }
+      }
+    },
+    "front": {
+      "draft": [],
+      "activeSel": null,
+      "final": null,
+      "lastExport": null
+    },
+    "34front": {
+      "draft": [],
+      "activeSel": null,
+      "final": null,
+      "lastExport": null
+    },
+    "34rear": {
+      "draft": [],
+      "activeSel": null,
+      "final": null,
+      "lastExport": null
+    },
+    "rear": {
+      "draft": [],
+      "activeSel": null,
+      "final": null,
+      "lastExport": null
+    },
+    "custom1": {
+      "draft": [],
+      "activeSel": null,
+      "final": null,
+      "lastExport": null,
+      "customLabel": "Доп. 1"
+    },
+    "custom2": {
+      "draft": [],
+      "activeSel": null,
+      "final": null,
+      "lastExport": null,
+      "customLabel": "Доп. 2"
+    }
+  }
+}
