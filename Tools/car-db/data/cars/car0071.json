@@ -1,0 +1,140 @@
+{
+  "id": "car0071",
+  "name": "Plymouth Hemi Cuda 1970",
+  "style": "America",
+  "substyle": "muscle",
+  "usageLinks": [],
+  "descShort": "",
+  "descHistorical": "",
+  "country": "",
+  "designer": "",
+  "cardWidth": 1700,
+  "views": {
+    "side": {
+      "draft": [
+        {
+          "file": "1.png",
+          "x": -0.8544921875,
+          "y": -3.5725911458333335,
+          "scale": 2.64
+        }
+      ],
+      "activeSel": {
+        "kind": "draft",
+        "index": 0
+      },
+      "final": null,
+      "lastExport": null,
+      "guides": {
+        "vertical": {
+          "head": {
+            "offsetX": -756.1637114013704,
+            "visible": true
+          },
+          "cab1": {
+            "offsetX": -239.70643274191457,
+            "visible": true
+          },
+          "center": {
+            "offsetX": 187.1865061718379,
+            "visible": true
+          },
+          "cab2": {
+            "offsetX": 496.2048866309815,
+            "visible": true
+          },
+          "trunk": {
+            "offsetX": 768.9018163471924,
+            "visible": true
+          }
+        },
+        "horizontal": {
+          "ground": {
+            "offsetY": -85.6640625,
+            "visible": true
+          },
+          "bottom": {
+            "offsetY": -196.26057121399396,
+            "visible": true
+          },
+          "center": {
+            "offsetY": -410.06615280122554,
+            "visible": true
+          },
+          "top": {
+            "offsetY": -550.280243844697,
+            "visible": true
+          }
+        },
+        "wheels": {
+          "front": {
+            "offsetX": -481.29019156398044,
+            "visible": true
+          },
+          "rear": {
+            "offsetX": 440.22843928939074,
+            "visible": true
+          },
+          "radius": {
+            "offsetX": -593.527782756087,
+            "visible": true
+          }
+        },
+        "rulers": {
+          "horizontal": {
+            "enabled": false,
+            "startOffsetX": -180,
+            "endOffsetX": 180,
+            "ratioKey": "gold",
+            "invert": false
+          },
+          "vertical": {
+            "enabled": false,
+            "startOffsetY": -280,
+            "endOffsetY": 0,
+            "ratioKey": "gold",
+            "invert": false
+          }
+        }
+      }
+    },
+    "front": {
+      "draft": [],
+      "activeSel": null,
+      "final": null,
+      "lastExport": null
+    },
+    "34front": {
+      "draft": [],
+      "activeSel": null,
+      "final": null,
+      "lastExport": null
+    },
+    "34rear": {
+      "draft": [],
+      "activeSel": null,
+      "final": null,
+      "lastExport": null
+    },
+    "rear": {
+      "draft": [],
+      "activeSel": null,
+      "final": null,
+      "lastExport": null
+    },
+    "custom1": {
+      "draft": [],
+      "activeSel": null,
+      "final": null,
+      "lastExport": null,
+      "customLabel": "Доп. 1"
+    },
+    "custom2": {
+      "draft": [],
+      "activeSel": null,
+      "final": null,
+      "lastExport": null,
+      "customLabel": "Доп. 2"
+    }
+  }
+}

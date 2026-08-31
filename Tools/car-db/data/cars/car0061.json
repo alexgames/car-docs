@@ -1,0 +1,140 @@
+{
+  "id": "car0061",
+  "name": "Ford Thunderbird 1971",
+  "style": "America",
+  "substyle": "muscle",
+  "usageLinks": [],
+  "descShort": "",
+  "descHistorical": "",
+  "country": "",
+  "designer": "",
+  "cardWidth": 1900,
+  "views": {
+    "side": {
+      "draft": [
+        {
+          "file": "1.jpg",
+          "x": -14.705580079889328,
+          "y": 208.33092941932028,
+          "scale": 1.84
+        }
+      ],
+      "activeSel": {
+        "kind": "draft",
+        "index": 0
+      },
+      "final": null,
+      "lastExport": null,
+      "guides": {
+        "vertical": {
+          "head": {
+            "offsetX": -904.0641799554345,
+            "visible": true
+          },
+          "cab1": {
+            "offsetX": -348.03301964484444,
+            "visible": true
+          },
+          "center": {
+            "offsetX": 58.47132710420783,
+            "visible": true
+          },
+          "cab2": {
+            "offsetX": 579.654857507777,
+            "visible": true
+          },
+          "trunk": {
+            "offsetX": 885.160880610616,
+            "visible": true
+          }
+        },
+        "horizontal": {
+          "ground": {
+            "offsetY": -85.6640625,
+            "visible": true
+          },
+          "bottom": {
+            "offsetY": -170.28665830217227,
+            "visible": true
+          },
+          "center": {
+            "offsetY": -422.17552780122554,
+            "visible": true
+          },
+          "top": {
+            "offsetY": -550.280243844697,
+            "visible": true
+          }
+        },
+        "wheels": {
+          "front": {
+            "offsetX": -491.9584800457976,
+            "visible": true
+          },
+          "rear": {
+            "offsetX": 501.3754682772212,
+            "visible": true
+          },
+          "radius": {
+            "offsetX": -630.0186681727537,
+            "visible": true
+          }
+        },
+        "rulers": {
+          "horizontal": {
+            "enabled": false,
+            "startOffsetX": -180,
+            "endOffsetX": 180,
+            "ratioKey": "gold",
+            "invert": false
+          },
+          "vertical": {
+            "enabled": false,
+            "startOffsetY": -280,
+            "endOffsetY": 0,
+            "ratioKey": "gold",
+            "invert": false
+          }
+        }
+      }
+    },
+    "front": {
+      "draft": [],
+      "activeSel": null,
+      "final": null,
+      "lastExport": null
+    },
+    "34front": {
+      "draft": [],
+      "activeSel": null,
+      "final": null,
+      "lastExport": null
+    },
+    "34rear": {
+      "draft": [],
+      "activeSel": null,
+      "final": null,
+      "lastExport": null
+    },
+    "rear": {
+      "draft": [],
+      "activeSel": null,
+      "final": null,
+      "lastExport": null
+    },
+    "custom1": {
+      "draft": [],
+      "activeSel": null,
+      "final": null,
+      "lastExport": null,
+      "customLabel": "Доп. 1"
+    },
+    "custom2": {
+      "draft": [],
+      "activeSel": null,
+      "final": null,
+      "lastExport": null,
+      "customLabel": "Доп. 2"
+    }
+  }
+}

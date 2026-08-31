@@ -1,0 +1,140 @@
+{
+  "id": "car0077",
+  "name": "Chevrolet El Camino 1959",
+  "style": "America",
+  "substyle": "muscle",
+  "usageLinks": [],
+  "descShort": "",
+  "descHistorical": "",
+  "country": "",
+  "designer": "",
+  "cardWidth": 1800,
+  "views": {
+    "side": {
+      "draft": [
+        {
+          "file": "1.jpg",
+          "x": -11.17365056818182,
+          "y": 351.415127840909,
+          "scale": 2.11
+        }
+      ],
+      "activeSel": {
+        "kind": "draft",
+        "index": 0
+      },
+      "final": null,
+      "lastExport": null,
+      "guides": {
+        "vertical": {
+          "head": {
+            "offsetX": -835.1676176513704,
+            "visible": true
+          },
+          "cab1": {
+            "offsetX": -330.07752649191457,
+            "visible": true
+          },
+          "center": {
+            "offsetX": 46.90330304683789,
+            "visible": true
+          },
+          "cab2": {
+            "offsetX": 215.1599647559815,
+            "visible": true
+          },
+          "trunk": {
+            "offsetX": 850.6596288471924,
+            "visible": true
+          }
+        },
+        "horizontal": {
+          "ground": {
+            "offsetY": -85.6640625,
+            "visible": true
+          },
+          "bottom": {
+            "offsetY": -167.48127433899396,
+            "visible": true
+          },
+          "center": {
+            "offsetY": -412.23412155122554,
+            "visible": true
+          },
+          "top": {
+            "offsetY": -550.280243844697,
+            "visible": true
+          }
+        },
+        "wheels": {
+          "front": {
+            "offsetX": -583.2042540639804,
+            "visible": true
+          },
+          "rear": {
+            "offsetX": 400.80461116439074,
+            "visible": true
+          },
+          "radius": {
+            "offsetX": -689.660595256087,
+            "visible": true
+          }
+        },
+        "rulers": {
+          "horizontal": {
+            "enabled": false,
+            "startOffsetX": -180,
+            "endOffsetX": 180,
+            "ratioKey": "gold",
+            "invert": false
+          },
+          "vertical": {
+            "enabled": false,
+            "startOffsetY": -280,
+            "endOffsetY": 0,
+            "ratioKey": "gold",
+            "invert": false
+          }
+        }
+      }
+    },
+    "front": {
+      "draft": [],
+      "activeSel": null,
+      "final": null,
+      "lastExport": null
+    },
+    "34front": {
+      "draft": [],
+      "activeSel": null,
+      "final": null,
+      "lastExport": null
+    },
+    "34rear": {
+      "draft": [],
+      "activeSel": null,
+      "final": null,
+      "lastExport": null
+    },
+    "rear": {
+      "draft": [],
+      "activeSel": null,
+      "final": null,
+      "lastExport": null
+    },
+    "custom1": {
+      "draft": [],
+      "activeSel": null,
+      "final": null,
+      "lastExport": null,
+      "customLabel": "Доп. 1"
+    },
+    "custom2": {
+      "draft": [],
+      "activeSel": null,
+      "final": null,
+      "lastExport": null,
+      "customLabel": "Доп. 2"
+    }
+  }
+}

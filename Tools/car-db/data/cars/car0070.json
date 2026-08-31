@@ -1,0 +1,140 @@
+{
+  "id": "car0070",
+  "name": "Chevrolet Camaro 1966",
+  "style": "America",
+  "substyle": "muscle",
+  "usageLinks": [],
+  "descShort": "",
+  "descHistorical": "",
+  "country": "",
+  "designer": "",
+  "cardWidth": 1700,
+  "views": {
+    "side": {
+      "draft": [
+        {
+          "file": "1.png",
+          "x": 29.638671875,
+          "y": 23.232421875,
+          "scale": 2.78
+        }
+      ],
+      "activeSel": {
+        "kind": "draft",
+        "index": 0
+      },
+      "final": null,
+      "lastExport": null,
+      "guides": {
+        "vertical": {
+          "head": {
+            "offsetX": -742.2590890055371,
+            "visible": true
+          },
+          "cab1": {
+            "offsetX": -274.20187545024794,
+            "visible": true
+          },
+          "center": {
+            "offsetX": 124.42771710933789,
+            "visible": true
+          },
+          "cab2": {
+            "offsetX": 490.8582069434815,
+            "visible": true
+          },
+          "trunk": {
+            "offsetX": 761.3285741596924,
+            "visible": true
+          }
+        },
+        "horizontal": {
+          "ground": {
+            "offsetY": -85.6640625,
+            "visible": true
+          },
+          "bottom": {
+            "offsetY": -201.98973788066064,
+            "visible": true
+          },
+          "center": {
+            "offsetY": -415.48607467622554,
+            "visible": true
+          },
+          "top": {
+            "offsetY": -550.280243844697,
+            "visible": true
+          }
+        },
+        "wheels": {
+          "front": {
+            "offsetX": -528.1424051056471,
+            "visible": true
+          },
+          "rear": {
+            "offsetX": 398.117436685224,
+            "visible": true
+          },
+          "radius": {
+            "offsetX": -636.9913244227537,
+            "visible": true
+          }
+        },
+        "rulers": {
+          "horizontal": {
+            "enabled": false,
+            "startOffsetX": -180,
+            "endOffsetX": 180,
+            "ratioKey": "gold",
+            "invert": false
+          },
+          "vertical": {
+            "enabled": false,
+            "startOffsetY": -280,
+            "endOffsetY": 0,
+            "ratioKey": "gold",
+            "invert": false
+          }
+        }
+      }
+    },
+    "front": {
+      "draft": [],
+      "activeSel": null,
+      "final": null,
+      "lastExport": null
+    },
+    "34front": {
+      "draft": [],
+      "activeSel": null,
+      "final": null,
+      "lastExport": null
+    },
+    "34rear": {
+      "draft": [],
+      "activeSel": null,
+      "final": null,
+      "lastExport": null
+    },
+    "rear": {
+      "draft": [],
+      "activeSel": null,
+      "final": null,
+      "lastExport": null
+    },
+    "custom1": {
+      "draft": [],
+      "activeSel": null,
+      "final": null,
+      "lastExport": null,
+      "customLabel": "Доп. 1"
+    },
+    "custom2": {
+      "draft": [],
+      "activeSel": null,
+      "final": null,
+      "lastExport": null,
+      "customLabel": "Доп. 2"
+    }
+  }
+}

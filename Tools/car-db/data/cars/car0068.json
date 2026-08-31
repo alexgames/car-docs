@@ -1,0 +1,140 @@
+{
+  "id": "car0068",
+  "name": "Dodge Charger 1968",
+  "style": "America",
+  "substyle": "muscle",
+  "usageLinks": [],
+  "descShort": "",
+  "descHistorical": "",
+  "country": "",
+  "designer": "",
+  "cardWidth": 1900,
+  "views": {
+    "side": {
+      "draft": [
+        {
+          "file": "1.png",
+          "x": -3.0877976190476195,
+          "y": -35.51897321428572,
+          "scale": 1.63
+        }
+      ],
+      "activeSel": {
+        "kind": "draft",
+        "index": 0
+      },
+      "final": null,
+      "lastExport": null,
+      "guides": {
+        "vertical": {
+          "head": {
+            "offsetX": -880.9649111781562,
+            "visible": true
+          },
+          "cab1": {
+            "offsetX": -258.63546920024794,
+            "visible": true
+          },
+          "center": {
+            "offsetX": 114.29657871648078,
+            "visible": true
+          },
+          "cab2": {
+            "offsetX": 598.5497992053863,
+            "visible": true
+          },
+          "trunk": {
+            "offsetX": 880.7217103204066,
+            "visible": true
+          }
+        },
+        "horizontal": {
+          "ground": {
+            "offsetY": -85.6640625,
+            "visible": true
+          },
+          "bottom": {
+            "offsetY": -169.2679186842321,
+            "visible": true
+          },
+          "center": {
+            "offsetY": -410.06615280122554,
+            "visible": true
+          },
+          "top": {
+            "offsetY": -550.280243844697,
+            "visible": true
+          }
+        },
+        "wheels": {
+          "front": {
+            "offsetX": -561.9193768318376,
+            "visible": true
+          },
+          "rear": {
+            "offsetX": 446.8888280542717,
+            "visible": true
+          },
+          "radius": {
+            "offsetX": -668.4580282918013,
+            "visible": true
+          }
+        },
+        "rulers": {
+          "horizontal": {
+            "enabled": false,
+            "startOffsetX": -180,
+            "endOffsetX": 180,
+            "ratioKey": "gold",
+            "invert": false
+          },
+          "vertical": {
+            "enabled": false,
+            "startOffsetY": -280,
+            "endOffsetY": 0,
+            "ratioKey": "gold",
+            "invert": false
+          }
+        }
+      }
+    },
+    "front": {
+      "draft": [],
+      "activeSel": null,
+      "final": null,
+      "lastExport": null
+    },
+    "34front": {
+      "draft": [],
+      "activeSel": null,
+      "final": null,
+      "lastExport": null
+    },
+    "34rear": {
+      "draft": [],
+      "activeSel": null,
+      "final": null,
+      "lastExport": null
+    },
+    "rear": {
+      "draft": [],
+      "activeSel": null,
+      "final": null,
+      "lastExport": null
+    },
+    "custom1": {
+      "draft": [],
+      "activeSel": null,
+      "final": null,
+      "lastExport": null,
+      "customLabel": "Доп. 1"
+    },
+    "custom2": {
+      "draft": [],
+      "activeSel": null,
+      "final": null,
+      "lastExport": null,
+      "customLabel": "Доп. 2"
+    }
+  }
+}
