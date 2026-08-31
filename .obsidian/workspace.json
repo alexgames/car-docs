@@ -97,12 +97,22 @@
             "state": {
               "type": "markdown",
               "state": {
-                "file": "DisDocs/sprints/0001 — Текущий (Август) Версия 2.0.md",
+                "file": "DisDocs/Разработка/0078 — Редактор решеток-фар-баиперов.md",
                 "mode": "source",
-                "source": false
+                "source": false,
+                "backlinks": true,
+                "backlinkOpts": {
+                  "collapseAll": false,
+                  "extraContext": false,
+                  "sortOrder": "alphabetical",
+                  "showSearch": false,
+                  "searchQuery": "",
+                  "backlinkCollapsed": false,
+                  "unlinkedCollapsed": true
+                }
               },
               "icon": "lucide-file",
-              "title": "0001 — Текущий (Август) Версия 2.0"
+              "title": "0078 — Редактор решеток-фар-баиперов"
             }
           },
           {
@@ -121,6 +131,26 @@
           }
         ],
         "currentTab": 6
+      },
+      {
+        "id": "6043f9506f9e51cb",
+        "type": "tabs",
+        "children": [
+          {
+            "id": "53085408de80946c",
+            "type": "leaf",
+            "state": {
+              "type": "markdown",
+              "state": {
+                "file": "DisDocs/sprints/0002 — Спринт Чеклист.md",
+                "mode": "source",
+                "source": false
+              },
+              "icon": "lucide-file",
+              "title": "0002 — Спринт Чеклист"
+            }
+          }
+        ]
       }
     ],
     "direction": "vertical"
@@ -154,7 +184,7 @@
             "state": {
               "type": "search",
               "state": {
-                "query": "обод",
+                "query": "решет",
                 "matchingCase": false,
                 "explainSearch": false,
                 "collapseAll": false,
@@ -182,7 +212,7 @@
       }
     ],
     "direction": "horizontal",
-    "width": 356.81640625
+    "width": 267.17578125
   },
   "right": {
     "id": "43901a2bea0d586c",
@@ -260,13 +290,13 @@
             "state": {
               "type": "outline",
               "state": {
-                "file": "DisDocs/sprints/0001 — Текущий (Август) Версия 2.0.md",
+                "file": "DisDocs/Разработка/0078 — Редактор решеток.md",
                 "followCursor": false,
                 "showSearch": false,
                 "searchQuery": ""
               },
               "icon": "lucide-list",
-              "title": "Outline of 0001 — Текущий (Август) Версия 2.0"
+              "title": "Outline"
             }
           }
         ],
@@ -290,29 +320,38 @@
   },
   "active": "17cc1349027cd935",
   "lastOpenFiles": [
-    "Design/car_models/1965-ferrari-330-gt.zip",
-    "Design/car_models/Unconfirmed 404735.crdownload",
-    "Design/car_models",
-    "Design/Tuning/light/Saab 99 Turbo 1977/27161.jpg",
-    "Design/Tuning/light/Saab 99 Turbo 1977/IMG-20250303-WA0005.jpg",
-    "Design/Tuning/light/Saab 99 Turbo 1977/images (2).jpeg",
-    "Design/Tuning/light/Saab 99 Turbo 1977/1977-saab-99-61d2a973f1590.webp",
-    "Design/Tuning/light/Saab 99 Turbo 1977/images (1).jpeg",
-    "Design/Tuning/light/Saab 99 Turbo 1977/b1bc6563-af2c-4985-8a9e-fff234891594.avif",
-    "Design/Tuning/light/Saab 99 Turbo 1977/Intsaab2016_26_-_Saab_99.jpg",
-    "Design/Tuning/light/Saab 99 Turbo 1977/images.jpeg",
-    "Design/Tuning/light/Saab 99 Turbo 1977/Unconfirmed 939347.crdownload",
-    "Design/Tuning/light/Saab 99 Turbo 1977/261032055.avif",
-    "Design/Tuning/light/Saab 99 Turbo 1977/saab-99L-1712-1920x1440-1.webp",
-    "Design/Tuning/light/Saab 99 Turbo 1977",
-    "Design/Tuning/light/untitled folder",
-    "Design/Tuning/light",
-    "Design/Tuning/untitled folder",
-    "Design/Tuning",
+    "Tools/car-db/data/photos/car0030/side/draft/1.png",
+    "Tools/car-db/data/photos/car0030/side/draft",
+    "Tools/car-db/data/photos/car0030/side",
+    "Tools/car-db/data/photos/car0030",
+    "Tools/car-db/data/cars/car0030.json",
+    "Design/grills/1971 Chrysler Imperial LeBaron.png",
+    "Design/grills/1971 Chrysler Imperial Crown .png",
+    "Design/grills/Screenshot 2026-08-30 at 9.31.14 PM.png",
+    "Design/grills/1958 Chrysler Imperial Crown .png",
+    "Design/grills/Screenshot 2026-08-30 at 9.29.47 PM.png",
+    "Design/grills/1961 Chrysler Imperial Crown .jpg",
+    "Design/grills/images.jpg",
+    "Design/grills/1961 Lincoln Continental3.jpg",
+    "Design/grills/1961 Lincoln Continental2.png",
+    "Design/grills/Screenshot 2026-08-30 at 9.24.38 PM.png",
+    "Design/grills",
     "Design/untitled folder",
-    "Tools/car-db/data/photos/car0017/side/draft",
-    "DisDocs/Разработка/Backlog/Engenerring-Art direction.md",
+    "Design/normal maps",
+    "DisDocs/Разработка/0081 — Генератор решёток и UGC.md",
+    "DisDocs/Разработка/0080 — Генератор фар.md",
+    "DisDocs/Разработка/Backlog/0079 — Автоматические UV кузова.md",
+    "Tools/car-db/data/photos/car0029/side/draft",
+    "Tools/car-db/data/photos/car0029/side",
+    "Tools/car-db/data/photos/car0029",
     "DisDocs/sprints/0001 — Текущий (Август) Версия 2.0.md",
+    "DisDocs/Разработка/0078 — Редактор решеток-фар-баиперов.md",
+    "DisDocs/Разработка/0001 — ШАБЛОН.md",
+    "DisDocs/sprints/0002 — Спринт Чеклист.md",
+    "DisDocs/Разработка/0073 — deformX deformZ.md",
+    "DisDocs/sprints/01-текущий-спринт-сборка.md",
+    "DisDocs/sprints/0000 — Шаблон Спринта.md",
+    "DisDocs/Разработка/Backlog/Engenerring-Art direction.md",
     "DisDocs/Разработка/0077 — Накладные обода.md",
     "DisDocs/Разработка/0056 — режимы Blueprint-Pencil-силуэт-wireframe.md",
     "DisDocs/Разработка/Backlog/0032 — AR.md",
@@ -327,15 +366,6 @@
     "DisDocs/Разработка/0076 — Зеркала пол и стены.md",
     "DisDocs/Разработка/Backlog/0068 — Новый тип обвеса.md",
     "DisDocs/Разработка/В работе/0054 — Обвес новый.md",
-    "DisDocs/Разработка/0052 — Идеи дизайна.md",
-    "DisDocs/Разработка/Backlog/новые стили.md",
-    "DisDocs/Разработка/Backlog/0069 — Интерьер.md",
-    "DisDocs/Разработка/Backlog/0035 — Эффекты.md",
-    "DisDocs/Разработка/0073 — deformX.md",
-    "DisDocs/Разработка/0001 — ШАБЛОН.md",
-    "DisDocs/Разработка/0002 — Дейли задания.md",
-    "DisDocs/Разработка/Backlog/0072 — AI generated textures.md",
-    "DisDocs/Разработка/0071 — видео для фичей.md",
     "Analytics/reviews/Untitled.canvas"
   ]
 }

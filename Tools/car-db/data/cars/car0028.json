@@ -1,0 +1,140 @@
+{
+  "id": "car0028",
+  "name": "Toyota Corolla 1966",
+  "style": "Compact",
+  "substyle": "",
+  "usageLinks": [],
+  "descShort": "",
+  "descHistorical": "",
+  "country": "",
+  "designer": "",
+  "cardWidth": 1500,
+  "views": {
+    "side": {
+      "draft": [
+        {
+          "file": "1.png",
+          "x": 8.541165865384613,
+          "y": -14.74609375,
+          "scale": 1.58
+        }
+      ],
+      "activeSel": {
+        "kind": "draft",
+        "index": 0
+      },
+      "final": null,
+      "lastExport": null,
+      "guides": {
+        "vertical": {
+          "head": {
+            "offsetX": -612.0650540865385,
+            "visible": true
+          },
+          "cab1": {
+            "offsetX": -251.58804086538464,
+            "visible": true
+          },
+          "center": {
+            "offsetX": 90.76847956730785,
+            "visible": true
+          },
+          "cab2": {
+            "offsetX": 484.4553786057693,
+            "visible": true
+          },
+          "trunk": {
+            "offsetX": 646.7074819711538,
+            "visible": true
+          }
+        },
+        "horizontal": {
+          "ground": {
+            "offsetY": -85.6640625,
+            "visible": true
+          },
+          "bottom": {
+            "offsetY": -163.99714543269232,
+            "visible": true
+          },
+          "center": {
+            "offsetY": -397.3933293269231,
+            "visible": true
+          },
+          "top": {
+            "offsetY": -542.9544771634615,
+            "visible": true
+          }
+        },
+        "wheels": {
+          "front": {
+            "offsetX": -430.2854567307693,
+            "visible": true
+          },
+          "rear": {
+            "offsetX": 356.923828125,
+            "visible": true
+          },
+          "radius": {
+            "offsetX": -524.2750901442307,
+            "visible": true
+          }
+        },
+        "rulers": {
+          "horizontal": {
+            "enabled": false,
+            "startOffsetX": -180,
+            "endOffsetX": 180,
+            "ratioKey": "gold",
+            "invert": false
+          },
+          "vertical": {
+            "enabled": false,
+            "startOffsetY": -280,
+            "endOffsetY": 0,
+            "ratioKey": "gold",
+            "invert": false
+          }
+        }
+      }
+    },
+    "front": {
+      "draft": [],
+      "activeSel": null,
+      "final": null,
+      "lastExport": null
+    },
+    "34front": {
+      "draft": [],
+      "activeSel": null,
+      "final": null,
+      "lastExport": null
+    },
+    "34rear": {
+      "draft": [],
+      "activeSel": null,
+      "final": null,
+      "lastExport": null
+    },
+    "rear": {
+      "draft": [],
+      "activeSel": null,
+      "final": null,
+      "lastExport": null
+    },
+    "custom1": {
+      "draft": [],
+      "activeSel": null,
+      "final": null,
+      "lastExport": null,
+      "customLabel": "Доп. 1"
+    },
+    "custom2": {
+      "draft": [],
+      "activeSel": null,
+      "final": null,
+      "lastExport": null,
+      "customLabel": "Доп. 2"
+    }
+  }
+}

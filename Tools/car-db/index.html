@@ -185,7 +185,7 @@ body {
      Сам холст (.canvas-inner) логически по-прежнему CANVAS_HEIGHT px, но показывается
      через CSS zoom — пользователь подбирает масштаб кнопками +/-, чтобы влезла и
      длинная «блинная» машина, и короткая. */
-  flex: 1; height: 300px; min-height: 150px; resize: vertical; overflow-x: auto; overflow-y: auto; background: #ececea;
+  flex: 1; height: 600px; min-height: 150px; resize: vertical; overflow-x: auto; overflow-y: auto; background: #ececea;
   border-radius: 8px; position: relative; border: 1px solid #ccc;
   box-shadow: inset 0 0 0 1px #fff;
 }
@@ -360,7 +360,7 @@ App.State = {
   showOverlay: false,
   photoLocked: false, // лок перемещения фото на холсте (drag выключен, пока true)
   canvasZoom: 0.5,  // масштаб показа холста (сам холст логически всегда CANVAS_HEIGHT px)
-  canvasScrollHeight: 300, // высота видимой области холста на экране — тянется за угол (resize: vertical), должна пережить renderAll
+  canvasScrollHeight: 600, // высота видимой области холста на экране — тянется за угол (resize: vertical), должна пережить renderAll
 
   lastFitKey: null, // под какое фото зум уже подгоняли — чтобы не подгонять повторно
   collapsedStyleGroups: new Set(), // какие папки-стили свёрнуты в списке машин
@@ -1192,11 +1192,11 @@ App.UI = (function () {
       scaleLbl.style.cssText = 'font-size:11px;color:#888;';
       scaleRow.appendChild(scaleLbl);
       const scaleRange = document.createElement('input'); scaleRange.type = 'range';
-      scaleRange.min = '5'; scaleRange.max = '300'; scaleRange.step = '1'; scaleRange.value = Math.round(active.meta.scale * 100);
+      scaleRange.min = '5'; scaleRange.max = '400'; scaleRange.step = '1'; scaleRange.value = Math.round(active.meta.scale * 100);
       scaleRange.style.width = '160px';
       scaleRow.appendChild(scaleRange);
       const scaleNum = document.createElement('input'); scaleNum.type = 'number';
-      scaleNum.min = '5'; scaleNum.max = '300'; scaleNum.step = '1'; scaleNum.value = Math.round(active.meta.scale * 100);
+      scaleNum.min = '5'; scaleNum.max = '400'; scaleNum.step = '1'; scaleNum.value = Math.round(active.meta.scale * 100);
       scaleNum.style.cssText = 'width:60px;font-size:11px;padding:4px 6px;border:1px solid #ddd;border-radius:5px;';
       scaleRow.appendChild(scaleNum);
       const scalePct = document.createElement('span'); scalePct.textContent = '%';
@@ -1204,7 +1204,7 @@ App.UI = (function () {
       scaleRow.appendChild(scalePct);
 
       function applyScale(pct, persist) {
-        pct = Math.max(5, Math.min(300, pct));
+        pct = Math.max(5, Math.min(400, pct));
         active.meta.scale = pct / 100;
         const w = parseFloat(img.dataset.w) || img.naturalWidth, h = parseFloat(img.dataset.h) || img.naturalHeight;
         positionPhoto(img, active.meta, w, h);
