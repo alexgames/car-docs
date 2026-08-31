@@ -1,0 +1,140 @@
+{
+  "id": "car0106",
+  "name": "Kaiser Darrin 1954",
+  "style": "Sport GT",
+  "substyle": "",
+  "usageLinks": [],
+  "descShort": "",
+  "descHistorical": "",
+  "country": "",
+  "designer": "",
+  "cardWidth": 1700,
+  "views": {
+    "side": {
+      "draft": [
+        {
+          "file": "1.png",
+          "x": -4.039634146341464,
+          "y": -15.748856707317074,
+          "scale": 1.85
+        }
+      ],
+      "activeSel": {
+        "kind": "draft",
+        "index": 0
+      },
+      "final": null,
+      "lastExport": null,
+      "guides": {
+        "vertical": {
+          "head": {
+            "offsetX": -751.5194172295043,
+            "visible": true
+          },
+          "cab1": {
+            "offsetX": -120.8990465394188,
+            "visible": true
+          },
+          "center": {
+            "offsetX": 199.67742186951227,
+            "visible": true
+          },
+          "cab2": {
+            "offsetX": 430.2989379639366,
+            "visible": true
+          },
+          "trunk": {
+            "offsetX": 761.602911781112,
+            "visible": true
+          }
+        },
+        "horizontal": {
+          "ground": {
+            "offsetY": -85.6640625,
+            "visible": true
+          },
+          "bottom": {
+            "offsetY": -164.61972464564457,
+            "visible": true
+          },
+          "center": {
+            "offsetY": -414.7150999084291,
+            "visible": true
+          },
+          "top": {
+            "offsetY": -550.280243844697,
+            "visible": true
+          }
+        },
+        "wheels": {
+          "front": {
+            "offsetX": -511.48818504100825,
+            "visible": true
+          },
+          "rear": {
+            "offsetX": 390.7699523353351,
+            "visible": true
+          },
+          "radius": {
+            "offsetX": -622.1344723476923,
+            "visible": true
+          }
+        },
+        "rulers": {
+          "horizontal": {
+            "enabled": false,
+            "startOffsetX": -180,
+            "endOffsetX": 180,
+            "ratioKey": "gold",
+            "invert": false
+          },
+          "vertical": {
+            "enabled": false,
+            "startOffsetY": -280,
+            "endOffsetY": 0,
+            "ratioKey": "gold",
+            "invert": false
+          }
+        }
+      }
+    },
+    "front": {
+      "draft": [],
+      "activeSel": null,
+      "final": null,
+      "lastExport": null
+    },
+    "34front": {
+      "draft": [],
+      "activeSel": null,
+      "final": null,
+      "lastExport": null
+    },
+    "34rear": {
+      "draft": [],
+      "activeSel": null,
+      "final": null,
+      "lastExport": null
+    },
+    "rear": {
+      "draft": [],
+      "activeSel": null,
+      "final": null,
+      "lastExport": null
+    },
+    "custom1": {
+      "draft": [],
+      "activeSel": null,
+      "final": null,
+      "lastExport": null,
+      "customLabel": "Доп. 1"
+    },
+    "custom2": {
+      "draft": [],
+      "activeSel": null,
+      "final": null,
+      "lastExport": null,
+      "customLabel": "Доп. 2"
+    }
+  }
+}

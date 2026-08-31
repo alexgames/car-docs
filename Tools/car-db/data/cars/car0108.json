@@ -1,0 +1,140 @@
+{
+  "id": "car0108",
+  "name": "1964  Lambo 350gtv",
+  "style": "Sport GT",
+  "substyle": "",
+  "usageLinks": [],
+  "descShort": "",
+  "descHistorical": "",
+  "country": "",
+  "designer": "",
+  "cardWidth": 1800,
+  "views": {
+    "side": {
+      "draft": [
+        {
+          "file": "1.webp",
+          "x": -25.879264840881277,
+          "y": 187.49091569767444,
+          "scale": 2.84
+        }
+      ],
+      "activeSel": {
+        "kind": "draft",
+        "index": 0
+      },
+      "final": null,
+      "lastExport": null,
+      "guides": {
+        "vertical": {
+          "head": {
+            "offsetX": -816.1949327140999,
+            "visible": true
+          },
+          "cab1": {
+            "offsetX": -252.30349134044582,
+            "visible": true
+          },
+          "center": {
+            "offsetX": 199.67742186951227,
+            "visible": true
+          },
+          "cab2": {
+            "offsetX": 627.7764231211895,
+            "visible": true
+          },
+          "trunk": {
+            "offsetX": 792.7583895571067,
+            "visible": true
+          }
+        },
+        "horizontal": {
+          "ground": {
+            "offsetY": -85.6640625,
+            "visible": true
+          },
+          "bottom": {
+            "offsetY": -157.78855086515676,
+            "visible": true
+          },
+          "center": {
+            "offsetY": -399.5283621035511,
+            "visible": true
+          },
+          "top": {
+            "offsetY": -550.280243844697,
+            "visible": true
+          }
+        },
+        "wheels": {
+          "front": {
+            "offsetX": -567.6486772585948,
+            "visible": true
+          },
+          "rear": {
+            "offsetX": 386.10727382121445,
+            "visible": true
+          },
+          "radius": {
+            "offsetX": -699.2575869176537,
+            "visible": true
+          }
+        },
+        "rulers": {
+          "horizontal": {
+            "enabled": false,
+            "startOffsetX": -180,
+            "endOffsetX": 180,
+            "ratioKey": "gold",
+            "invert": false
+          },
+          "vertical": {
+            "enabled": false,
+            "startOffsetY": -280,
+            "endOffsetY": 0,
+            "ratioKey": "gold",
+            "invert": false
+          }
+        }
+      }
+    },
+    "front": {
+      "draft": [],
+      "activeSel": null,
+      "final": null,
+      "lastExport": null
+    },
+    "34front": {
+      "draft": [],
+      "activeSel": null,
+      "final": null,
+      "lastExport": null
+    },
+    "34rear": {
+      "draft": [],
+      "activeSel": null,
+      "final": null,
+      "lastExport": null
+    },
+    "rear": {
+      "draft": [],
+      "activeSel": null,
+      "final": null,
+      "lastExport": null
+    },
+    "custom1": {
+      "draft": [],
+      "activeSel": null,
+      "final": null,
+      "lastExport": null,
+      "customLabel": "Доп. 1"
+    },
+    "custom2": {
+      "draft": [],
+      "activeSel": null,
+      "final": null,
+      "lastExport": null,
+      "customLabel": "Доп. 2"
+    }
+  }
+}

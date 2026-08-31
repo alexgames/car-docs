@@ -1,0 +1,140 @@
+{
+  "id": "car0103",
+  "name": "Chevrolet Corvette 1953",
+  "style": "Sport GT",
+  "substyle": "",
+  "usageLinks": [],
+  "descShort": "",
+  "descHistorical": "",
+  "country": "",
+  "designer": "",
+  "cardWidth": 1600,
+  "views": {
+    "side": {
+      "draft": [
+        {
+          "file": "1.png",
+          "x": 9.105902777777777,
+          "y": -0.564236111111111,
+          "scale": 1.8902439024390243
+        }
+      ],
+      "activeSel": {
+        "kind": "draft",
+        "index": 0
+      },
+      "final": null,
+      "lastExport": null,
+      "guides": {
+        "vertical": {
+          "head": {
+            "offsetX": -737.9038599801818,
+            "visible": true
+          },
+          "cab1": {
+            "offsetX": -178.682329059744,
+            "visible": true
+          },
+          "center": {
+            "offsetX": 210.18089409173444,
+            "visible": true
+          },
+          "cab2": {
+            "offsetX": 356.6084315276223,
+            "visible": true
+          },
+          "trunk": {
+            "offsetX": 741.958179396288,
+            "visible": true
+          }
+        },
+        "horizontal": {
+          "ground": {
+            "offsetY": -85.6640625,
+            "visible": true
+          },
+          "bottom": {
+            "offsetY": -157.78855086515676,
+            "visible": true
+          },
+          "center": {
+            "offsetY": -399.5283621035511,
+            "visible": true
+          },
+          "top": {
+            "offsetY": -550.280243844697,
+            "visible": true
+          }
+        },
+        "wheels": {
+          "front": {
+            "offsetX": -505.87715861824404,
+            "visible": true
+          },
+          "rear": {
+            "offsetX": 430.60311629197463,
+            "visible": true
+          },
+          "radius": {
+            "offsetX": -627.7069655726245,
+            "visible": true
+          }
+        },
+        "rulers": {
+          "horizontal": {
+            "enabled": false,
+            "startOffsetX": -180,
+            "endOffsetX": 180,
+            "ratioKey": "gold",
+            "invert": false
+          },
+          "vertical": {
+            "enabled": false,
+            "startOffsetY": -280,
+            "endOffsetY": 0,
+            "ratioKey": "gold",
+            "invert": false
+          }
+        }
+      }
+    },
+    "front": {
+      "draft": [],
+      "activeSel": null,
+      "final": null,
+      "lastExport": null
+    },
+    "34front": {
+      "draft": [],
+      "activeSel": null,
+      "final": null,
+      "lastExport": null
+    },
+    "34rear": {
+      "draft": [],
+      "activeSel": null,
+      "final": null,
+      "lastExport": null
+    },
+    "rear": {
+      "draft": [],
+      "activeSel": null,
+      "final": null,
+      "lastExport": null
+    },
+    "custom1": {
+      "draft": [],
+      "activeSel": null,
+      "final": null,
+      "lastExport": null,
+      "customLabel": "Доп. 1"
+    },
+    "custom2": {
+      "draft": [],
+      "activeSel": null,
+      "final": null,
+      "lastExport": null,
+      "customLabel": "Доп. 2"
+    }
+  }
+}

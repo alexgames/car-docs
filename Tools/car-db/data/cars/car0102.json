@@ -1,0 +1,140 @@
+{
+  "id": "car0102",
+  "name": "Borgward Isabella TS 1954",
+  "style": "Sport GT",
+  "substyle": "",
+  "usageLinks": [],
+  "descShort": "",
+  "descHistorical": "",
+  "country": "",
+  "designer": "",
+  "cardWidth": 1500,
+  "views": {
+    "side": {
+      "draft": [
+        {
+          "file": "1.png",
+          "x": 19.51264880952381,
+          "y": -15.066964285714288,
+          "scale": 2.26
+        }
+      ],
+      "activeSel": {
+        "kind": "draft",
+        "index": 0
+      },
+      "final": null,
+      "lastExport": null,
+      "guides": {
+        "vertical": {
+          "head": {
+            "offsetX": -673.9814889484358,
+            "visible": true
+          },
+          "cab1": {
+            "offsetX": -219.40777548831545,
+            "visible": true
+          },
+          "center": {
+            "offsetX": 94.59929686951227,
+            "visible": true
+          },
+          "cab2": {
+            "offsetX": 341.01753371016207,
+            "visible": true
+          },
+          "trunk": {
+            "offsetX": 680.2760117375578,
+            "visible": true
+          }
+        },
+        "horizontal": {
+          "ground": {
+            "offsetY": -85.6640625,
+            "visible": true
+          },
+          "bottom": {
+            "offsetY": -165.00581276991863,
+            "visible": true
+          },
+          "center": {
+            "offsetY": -407.0618442464082,
+            "visible": true
+          },
+          "top": {
+            "offsetY": -550.280243844697,
+            "visible": true
+          }
+        },
+        "wheels": {
+          "front": {
+            "offsetX": -476.2752240944345,
+            "visible": true
+          },
+          "rear": {
+            "offsetX": 385.7959486332445,
+            "visible": true
+          },
+          "radius": {
+            "offsetX": -572.808652080561,
+            "visible": true
+          }
+        },
+        "rulers": {
+          "horizontal": {
+            "enabled": false,
+            "startOffsetX": -180,
+            "endOffsetX": 180,
+            "ratioKey": "gold",
+            "invert": false
+          },
+          "vertical": {
+            "enabled": false,
+            "startOffsetY": -280,
+            "endOffsetY": 0,
+            "ratioKey": "gold",
+            "invert": false
+          }
+        }
+      }
+    },
+    "front": {
+      "draft": [],
+      "activeSel": null,
+      "final": null,
+      "lastExport": null
+    },
+    "34front": {
+      "draft": [],
+      "activeSel": null,
+      "final": null,
+      "lastExport": null
+    },
+    "34rear": {
+      "draft": [],
+      "activeSel": null,
+      "final": null,
+      "lastExport": null
+    },
+    "rear": {
+      "draft": [],
+      "activeSel": null,
+      "final": null,
+      "lastExport": null
+    },
+    "custom1": {
+      "draft": [],
+      "activeSel": null,
+      "final": null,
+      "lastExport": null,
+      "customLabel": "Доп. 1"
+    },
+    "custom2": {
+      "draft": [],
+      "activeSel": null,
+      "final": null,
+      "lastExport": null,
+      "customLabel": "Доп. 2"
+    }
+  }
+}

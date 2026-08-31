@@ -1,6 +1,6 @@
 {
-  "id": "car0099",
-  "name": "Mercedes-Benz 300SL1954",
+  "id": "car0104",
+  "name": "Lotus Elite 1957",
   "style": "Sport GT",
   "substyle": "",
   "usageLinks": [],
@@ -8,15 +8,15 @@
   "descHistorical": "",
   "country": "",
   "designer": "",
-  "cardWidth": 1700,
+  "cardWidth": 1500,
   "views": {
     "side": {
       "draft": [
         {
           "file": "1.png",
-          "x": 3.182164634146341,
-          "y": -14.653201219512194,
-          "scale": 2.98
+          "x": -10.198709239130434,
+          "y": -31.368885869565215,
+          "scale": 2.42
         }
       ],
       "activeSel": {
@@ -28,23 +28,23 @@
       "guides": {
         "vertical": {
           "head": {
-            "offsetX": -723.2991428392604,
+            "offsetX": -651.9237120333219,
             "visible": true
           },
           "cab1": {
-            "offsetX": -145.87999166137,
+            "offsetX": -117.105675980034,
             "visible": true
           },
           "center": {
-            "offsetX": 224.57262004024392,
+            "offsetX": 199.67742186951227,
             "visible": true
           },
           "cab2": {
-            "offsetX": 487.777977598083,
+            "offsetX": 478.86650821844364,
             "visible": true
           },
           "trunk": {
-            "offsetX": 761.3742532445265,
+            "offsetX": 686.3622403866261,
             "visible": true
           }
         },
@@ -54,7 +54,7 @@
             "visible": true
           },
           "bottom": {
-            "offsetY": -157.78855086515676,
+            "offsetY": -166.80689325646114,
             "visible": true
           },
           "center": {
@@ -68,15 +68,15 @@
         },
         "wheels": {
           "front": {
-            "offsetX": -508.18216369954484,
+            "offsetX": -479.2404964805628,
             "visible": true
           },
           "rear": {
-            "offsetX": 353.2794797743595,
+            "offsetX": 370.56763923883454,
             "visible": true
           },
           "radius": {
-            "offsetX": -621.6676278354971,
+            "offsetX": -595.1256325412236,
             "visible": true
           }
         },

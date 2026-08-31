@@ -1,0 +1,140 @@
+{
+  "id": "car0107",
+  "name": "Ferrari – 250 GT Spyder California",
+  "style": "Sport GT",
+  "substyle": "",
+  "usageLinks": [],
+  "descShort": "",
+  "descHistorical": "",
+  "country": "",
+  "designer": "",
+  "cardWidth": 1700,
+  "views": {
+    "side": {
+      "draft": [
+        {
+          "file": "1.jpg",
+          "x": 17.81850961538462,
+          "y": 409.7956730769231,
+          "scale": 1.77
+        }
+      ],
+      "activeSel": {
+        "kind": "draft",
+        "index": 0
+      },
+      "final": null,
+      "lastExport": null,
+      "guides": {
+        "vertical": {
+          "head": {
+            "offsetX": -750.8158525015493,
+            "visible": true
+          },
+          "cab1": {
+            "offsetX": -134.80813034179528,
+            "visible": true
+          },
+          "center": {
+            "offsetX": 199.67742186951227,
+            "visible": true
+          },
+          "cab2": {
+            "offsetX": 415.98677020283594,
+            "visible": true
+          },
+          "trunk": {
+            "offsetX": 749.6291195672281,
+            "visible": true
+          }
+        },
+        "horizontal": {
+          "ground": {
+            "offsetY": -85.6640625,
+            "visible": true
+          },
+          "bottom": {
+            "offsetY": -158.34944830105422,
+            "visible": true
+          },
+          "center": {
+            "offsetY": -399.0776409497049,
+            "visible": true
+          },
+          "top": {
+            "offsetY": -550.280243844697,
+            "visible": true
+          }
+        },
+        "wheels": {
+          "front": {
+            "offsetX": -489.8354919515773,
+            "visible": true
+          },
+          "rear": {
+            "offsetX": 406.58134812958156,
+            "visible": true
+          },
+          "radius": {
+            "offsetX": -610.566207025616,
+            "visible": true
+          }
+        },
+        "rulers": {
+          "horizontal": {
+            "enabled": false,
+            "startOffsetX": -180,
+            "endOffsetX": 180,
+            "ratioKey": "gold",
+            "invert": false
+          },
+          "vertical": {
+            "enabled": false,
+            "startOffsetY": -280,
+            "endOffsetY": 0,
+            "ratioKey": "gold",
+            "invert": false
+          }
+        }
+      }
+    },
+    "front": {
+      "draft": [],
+      "activeSel": null,
+      "final": null,
+      "lastExport": null
+    },
+    "34front": {
+      "draft": [],
+      "activeSel": null,
+      "final": null,
+      "lastExport": null
+    },
+    "34rear": {
+      "draft": [],
+      "activeSel": null,
+      "final": null,
+      "lastExport": null
+    },
+    "rear": {
+      "draft": [],
+      "activeSel": null,
+      "final": null,
+      "lastExport": null
+    },
+    "custom1": {
+      "draft": [],
+      "activeSel": null,
+      "final": null,
+      "lastExport": null,
+      "customLabel": "Доп. 1"
+    },
+    "custom2": {
+      "draft": [],
+      "activeSel": null,
+      "final": null,
+      "lastExport": null,
+      "customLabel": "Доп. 2"
+    }
+  }
+}

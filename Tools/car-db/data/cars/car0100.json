@@ -1,0 +1,140 @@
+{
+  "id": "car0100",
+  "name": "Volvo P1800 1961",
+  "style": "Sport GT",
+  "substyle": "",
+  "usageLinks": [],
+  "descShort": "",
+  "descHistorical": "",
+  "country": "",
+  "designer": "",
+  "cardWidth": 1600,
+  "views": {
+    "side": {
+      "draft": [
+        {
+          "file": "1.png",
+          "x": -4.169497282608697,
+          "y": 16.219429347826086,
+          "scale": 2.8703703703703702
+        }
+      ],
+      "activeSel": {
+        "kind": "draft",
+        "index": 0
+      },
+      "final": null,
+      "lastExport": null,
+      "guides": {
+        "vertical": {
+          "head": {
+            "offsetX": -681.033766381148,
+            "visible": true
+          },
+          "cab1": {
+            "offsetX": -189.9232710887295,
+            "visible": true
+          },
+          "center": {
+            "offsetX": 180.63869904342528,
+            "visible": true
+          },
+          "cab2": {
+            "offsetX": 427.7795516967044,
+            "visible": true
+          },
+          "trunk": {
+            "offsetX": 723.1659088648871,
+            "visible": true
+          }
+        },
+        "horizontal": {
+          "ground": {
+            "offsetY": -85.6640625,
+            "visible": true
+          },
+          "bottom": {
+            "offsetY": -168.3099503216785,
+            "visible": true
+          },
+          "center": {
+            "offsetY": -408.597655581812,
+            "visible": true
+          },
+          "top": {
+            "offsetY": -550.280243844697,
+            "visible": true
+          }
+        },
+        "wheels": {
+          "front": {
+            "offsetX": -471.5723578936063,
+            "visible": true
+          },
+          "rear": {
+            "offsetX": 389.90357673883454,
+            "visible": true
+          },
+          "radius": {
+            "offsetX": -580.4771950412236,
+            "visible": true
+          }
+        },
+        "rulers": {
+          "horizontal": {
+            "enabled": false,
+            "startOffsetX": -180,
+            "endOffsetX": 180,
+            "ratioKey": "gold",
+            "invert": false
+          },
+          "vertical": {
+            "enabled": false,
+            "startOffsetY": -280,
+            "endOffsetY": 0,
+            "ratioKey": "gold",
+            "invert": false
+          }
+        }
+      }
+    },
+    "front": {
+      "draft": [],
+      "activeSel": null,
+      "final": null,
+      "lastExport": null
+    },
+    "34front": {
+      "draft": [],
+      "activeSel": null,
+      "final": null,
+      "lastExport": null
+    },
+    "34rear": {
+      "draft": [],
+      "activeSel": null,
+      "final": null,
+      "lastExport": null
+    },
+    "rear": {
+      "draft": [],
+      "activeSel": null,
+      "final": null,
+      "lastExport": null
+    },
+    "custom1": {
+      "draft": [],
+      "activeSel": null,
+      "final": null,
+      "lastExport": null,
+      "customLabel": "Доп. 1"
+    },
+    "custom2": {
+      "draft": [],
+      "activeSel": null,
+      "final": null,
+      "lastExport": null,
+      "customLabel": "Доп. 2"
+    }
+  }
+}
