@@ -1,22 +1,22 @@
 {
-  "id": "car0083",
-  "name": "Dino 246 GT 1969",
-  "style": "Sport GT",
+  "id": "car0112",
+  "name": "Lancia Stratos HF 1972",
+  "style": "Wedge",
   "substyle": "",
   "usageLinks": [],
-  "descShort": "",
+  "descShort": "Lancia Stratos HF — сильная икона, но требует собственного деформа: короткая база, огромная кабина и почти отсутствующие свесы. Stellantis официально описывает её как среднемоторное купе с клиновидным кузовом Gandini.",
   "descHistorical": "",
   "country": "",
   "designer": "",
-  "cardWidth": 1800,
+  "cardWidth": 1600,
   "views": {
     "side": {
       "draft": [
         {
           "file": "1.png",
-          "x": 7.739825581395349,
-          "y": -18.15952034883721,
-          "scale": 1.5196078431372548
+          "x": -27.852470930232556,
+          "y": -14.880087209302326,
+          "scale": 1.78
         }
       ],
       "activeSel": {
@@ -28,23 +28,23 @@
       "guides": {
         "vertical": {
           "head": {
-            "offsetX": -787.2592782618356,
+            "offsetX": -739.9835868727721,
             "visible": true
           },
           "cab1": {
-            "offsetX": -356.04000832330996,
+            "offsetX": -338.39411933839483,
             "visible": true
           },
           "center": {
-            "offsetX": 187.99500907881452,
+            "offsetX": 185.85455103356003,
             "visible": true
           },
           "cab2": {
-            "offsetX": 541.2357732588885,
+            "offsetX": 459.7743790885554,
             "visible": true
           },
           "trunk": {
-            "offsetX": 805.8204209983553,
+            "offsetX": 697.7069114131887,
             "visible": true
           }
         },
@@ -54,11 +54,11 @@
             "visible": true
           },
           "bottom": {
-            "offsetY": -163.19371074887772,
+            "offsetY": -171.40076409582935,
             "visible": true
           },
           "center": {
-            "offsetY": -399.5283621035511,
+            "offsetY": -431.0145539640162,
             "visible": true
           },
           "top": {
@@ -68,15 +68,15 @@
         },
         "wheels": {
           "front": {
-            "offsetX": -440.1292177267711,
+            "offsetX": -429.81927115228973,
             "visible": true
           },
           "rear": {
-            "offsetX": 497.14159335915815,
+            "offsetX": 449.679059968209,
             "visible": true
           },
           "radius": {
-            "offsetX": -568.009977523529,
+            "offsetX": -557.466785348796,
             "visible": true
           }
         },
@@ -136,5 +136,6 @@
       "lastExport": null,
       "customLabel": "Доп. 2"
     }
-  }
+  },
+  "favorite": true
 }

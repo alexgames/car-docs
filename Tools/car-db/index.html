@@ -80,6 +80,11 @@ body {
 .car-item-thumb img { width: 100%; height: 100%; object-fit: contain; display: block; }
 .car-item-info { min-width: 0; flex: 1; }
 .car-item-name { font-size: 13px; font-weight: 600; color: #333; }
+.car-item-star { color: #e0a800; }
+.car-list-item.active .car-item-star { color: #ffd54f; }
+.fav-star-btn { flex: none; font-size: 22px; line-height: 1; background: none; border: none; cursor: pointer; color: #ccc; padding: 0 2px; }
+.fav-star-btn:hover { color: #e0a800; }
+.fav-star-btn.active { color: #e0a800; }
 .car-item-sub { font-size: 11px; color: #999; margin-top: 1px; }
 .car-item-id { font-family: monospace; }
 .car-group { margin-bottom: 2px; }
@@ -479,7 +484,7 @@ App.Data = (function () {
     const d = App.State.cardDefaults;
     return {
       id, name: 'Новая машина', style: (d && d.style) || '', substyle: (d && d.substyle) || '', usageLinks: [],
-      descShort: '', descHistorical: '', country: '', designer: '',
+      descShort: '', descHistorical: '', country: '', designer: '', favorite: false,
       cardWidth: (d && d.cardWidth) || App.State.cardSizes[0] || 260, views,
     };
   }
@@ -743,7 +748,8 @@ App.UI = (function () {
     div.appendChild(thumb);
 
     const info = document.createElement('div'); info.className = 'car-item-info';
-    info.innerHTML = `<div class="car-item-name">${App.esc(car.name || '(без названия)')}</div>` +
+    const starMark = car.favorite ? '<span class="car-item-star">★</span> ' : '';
+    info.innerHTML = `<div class="car-item-name">${starMark}${App.esc(car.name || '(без названия)')}</div>` +
       `<div class="car-item-sub"><span class="car-item-id">${App.esc(car.id)}</span></div>`;
     div.appendChild(info);
 
@@ -796,13 +802,18 @@ App.UI = (function () {
       if (!cars.length) return;
       const details = collapsibleGroup(styleKey, groupLabels[styleKey], cars.length);
 
-      const noSub = cars.filter(c => !c.substyle);
+      // Избранные — первыми внутри каждой (под)группы; sort стабильный, так что порядок
+      // по id (уже отсортирован в App.State.cars) внутри «избранное»/«не избранное»
+      // не ломается — только звёздочки всплывают наверх.
+      const byFavorite = (a, b) => (b.favorite ? 1 : 0) - (a.favorite ? 1 : 0);
+
+      const noSub = cars.filter(c => !c.substyle).sort(byFavorite);
       noSub.forEach(car => details.appendChild(carListItem(car)));
 
       const bySub = new Map();
       cars.forEach(c => { if (c.substyle) { if (!bySub.has(c.substyle)) bySub.set(c.substyle, []); bySub.get(c.substyle).push(c); } });
       Array.from(bySub.keys()).sort((a, b) => a.localeCompare(b, 'ru')).forEach(sub => {
-        const subCars = bySub.get(sub);
+        const subCars = bySub.get(sub).sort(byFavorite);
         const subDetails = collapsibleGroup('sub:' + styleKey + '|' + sub, sub, subCars.length, 'car-subgroup');
         subCars.forEach(car => subDetails.appendChild(carListItem(car)));
         details.appendChild(subDetails);
@@ -832,7 +843,27 @@ App.UI = (function () {
       if (item) item.textContent = car.name || '(без названия)';
     };
     nameInput.onblur = () => App.Data.saveCar(car);
-    const nameRow = fieldRow('Название (марка-модель-год)', nameInput);
+    nameInput.style.flex = '1';
+
+    const starBtn = document.createElement('button');
+    starBtn.type = 'button';
+    starBtn.className = 'fav-star-btn' + (car.favorite ? ' active' : '');
+    starBtn.textContent = car.favorite ? '★' : '☆';
+    starBtn.title = car.favorite ? 'Убрать из избранного' : 'Добавить в избранное';
+    starBtn.addEventListener('click', () => {
+      car.favorite = !car.favorite;
+      starBtn.classList.toggle('active', car.favorite);
+      starBtn.textContent = car.favorite ? '★' : '☆';
+      starBtn.title = car.favorite ? 'Убрать из избранного' : 'Добавить в избранное';
+      App.Data.saveCar(car);
+      renderCarList();
+    });
+
+    const nameWrap = document.createElement('div');
+    nameWrap.style.cssText = 'display:flex;align-items:center;gap:8px;';
+    nameWrap.appendChild(starBtn);
+    nameWrap.appendChild(nameInput);
+    const nameRow = fieldRow('Название (марка-модель-год)', nameWrap);
     const idBadge = document.createElement('span');
     idBadge.textContent = car.id;
     idBadge.title = 'id машины — так называется её файл: cars/' + car.id + '.json и папка фото photos/' + car.id;

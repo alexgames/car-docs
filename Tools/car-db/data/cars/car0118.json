@@ -1,22 +1,23 @@
 {
-  "id": "car0083",
-  "name": "Dino 246 GT 1969",
-  "style": "Sport GT",
+  "id": "car0118",
+  "name": "Vector W8 1989",
+  "style": "Wedge",
   "substyle": "",
   "usageLinks": [],
   "descShort": "",
   "descHistorical": "",
   "country": "",
   "designer": "",
-  "cardWidth": 1800,
+  "favorite": false,
+  "cardWidth": 2000,
   "views": {
     "side": {
       "draft": [
         {
-          "file": "1.png",
-          "x": 7.739825581395349,
-          "y": -18.15952034883721,
-          "scale": 1.5196078431372548
+          "file": "1.jpg",
+          "x": 2.2894965277777803,
+          "y": -36.81640625000001,
+          "scale": 2.06
         }
       ],
       "activeSel": {
@@ -28,23 +29,23 @@
       "guides": {
         "vertical": {
           "head": {
-            "offsetX": -787.2592782618356,
+            "offsetX": -957.977966015565,
             "visible": true
           },
           "cab1": {
-            "offsetX": -356.04000832330996,
+            "offsetX": -340.4920336352435,
             "visible": true
           },
           "center": {
-            "offsetX": 187.99500907881452,
+            "offsetX": 202.37415732779664,
             "visible": true
           },
           "cab2": {
-            "offsetX": 541.2357732588885,
+            "offsetX": 566.4739313684961,
             "visible": true
           },
           "trunk": {
-            "offsetX": 805.8204209983553,
+            "offsetX": 956.0601907146715,
             "visible": true
           }
         },
@@ -54,11 +55,11 @@
             "visible": true
           },
           "bottom": {
-            "offsetY": -163.19371074887772,
+            "offsetY": -136.0285095738655,
             "visible": true
           },
           "center": {
-            "offsetY": -399.5283621035511,
+            "offsetY": -433.3825287702178,
             "visible": true
           },
           "top": {
@@ -68,15 +69,15 @@
         },
         "wheels": {
           "front": {
-            "offsetX": -440.1292177267711,
+            "offsetX": -484.34748866296263,
             "visible": true
           },
           "rear": {
-            "offsetX": 497.14159335915815,
+            "offsetX": 708.0090250879989,
             "visible": true
           },
           "radius": {
-            "offsetX": -568.009977523529,
+            "offsetX": -632.16185779501,
             "visible": true
           }
         },

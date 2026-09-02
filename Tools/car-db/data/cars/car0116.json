@@ -1,22 +1,23 @@
 {
-  "id": "car0083",
-  "name": "Dino 246 GT 1969",
-  "style": "Sport GT",
+  "id": "car0116",
+  "name": "BMW M1 1979",
+  "style": "Wedge",
   "substyle": "",
   "usageLinks": [],
-  "descShort": "",
+  "descShort": "сильный hero-референс. Публичный дебют состоялся в 1978 году, производство — 1978–1981.",
   "descHistorical": "",
   "country": "",
   "designer": "",
+  "favorite": true,
   "cardWidth": 1800,
   "views": {
     "side": {
       "draft": [
         {
           "file": "1.png",
-          "x": 7.739825581395349,
-          "y": -18.15952034883721,
-          "scale": 1.5196078431372548
+          "x": 1.4576981707317072,
+          "y": 13.452743902439025,
+          "scale": 3.22
         }
       ],
       "activeSel": {
@@ -28,23 +29,23 @@
       "guides": {
         "vertical": {
           "head": {
-            "offsetX": -787.2592782618356,
+            "offsetX": -829.3951196402263,
             "visible": true
           },
           "cab1": {
-            "offsetX": -356.04000832330996,
+            "offsetX": -280.3683357185769,
             "visible": true
           },
           "center": {
-            "offsetX": 187.99500907881452,
+            "offsetX": 139.07385244974785,
             "visible": true
           },
           "cab2": {
-            "offsetX": 541.2357732588885,
+            "offsetX": 523.1238191564364,
             "visible": true
           },
           "trunk": {
-            "offsetX": 805.8204209983553,
+            "offsetX": 806.8446165276798,
             "visible": true
           }
         },
@@ -54,7 +55,7 @@
             "visible": true
           },
           "bottom": {
-            "offsetY": -163.19371074887772,
+            "offsetY": -148.57191235164328,
             "visible": true
           },
           "center": {
@@ -68,15 +69,15 @@
         },
         "wheels": {
           "front": {
-            "offsetX": -440.1292177267711,
+            "offsetX": -493.70449238924994,
             "visible": true
           },
           "rear": {
-            "offsetX": 497.14159335915815,
+            "offsetX": 425.4127450236358,
             "visible": true
           },
           "radius": {
-            "offsetX": -568.009977523529,
+            "offsetX": -618.3028744786143,
             "visible": true
           }
         },

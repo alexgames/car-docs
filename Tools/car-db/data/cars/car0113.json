@@ -1,22 +1,22 @@
 {
-  "id": "car0083",
-  "name": "Dino 246 GT 1969",
-  "style": "Sport GT",
+  "id": "car0113",
+  "name": "Ferrari Enzo 2002",
+  "style": "Wedge",
   "substyle": "",
   "usageLinks": [],
-  "descShort": "",
+  "descShort": "можно показать как позднюю эволюцию клина, но не как основу стиля 1970–80-х. У неё уже другой язык: современная аэродинамическая скульптура",
   "descHistorical": "",
   "country": "",
   "designer": "",
-  "cardWidth": 1800,
+  "cardWidth": 1900,
   "views": {
     "side": {
       "draft": [
         {
           "file": "1.png",
-          "x": 7.739825581395349,
-          "y": -18.15952034883721,
-          "scale": 1.5196078431372548
+          "x": -27.13216145833333,
+          "y": 91.7995876736111,
+          "scale": 3.1
         }
       ],
       "activeSel": {
@@ -28,23 +28,23 @@
       "guides": {
         "vertical": {
           "head": {
-            "offsetX": -787.2592782618356,
+            "offsetX": -870.5487314141158,
             "visible": true
           },
           "cab1": {
-            "offsetX": -356.04000832330996,
+            "offsetX": -358.1706455011855,
             "visible": true
           },
           "center": {
-            "offsetX": 187.99500907881452,
+            "offsetX": 155.20335796185464,
             "visible": true
           },
           "cab2": {
-            "offsetX": 541.2357732588885,
+            "offsetX": 517.1981646759496,
             "visible": true
           },
           "trunk": {
-            "offsetX": 805.8204209983553,
+            "offsetX": 860.441445027991,
             "visible": true
           }
         },
@@ -54,11 +54,11 @@
             "visible": true
           },
           "bottom": {
-            "offsetY": -163.19371074887772,
+            "offsetY": -148.57191235164328,
             "visible": true
           },
           "center": {
-            "offsetY": -399.5283621035511,
+            "offsetY": -403.0439871035511,
             "visible": true
           },
           "top": {
@@ -68,15 +68,15 @@
         },
         "wheels": {
           "front": {
-            "offsetX": -440.1292177267711,
+            "offsetX": -437.7791387233491,
             "visible": true
           },
           "rear": {
-            "offsetX": 497.14159335915815,
+            "offsetX": 594.835540680649,
             "visible": true
           },
           "radius": {
-            "offsetX": -568.009977523529,
+            "offsetX": -563.5623522092611,
             "visible": true
           }
         },
@@ -136,5 +136,6 @@
       "lastExport": null,
       "customLabel": "Доп. 2"
     }
-  }
+  },
+  "favorite": false
 }

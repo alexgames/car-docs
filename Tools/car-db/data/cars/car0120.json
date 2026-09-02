@@ -1,22 +1,23 @@
 {
-  "id": "car0083",
-  "name": "Dino 246 GT 1969",
-  "style": "Sport GT",
+  "id": "car0120",
+  "name": "Maserati Kyalami 1976",
+  "style": "Wedge",
   "substyle": "",
   "usageLinks": [],
   "descShort": "",
   "descHistorical": "",
   "country": "",
   "designer": "",
-  "cardWidth": 1800,
+  "favorite": false,
+  "cardWidth": 1700,
   "views": {
     "side": {
       "draft": [
         {
-          "file": "1.png",
-          "x": 7.739825581395349,
-          "y": -18.15952034883721,
-          "scale": 1.5196078431372548
+          "file": "1.jpg",
+          "x": 24.091352982954547,
+          "y": 211.68069858743684,
+          "scale": 3.17
         }
       ],
       "activeSel": {
@@ -28,23 +29,23 @@
       "guides": {
         "vertical": {
           "head": {
-            "offsetX": -787.2592782618356,
+            "offsetX": -770.5257090711207,
             "visible": true
           },
           "cab1": {
-            "offsetX": -356.04000832330996,
+            "offsetX": -280.3683357185769,
             "visible": true
           },
           "center": {
-            "offsetX": 187.99500907881452,
+            "offsetX": 211.9922128833523,
             "visible": true
           },
           "cab2": {
-            "offsetX": 541.2357732588885,
+            "offsetX": 525.5863445629404,
             "visible": true
           },
           "trunk": {
-            "offsetX": 805.8204209983553,
+            "offsetX": 793.4126212702272,
             "visible": true
           }
         },
@@ -54,11 +55,11 @@
             "visible": true
           },
           "bottom": {
-            "offsetY": -163.19371074887772,
+            "offsetY": -164.05802346275436,
             "visible": true
           },
           "center": {
-            "offsetY": -399.5283621035511,
+            "offsetY": -410.17940377021773,
             "visible": true
           },
           "top": {
@@ -68,15 +69,15 @@
         },
         "wheels": {
           "front": {
-            "offsetX": -440.1292177267711,
+            "offsetX": -504.23464144074035,
             "visible": true
           },
           "rear": {
-            "offsetX": 497.14159335915815,
+            "offsetX": 449.84279244911,
             "visible": true
           },
           "radius": {
-            "offsetX": -568.009977523529,
+            "offsetX": -620.7317362672321,
             "visible": true
           }
         },

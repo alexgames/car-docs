@@ -1,22 +1,23 @@
 {
-  "id": "car0083",
-  "name": "Dino 246 GT 1969",
-  "style": "Sport GT",
+  "id": "car0115",
+  "name": "Triumph TR7 1975",
+  "style": "Wedge",
   "substyle": "",
   "usageLinks": [],
-  "descShort": "",
+  "descShort": "один из лучших вариантов: передний мотор, чистый клин, отдельная корма.",
   "descHistorical": "",
   "country": "",
   "designer": "",
-  "cardWidth": 1800,
+  "favorite": true,
+  "cardWidth": 1600,
   "views": {
     "side": {
       "draft": [
         {
           "file": "1.png",
-          "x": 7.739825581395349,
-          "y": -18.15952034883721,
-          "scale": 1.5196078431372548
+          "x": 19.099934895833336,
+          "y": -29.150390625000004,
+          "scale": 1.68
         }
       ],
       "activeSel": {
@@ -28,23 +29,23 @@
       "guides": {
         "vertical": {
           "head": {
-            "offsetX": -787.2592782618356,
+            "offsetX": -697.1842377169539,
             "visible": true
           },
           "cab1": {
-            "offsetX": -356.04000832330996,
+            "offsetX": -280.3683357185769,
             "visible": true
           },
           "center": {
-            "offsetX": 187.99500907881452,
+            "offsetX": 260.0320349319634,
             "visible": true
           },
           "cab2": {
-            "offsetX": 541.2357732588885,
+            "offsetX": 437.74943050044044,
             "visible": true
           },
           "trunk": {
-            "offsetX": 805.8204209983553,
+            "offsetX": 710.6256204021718,
             "visible": true
           }
         },
@@ -54,7 +55,7 @@
             "visible": true
           },
           "bottom": {
-            "offsetY": -163.19371074887772,
+            "offsetY": -157.9794644349766,
             "visible": true
           },
           "center": {
@@ -68,15 +69,15 @@
         },
         "wheels": {
           "front": {
-            "offsetX": -440.1292177267711,
+            "offsetX": -382.5544114060182,
             "visible": true
           },
           "rear": {
-            "offsetX": 497.14159335915815,
+            "offsetX": 420.9213514768878,
             "visible": true
           },
           "radius": {
-            "offsetX": -568.009977523529,
+            "offsetX": -504.7014628297321,
             "visible": true
           }
         },

@@ -97,7 +97,7 @@
             "state": {
               "type": "markdown",
               "state": {
-                "file": "DisDocs/Разработка/0057 — Материалы.md",
+                "file": "DisDocs/18-пул-разработки-2.0-и-2.1.md",
                 "mode": "source",
                 "source": false,
                 "backlinks": true,
@@ -112,7 +112,7 @@
                 }
               },
               "icon": "lucide-file",
-              "title": "0057 — Материалы"
+              "title": "18-пул-разработки-2.0-и-2.1"
             }
           },
           {
@@ -164,7 +164,7 @@
             "state": {
               "type": "search",
               "state": {
-                "query": "решет",
+                "query": "",
                 "matchingCase": false,
                 "explainSearch": false,
                 "collapseAll": false,
@@ -188,11 +188,12 @@
               "title": "Bookmarks"
             }
           }
-        ]
+        ],
+        "currentTab": 2
       }
     ],
     "direction": "horizontal",
-    "width": 276.51953125
+    "width": 330.9609375
   },
   "right": {
     "id": "43901a2bea0d586c",
@@ -300,52 +301,52 @@
   },
   "active": "17cc1349027cd935",
   "lastOpenFiles": [
-    "Tools/car-db/data/photos/car0108/side/draft/1.webp",
-    "Tools/car-db/data/photos/car0108/side/draft",
-    "Tools/car-db/data/photos/car0108/side",
-    "Tools/car-db/data/photos/car0108",
-    "Tools/car-db/data/cars/car0108.json",
-    "Tools/car-db/data/photos/car0107/side/draft/1.jpg",
-    "Tools/car-db/data/photos/car0107/side/draft",
-    "Tools/car-db/data/photos/car0107/side",
-    "Tools/car-db/data/photos/car0107",
-    "Tools/car-db/data/cars/car0107.json",
-    "Tools/car-db/data/cars/car0106.json.crswap",
-    "Tools/car-db/data/photos/car0106/side/draft/1.png",
-    "Tools/car-db/data/photos/car0106/side/draft",
-    "Tools/car-db/data/photos/car0105/side/draft/1.png",
-    "Tools/car-db/data/photos/car0104/side/draft/1.png",
-    "Tools/car-db/data/photos/car0103/side/draft/1.png",
-    "Tools/car-db/data/photos/car0102/side/draft/1.png",
-    "Tools/car-db/data/photos/car0101/side/draft/1.png",
-    "Tools/car-db/data/photos/car0100/side/draft/1.png",
-    "Tools/car-db/data/photos/car0099/side/draft/1.png",
-    "Tools/car-db/data/photos/car0098/side/draft/1.png",
-    "DisDocs/18-пул-разработки-2.0-и-2.1.md",
+    "Tools/car-db/data/cars/car0122.json.crswap",
+    "Tools/car-db/data/photos/car0122/side/draft/1.png",
+    "Tools/car-db/data/photos/car0122/side/draft",
+    "Tools/car-db/data/photos/car0122/side",
+    "Tools/car-db/data/photos/car0122",
+    "Tools/car-db/data/cars/car0122.json",
+    "Tools/car-db/data/cars/car0121.json.crswap",
+    "Tools/car-db/data/photos/car0121/side/draft/1.jpg.crswap",
+    "Tools/car-db/data/photos/car0121/side/draft/1.jpg",
+    "Tools/car-db/data/photos/car0121/side/draft",
+    "Tools/car-db/data/photos/car0121/side",
+    "Tools/car-db/data/photos/car0121",
+    "Tools/car-db/data/cars/car0121.json",
+    "Tools/car-db/data/photos/car0120/side/draft/1.jpg",
+    "Tools/car-db/data/photos/car0119/side/draft/1.jpg",
+    "Tools/car-db/data/photos/car0118/side/draft/1.jpg",
+    "Tools/car-db/data/photos/car0117/side/draft/1.png",
+    "Tools/car-db/data/photos/car0116/side/draft/1.png",
+    "Tools/car-db/data/photos/car0115/side/draft/1.png",
+    "Tools/car-db/data/photos/car0114/side/draft/1.png",
+    "DisDocs/Разработка/Backlog/0088 — Material Workbench для деталей.md",
+    "DisDocs/Разработка/Backlog/0087 — Автоматическая апертура света фар.md",
     "DisDocs/16-кризисный-роадмап-релиз-2.0.md",
-    "DisDocs/08-маркетинг-план.md",
-    "DisDocs/13-концепция-версии-2.0.md",
     "DisDocs/17-scope-версии-2.1.md",
-    "DisDocs/Разработка/В работе/Архитектура уровней и конфигов v2.md",
     "DisDocs/sprints/0001 — Текущий (Август) Версия 2.0.md",
+    "DisDocs/Разработка/Сделано/0079 — Автоматические UV кузова.md",
+    "DisDocs/Разработка/Backlog/0086 — Несовпадение стекол и окон кузова.md",
+    "DisDocs/Разработка/0075 — 3d models.md",
+    "DisDocs/Разработка/Backlog/0033 — Зекрала.md",
+    "DisDocs/Разработка/0024 — Распределить контент.md",
+    "DisDocs/Разработка/0051 — Профиль в игре.md",
+    "DisDocs/Разработка/0058 — План качества продукта после URP.md",
+    "DisDocs/Разработка/0057 — Материалы.md",
+    "DisDocs/Разработка/0055 — Tools.md",
+    "DisDocs/Разработка/В работе/0073 — deformX deformZ.md",
+    "DisDocs/Разработка/В работе/0074 — megafiers.md",
+    "DisDocs/12-легализация-бизнеса.md",
+    "DisDocs/13-концепция-версии-2.0.md",
+    "DisDocs/15-отчет-владельцу-2026-07-19-критический.md",
+    "DisDocs/18-пул-разработки-2.0-и-2.1.md",
+    "DisDocs/Разработка/0085 — Wedge при седанной архитектуре.md",
+    "Tools/car-db/data/photos/car0113/side/draft/1.png",
+    "DisDocs/08-маркетинг-план.md",
+    "DisDocs/Разработка/В работе/Архитектура уровней и конфигов v2.md",
     "DisDocs/Разработка/0084 — Аудит текущего деформа Compact.md",
     "DisDocs/Разработка/0083 — Игровая карточка стиля Compact.md",
-    "DisDocs/Разработка/0082 — Пропорции и сегменты Compact.md",
-    "DisDocs/Разработка/0052 — Идеи дизайна.md",
-    "DisDocs/Разработка/0081 — Генератор решёток и UGC.md",
-    "DisDocs/Разработка/0078 — Редактор решеток-фар-баиперов.md",
-    "DisDocs/Разработка/0080 — Генератор фар.md",
-    "DisDocs/Разработка/Backlog/0079 — Автоматические UV кузова.md",
-    "DisDocs/Разработка/0001 — ШАБЛОН.md",
-    "DisDocs/sprints/0002 — Спринт Чеклист.md",
-    "DisDocs/Разработка/0073 — deformX deformZ.md",
-    "DisDocs/sprints/01-текущий-спринт-сборка.md",
-    "DisDocs/sprints/0000 — Шаблон Спринта.md",
-    "DisDocs/Разработка/Backlog/Engenerring-Art direction.md",
-    "DisDocs/Разработка/0077 — Накладные обода.md",
-    "DisDocs/Разработка/0056 — режимы Blueprint-Pencil-силуэт-wireframe.md",
-    "DisDocs/Разработка/Backlog/0032 — AR.md",
-    "DisDocs/Разработка/0074 — megafiers.md",
     "Analytics/reviews/Untitled.canvas"
   ]
 }

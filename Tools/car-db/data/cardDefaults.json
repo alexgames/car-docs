@@ -2,23 +2,23 @@
   "guides": {
     "vertical": {
       "head": {
-        "offsetX": -828.1295544246262,
+        "offsetX": -774.5361257377873,
         "visible": true
       },
       "cab1": {
-        "offsetX": -301.2344123930774,
+        "offsetX": -280.3683357185769,
         "visible": true
       },
       "center": {
-        "offsetX": 199.67742186951227,
+        "offsetX": 202.37415732779664,
         "visible": true
       },
       "cab2": {
-        "offsetX": 606.2612093054001,
+        "offsetX": 435.2998862296072,
         "visible": true
       },
       "trunk": {
-        "offsetX": 830.2481099518436,
+        "offsetX": 769.2112323813383,
         "visible": true
       }
     },
@@ -28,7 +28,7 @@
         "visible": true
       },
       "bottom": {
-        "offsetY": -157.78855086515676,
+        "offsetY": -148.57191235164328,
         "visible": true
       },
       "center": {
@@ -42,15 +42,15 @@
     },
     "wheels": {
       "front": {
-        "offsetX": -538.0125752849107,
+        "offsetX": -441.0749192185182,
         "visible": true
       },
       "rear": {
-        "offsetX": 444.3617968475303,
+        "offsetX": 484.2351535602211,
         "visible": true
       },
       "radius": {
-        "offsetX": -662.5593961281801,
+        "offsetX": -557.3463196005655,
         "visible": true
       }
     },
@@ -71,7 +71,7 @@
       }
     }
   },
-  "cardWidth": 1800,
-  "style": "Sport GT",
+  "cardWidth": 1600,
+  "style": "Wedge",
   "substyle": ""
 }
