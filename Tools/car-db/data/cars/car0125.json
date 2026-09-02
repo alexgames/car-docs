@@ -1,0 +1,141 @@
+{
+  "id": "car0125",
+  "name": "Lamborghini LM002 1986",
+  "style": "Offroad",
+  "substyle": "",
+  "usageLinks": [],
+  "descShort": "",
+  "descHistorical": "",
+  "country": "",
+  "designer": "",
+  "favorite": true,
+  "cardWidth": 1200,
+  "views": {
+    "side": {
+      "draft": [
+        {
+          "file": "1.png",
+          "x": 4.181985294117648,
+          "y": -40.946691176470594,
+          "scale": 1.71
+        }
+      ],
+      "activeSel": {
+        "kind": "draft",
+        "index": 0
+      },
+      "final": null,
+      "lastExport": null,
+      "guides": {
+        "vertical": {
+          "head": {
+            "offsetX": -529.985180359636,
+            "visible": true
+          },
+          "cab1": {
+            "offsetX": -191.81613749553765,
+            "visible": true
+          },
+          "center": {
+            "offsetX": 31.867165468552912,
+            "visible": true
+          },
+          "cab2": {
+            "offsetX": 292.95372901672204,
+            "visible": true
+          },
+          "trunk": {
+            "offsetX": 525.1147852087195,
+            "visible": true
+          }
+        },
+        "horizontal": {
+          "ground": {
+            "offsetY": -85.6640625,
+            "visible": true
+          },
+          "bottom": {
+            "offsetY": -214.55758396403826,
+            "visible": true
+          },
+          "center": {
+            "offsetY": -416.0648204368845,
+            "visible": true
+          },
+          "top": {
+            "offsetY": -550.280243844697,
+            "visible": true
+          }
+        },
+        "wheels": {
+          "front": {
+            "offsetX": -388.0858720371456,
+            "visible": true
+          },
+          "rear": {
+            "offsetX": 320.00373833788217,
+            "visible": true
+          },
+          "radius": {
+            "offsetX": -485.1187176222742,
+            "visible": true
+          }
+        },
+        "rulers": {
+          "horizontal": {
+            "enabled": false,
+            "startOffsetX": -180,
+            "endOffsetX": 180,
+            "ratioKey": "gold",
+            "invert": false
+          },
+          "vertical": {
+            "enabled": false,
+            "startOffsetY": -280,
+            "endOffsetY": 0,
+            "ratioKey": "gold",
+            "invert": false
+          }
+        }
+      }
+    },
+    "front": {
+      "draft": [],
+      "activeSel": null,
+      "final": null,
+      "lastExport": null
+    },
+    "34front": {
+      "draft": [],
+      "activeSel": null,
+      "final": null,
+      "lastExport": null
+    },
+    "34rear": {
+      "draft": [],
+      "activeSel": null,
+      "final": null,
+      "lastExport": null
+    },
+    "rear": {
+      "draft": [],
+      "activeSel": null,
+      "final": null,
+      "lastExport": null
+    },
+    "custom1": {
+      "draft": [],
+      "activeSel": null,
+      "final": null,
+      "lastExport": null,
+      "customLabel": "Доп. 1"
+    },
+    "custom2": {
+      "draft": [],
+      "activeSel": null,
+      "final": null,
+      "lastExport": null,
+      "customLabel": "Доп. 2"
+    }
+  }
+}

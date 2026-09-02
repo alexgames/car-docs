@@ -1,0 +1,141 @@
+{
+  "id": "car0129",
+  "name": "Ford Bronco 1966",
+  "style": "Offroad",
+  "substyle": "",
+  "usageLinks": [],
+  "descShort": "",
+  "descHistorical": "",
+  "country": "",
+  "designer": "",
+  "favorite": false,
+  "cardWidth": 1100,
+  "views": {
+    "side": {
+      "draft": [
+        {
+          "file": "1.png",
+          "x": -13.137755102040817,
+          "y": -38.35299744897959,
+          "scale": 2.13
+        }
+      ],
+      "activeSel": {
+        "kind": "draft",
+        "index": 0
+      },
+      "final": null,
+      "lastExport": null,
+      "guides": {
+        "vertical": {
+          "head": {
+            "offsetX": -490.4401435949302,
+            "visible": true
+          },
+          "cab1": {
+            "offsetX": -148.4237805527605,
+            "visible": true
+          },
+          "center": {
+            "offsetX": 118.65484929208242,
+            "visible": true
+          },
+          "cab2": {
+            "offsetX": 408.68158265817874,
+            "visible": true
+          },
+          "trunk": {
+            "offsetX": 470.75679201144044,
+            "visible": true
+          }
+        },
+        "horizontal": {
+          "ground": {
+            "offsetY": -85.6640625,
+            "visible": true
+          },
+          "bottom": {
+            "offsetY": -193.86946496643924,
+            "visible": true
+          },
+          "center": {
+            "offsetY": -387.4030432260001,
+            "visible": true
+          },
+          "top": {
+            "offsetY": -550.280243844697,
+            "visible": true
+          }
+        },
+        "wheels": {
+          "front": {
+            "offsetX": -332.4751902644365,
+            "visible": true
+          },
+          "rear": {
+            "offsetX": 273.9603209709353,
+            "visible": true
+          },
+          "radius": {
+            "offsetX": -423.9578470240349,
+            "visible": true
+          }
+        },
+        "rulers": {
+          "horizontal": {
+            "enabled": false,
+            "startOffsetX": -180,
+            "endOffsetX": 180,
+            "ratioKey": "gold",
+            "invert": false
+          },
+          "vertical": {
+            "enabled": false,
+            "startOffsetY": -280,
+            "endOffsetY": 0,
+            "ratioKey": "gold",
+            "invert": false
+          }
+        }
+      }
+    },
+    "front": {
+      "draft": [],
+      "activeSel": null,
+      "final": null,
+      "lastExport": null
+    },
+    "34front": {
+      "draft": [],
+      "activeSel": null,
+      "final": null,
+      "lastExport": null
+    },
+    "34rear": {
+      "draft": [],
+      "activeSel": null,
+      "final": null,
+      "lastExport": null
+    },
+    "rear": {
+      "draft": [],
+      "activeSel": null,
+      "final": null,
+      "lastExport": null
+    },
+    "custom1": {
+      "draft": [],
+      "activeSel": null,
+      "final": null,
+      "lastExport": null,
+      "customLabel": "Доп. 1"
+    },
+    "custom2": {
+      "draft": [],
+      "activeSel": null,
+      "final": null,
+      "lastExport": null,
+      "customLabel": "Доп. 2"
+    }
+  }
+}

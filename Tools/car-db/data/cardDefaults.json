@@ -2,23 +2,23 @@
   "guides": {
     "vertical": {
       "head": {
-        "offsetX": -774.5361257377873,
+        "offsetX": -490.4401435949302,
         "visible": true
       },
       "cab1": {
-        "offsetX": -280.3683357185769,
+        "offsetX": -199.85075759357687,
         "visible": true
       },
       "center": {
-        "offsetX": 202.37415732779664,
+        "offsetX": 118.65484929208242,
         "visible": true
       },
       "cab2": {
-        "offsetX": 435.2998862296072,
+        "offsetX": 241.99631480103585,
         "visible": true
       },
       "trunk": {
-        "offsetX": 769.2112323813383,
+        "offsetX": 454.9324935420527,
         "visible": true
       }
     },
@@ -28,7 +28,7 @@
         "visible": true
       },
       "bottom": {
-        "offsetY": -148.57191235164328,
+        "offsetY": -173.17431190521472,
         "visible": true
       },
       "center": {
@@ -42,15 +42,15 @@
     },
     "wheels": {
       "front": {
-        "offsetX": -441.0749192185182,
+        "offsetX": -342.7350754685182,
         "visible": true
       },
       "rear": {
-        "offsetX": 484.2351535602211,
+        "offsetX": 260.5674638280782,
         "visible": true
       },
       "radius": {
-        "offsetX": -557.3463196005655,
+        "offsetX": -441.17723477913694,
         "visible": true
       }
     },
@@ -71,7 +71,7 @@
       }
     }
   },
-  "cardWidth": 1600,
-  "style": "Wedge",
+  "cardWidth": 1200,
+  "style": "Offroad",
   "substyle": ""
 }
