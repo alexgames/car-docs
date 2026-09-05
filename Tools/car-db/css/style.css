@@ -1,0 +1,262 @@
+* { box-sizing: border-box; }
+body {
+  background: #f5f5f0; color: #333; margin: 0;
+  font-family: -apple-system, 'Segoe UI', sans-serif; font-size: 14px;
+}
+#toolbar {
+  display: flex; align-items: center; gap: 14px; padding: 10px 16px;
+  background: #fff; border-bottom: 1px solid #e2e2de;
+}
+#toolbar h1 { font-size: 14px; font-weight: 600; margin: 0; color: #333; white-space: nowrap; }
+#toolbar button {
+  font-size: 11px; padding: 5px 12px; border-radius: 14px; border: 1px solid #ccc;
+  background: #fff; cursor: pointer;
+}
+#toolbar button:hover { background: #f0f0ec; }
+#folder-status { font-size: 10px; color: #999; }
+
+#app-layout { display: flex; height: calc(100vh - 44px); }
+#empty-state { padding: 60px 20px; text-align: center; color: #999; font-size: 13px; width: 100%; }
+
+/* ── левая панель: список машин ─────────────────────────── */
+#car-list-panel {
+  width: 260px; flex: none; background: #faf9f6;
+  display: flex; flex-direction: column; overflow: hidden;
+}
+#car-list-resize-handle {
+  width: 6px; flex: none; cursor: col-resize; background: transparent;
+  border-right: 1px solid #e2e2de;
+}
+#car-list-resize-handle:hover, #car-list-resize-handle.dragging { background: #ddd; }
+#car-list-head { padding: 10px; border-bottom: 1px solid #e2e2de; }
+#btn-new-car {
+  width: 100%; font-size: 12px; padding: 8px; border-radius: 8px; border: 1px dashed #ccc;
+  background: #fff; color: #666; cursor: pointer;
+}
+#btn-new-car:hover { background: #f0f0ec; border-color: #999; }
+#car-list { flex: 1; overflow-y: auto; padding: 6px; }
+.car-list-item {
+  display: flex; align-items: center; gap: 8px;
+  padding: 6px 9px; border-radius: 7px; cursor: pointer; margin-bottom: 3px;
+}
+.car-list-item:hover { background: #efeee9; }
+.car-list-item.active { background: #333; }
+.car-list-item.active .car-item-name { color: #fff; }
+.car-list-item.active .car-item-sub { color: #ccc; }
+.car-item-thumb {
+  width: 64px; height: 32px; flex: none; border-radius: 6px; background: #ece9e3;
+  overflow: hidden; display: flex; align-items: center; justify-content: center;
+}
+.car-item-thumb img { width: 100%; height: 100%; object-fit: contain; display: block; }
+.car-item-info { min-width: 0; flex: 1; }
+.car-item-name { font-size: 13px; font-weight: 600; color: #333; }
+.car-item-star { color: #e0a800; }
+.car-list-item.active .car-item-star { color: #ffd54f; }
+.fav-star-btn { flex: none; font-size: 22px; line-height: 1; background: none; border: none; cursor: pointer; color: #ccc; padding: 0 2px; }
+.fav-star-btn:hover { color: #e0a800; }
+.fav-star-btn.active { color: #e0a800; }
+.car-item-sub { font-size: 11px; color: #999; margin-top: 1px; }
+.car-item-id { font-family: monospace; }
+.car-group { margin-bottom: 2px; }
+.car-group summary {
+  cursor: pointer; font-size: 11.5px; font-weight: 600; color: #888; padding: 6px 8px;
+  border-radius: 6px; list-style: none; user-select: none;
+}
+.car-group summary::-webkit-details-marker { display: none; }
+.car-group summary::before { content: '▾ '; }
+.car-group:not([open]) summary::before { content: '▸ '; }
+.car-group summary:hover { background: #efeee9; color: #555; }
+.car-group .car-list-item { margin-left: 6px; }
+.car-subgroup { margin-left: 12px; }
+.car-subgroup summary { font-size: 11px; font-weight: 500; color: #aaa; padding: 4px 8px; }
+.car-subgroup summary:hover { color: #666; }
+
+/* ── основная панель ─────────────────────────────────────── */
+#car-main { flex: 1; overflow-y: auto; padding: 18px 24px 60px; }
+.field-row { margin-bottom: 12px; }
+.field-row label { display: block; font-size: 11px; color: #999; margin-bottom: 4px; }
+.field-row input[type=text], .field-row textarea, .field-row select {
+  width: 100%; font-size: 13px; padding: 7px 9px; border: 1px solid #ddd; border-radius: 6px;
+  font-family: inherit;
+}
+.field-row textarea { min-height: 60px; resize: vertical; }
+.field-grid { display: grid; grid-template-columns: 1fr 1fr 1fr 1fr; gap: 12px; }
+.field-grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+#car-name-input { font-size: 20px; font-weight: 700; padding: 6px 8px; }
+
+.usage-row { display: flex; gap: 6px; align-items: center; margin-bottom: 6px; }
+.usage-row input, .usage-row select { flex: 1; font-size: 12px; padding: 6px 8px; border: 1px solid #ddd; border-radius: 5px; background: #fff; }
+.usage-row button { border: none; background: transparent; color: #ccc; cursor: pointer; font-size: 15px; }
+.usage-row button:hover { color: #c0392b; }
+#btn-add-usage {
+  font-size: 11px; padding: 4px 10px; border-radius: 8px; border: 1px dashed #ccc;
+  background: #fff; color: #999; cursor: pointer;
+}
+#btn-add-usage:hover { background: #f0f0ec; }
+
+.card-actions { display: flex; justify-content: flex-end; gap: 8px; margin: 4px 0 22px; }
+.card-actions button {
+  font-size: 11px; padding: 6px 14px; border-radius: 8px; border: 1px solid #ccc;
+  background: #fff; cursor: pointer;
+}
+#btn-delete-car { color: #c0392b; border-color: #e6b3ac; }
+
+/* ── вкладки ракурсов ────────────────────────────────────── */
+#view-tabs { display: flex; gap: 5px; flex-wrap: wrap; margin: 10px 0 12px; }
+.view-tab {
+  font-size: 11px; padding: 6px 12px; border-radius: 10px; border: 1px solid #ddd;
+  background: #fff; color: #666; cursor: pointer;
+}
+.view-tab.active { background: #333; color: #fff; border-color: #333; }
+.view-tab-custom-input {
+  font-size: 11px; padding: 6px 10px; border-radius: 10px; border: 1px solid #ddd;
+  width: 92px; background: #fff; color: #666;
+}
+.view-tab-custom-input.active { background: #333; color: #fff; border-color: #333; }
+
+/* ── галерея драфт/финал фото ────────────────────────────── */
+.photo-cols { display: grid; grid-template-columns: 1fr 220px; gap: 14px; margin-bottom: 10px; }
+.photo-col-head { font-size: 11px; color: #999; margin-bottom: 6px; }
+.draft-strip { display: flex; gap: 8px; flex-wrap: wrap; }
+.draft-thumb {
+  position: relative; width: 70px; height: 70px; border-radius: 6px; overflow: hidden;
+  border: 2px solid transparent; cursor: pointer; background: #eee;
+}
+.draft-thumb img { width: 100%; height: 100%; object-fit: cover; display: block; }
+.draft-thumb.active { border-color: #6a5acd; }
+.draft-thumb .thumb-del {
+  position: absolute; top: 2px; right: 2px; width: 16px; height: 16px; border-radius: 50%;
+  border: none; background: rgba(0,0,0,.5); color: #fff; font-size: 10px; line-height: 1;
+  cursor: pointer; display: none; align-items: center; justify-content: center; padding: 0;
+}
+.draft-thumb:hover .thumb-del { display: flex; }
+.mini-drop {
+  width: 70px; height: 70px; border-radius: 6px; border: 1px dashed #ccc; color: #bbb;
+  display: flex; align-items: center; justify-content: center; font-size: 20px; cursor: pointer;
+}
+.mini-drop:hover { background: #fff; border-color: #999; color: #666; }
+.mini-drop.drag-over { border-color: #6a5acd; background: #f4f2fc; }
+.final-slot { width: 100px; height: 70px; }
+.final-slot .draft-thumb, .final-slot .mini-drop { width: 100px; height: 70px; }
+
+/* ── холст ───────────────────────────────────────────────── */
+.canvas-toolbar { display: flex; align-items: center; gap: 12px; margin-bottom: 8px; flex-wrap: wrap; }
+.canvas-toolbar button {
+  font-size: 11px; padding: 6px 13px; border-radius: 8px; border: 1px solid #ccc;
+  background: #fff; cursor: pointer;
+}
+.canvas-toolbar button.primary { background: #333; color: #fff; border-color: #333; }
+.canvas-toolbar label.chk { display: flex; align-items: center; gap: 5px; font-size: 11px; color: #666; }
+#export-status { font-size: 10.5px; color: #999; }
+.zoom-controls { display: flex; align-items: center; gap: 4px; }
+.zoom-controls button { width: 26px; padding: 5px 0; font-size: 13px; line-height: 1; }
+#zoom-level { font-size: 11px; color: #888; width: 40px; text-align: center; }
+
+.canvas-area { display: flex; gap: 14px; }
+.canvas-scroll {
+  /* Высота контейнера на экране — по умолчанию небольшая (не должна занимать весь
+     экран сама), но растягивается вручную за правый нижний угол (resize: vertical) —
+     кому нужно больше места, тот сам её увеличивает, без переключения зума холста.
+     Сам холст (.canvas-inner) логически по-прежнему CANVAS_HEIGHT px, но показывается
+     через CSS zoom — пользователь подбирает масштаб кнопками +/-, чтобы влезла и
+     длинная «блинная» машина, и короткая. */
+  flex: 1; height: 600px; min-height: 150px; resize: vertical; overflow-x: auto; overflow-y: auto; background: #ececea;
+  border-radius: 8px; position: relative; border: 1px solid #ccc;
+  box-shadow: inset 0 0 0 1px #fff;
+}
+/* border-top/bottom холста — это реальные верх/низ экспорта (высота холста всегда
+   целиком идёт в export.png, обрезается только ширина — см. .card-bound). */
+.canvas-inner {
+  /* Верх/низ холста — это буквально верх/низ export.png (высота не обрезается), поэтому
+     стиль как у .card-bound (границ ширины) — вместе они дают полную рамку того, что
+     попадёт в экспорт. */
+  width: 2400px; height: 620px; position: relative;
+  border-top: 3px solid #d68910; border-bottom: 3px solid #d68910; box-sizing: border-box;
+}
+/* Сплошные, не пунктирные: пунктир — это тоже длина в логических px холста, при
+   уменьшении zoom штрихи и промежутки становятся долями пикселя и сливаются в
+   сплошную (или пропадающую) линию. Сплошная линия не зависит от масштаба. */
+.line-fixed-v { position: absolute; top: 0; bottom: 0; width: 0; border-left: 2px solid #999; }
+.line-fixed-h { position: absolute; left: 0; right: 0; height: 0; border-top: 2px solid #999; }
+/* Границы того, что реально попадёт в экспорт (ширина карточки), — не двигаются,
+   не хендлы, просто ориентир при позиционировании фото. */
+.card-bound { position: absolute; top: 0; bottom: 0; width: 0; border-left: 3px solid #d68910; pointer-events: none; }
+.card-bound-label {
+  position: absolute; top: 2px; font-size: 9px; color: #a35a00; background: rgba(255,255,255,.85);
+  padding: 0 3px; border-radius: 3px; white-space: nowrap; transform-origin: 0 0;
+}
+/* Тянуть можно только за точку-хендл, сама линия не драгается — курсор resize на ней
+   был обманчивым (показывал, что можно тащить, а перетаскивание не было навешено). */
+.guide-v { position: absolute; top: 0; bottom: 0; width: 0; border-left: 1px solid; pointer-events: none; }
+.guide-h { position: absolute; left: 0; right: 0; height: 0; border-top: 1px solid; pointer-events: none; }
+/* Пунктир не через border-style (штрихи там мелкие, завязаны на border-width) —
+   через repeating-linear-gradient, длину штриха/промежутка задаём сами в JS. */
+.guide-v-dashed { position: absolute; top: 0; bottom: 0; width: 2px; margin-left: -1px; pointer-events: none; }
+.guide-handle-v {
+  position: absolute; top: 14px; width: 14px; height: 14px; border-radius: 50%;
+  margin-left: -7px; cursor: ew-resize; border: 2px solid #fff; box-shadow: 0 0 0 1px rgba(0,0,0,.2);
+}
+.guide-handle-h {
+  position: absolute; height: 14px; width: 14px; border-radius: 50%;
+  margin-top: -7px; cursor: ns-resize; border: 2px solid #fff; box-shadow: 0 0 0 1px rgba(0,0,0,.2);
+}
+.guide-label {
+  position: absolute; font-size: 9px; color: #666; background: rgba(255,255,255,.8); padding: 0 3px;
+  border-radius: 3px; white-space: nowrap; transform-origin: 0 0;
+}
+.canvas-photo { position: absolute; cursor: grab; user-select: none; -webkit-user-drag: none; }
+.canvas-photo:active { cursor: grabbing; }
+.canvas-photo.locked { cursor: default; }
+.canvas-photo.locked:active { cursor: default; }
+.canvas-photo-empty { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; color: #aaa; font-size: 12px; }
+.canvas-overlay-final { position: absolute; opacity: .5; pointer-events: none; outline: 1px dashed #6a5acd; }
+
+.guide-legend { width: 200px; flex: none; }
+.side-panel-tabs { display: flex; gap: 4px; margin-bottom: 10px; }
+.side-tab {
+  flex: 1; font-size: 11px; padding: 6px 4px; border-radius: 7px; border: 1px solid #ddd;
+  background: #fff; color: #666; cursor: pointer;
+}
+.side-tab.active { background: #333; color: #fff; border-color: #333; }
+.ruler-row { display: flex; align-items: center; gap: 6px; font-size: 11.5px; color: #555; padding: 4px 0; }
+.ruler-row select { font-size: 11px; padding: 3px 4px; border: 1px solid #ddd; border-radius: 4px; width: 100%; }
+/* Пропорциональная линейка (золотое сечение): полоска красный/белый + 3 линии
+   (два конца — тянутся за хендл, средняя — вычисляется, не двигается). */
+.ruler-strip { position: absolute; box-sizing: border-box; }
+.ruler-strip-red { background: #e74c3c; }
+.ruler-strip-white { background: #fff; border: 1px solid #e74c3c; }
+.ruler-gline-v { position: absolute; width: 0; border-left: 7px solid #e74c3c; pointer-events: none; margin-left: -3.5px; }
+.ruler-gline-h { position: absolute; height: 0; border-top: 7px solid #e74c3c; pointer-events: none; margin-top: -3.5px; }
+.ruler-handle-v {
+  position: absolute; top: 14px; width: 14px; height: 14px; border-radius: 50%; margin-left: -7px;
+  background: #e74c3c; border: 2px solid #fff; box-shadow: 0 0 0 1px rgba(0,0,0,.2); cursor: ew-resize;
+}
+.ruler-handle-h {
+  position: absolute; width: 14px; height: 14px; border-radius: 50%; margin-top: -7px;
+  background: #e74c3c; border: 2px solid #fff; box-shadow: 0 0 0 1px rgba(0,0,0,.2); cursor: ns-resize;
+}
+.legend-group-title { font-size: 10px; color: #999; text-transform: uppercase; margin: 10px 0 4px; }
+.legend-group-title:first-child { margin-top: 0; }
+.legend-row { display: flex; align-items: center; gap: 6px; font-size: 11.5px; color: #555; padding: 3px 0; }
+.legend-row input[type=checkbox] { margin: 0; }
+.legend-dot { width: 9px; height: 9px; border-radius: 50%; flex: none; }
+.legend-row .legend-name { flex: 1; }
+.legend-row .legend-val {
+  width: 52px; flex: none; font-size: 10px; color: #888; font-family: monospace;
+  padding: 2px 4px; border: 1px solid #ddd; border-radius: 4px; background: #fff;
+}
+
+.metrics-table { width: 100%; border-collapse: collapse; font-size: 10.5px; }
+.metrics-table th, .metrics-table td { padding: 3px 5px; border-bottom: 1px solid #eee; text-align: right; }
+.metrics-table th:first-child, .metrics-table td:first-child { text-align: left; }
+.metrics-table thead th { color: #999; font-weight: 600; font-size: 9.5px; text-transform: uppercase; }
+.metrics-table .metrics-label { color: #555; white-space: nowrap; }
+.metrics-table .metrics-num { font-family: monospace; color: #333; }
+.metrics-table .metrics-delta { color: #999; }
+.metrics-table .metrics-delta-high { color: #c0392b; font-weight: 700; }
+
+.drop-zone-wide {
+  border: 2px dashed #ccc; border-radius: 8px; padding: 10px; text-align: center;
+  font-size: 11px; color: #999; cursor: pointer; margin-top: 6px;
+}
+.drop-zone-wide.drag-over { border-color: #6a5acd; background: #f4f2fc; color: #6a5acd; }
