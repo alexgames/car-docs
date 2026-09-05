@@ -116,6 +116,20 @@
             }
           },
           {
+            "id": "76766e6e5a82988f",
+            "type": "leaf",
+            "state": {
+              "type": "markdown",
+              "state": {
+                "file": "DisDocs/Разработка/0082 — Пропорции и сегменты Compact.md",
+                "mode": "source",
+                "source": false
+              },
+              "icon": "lucide-file",
+              "title": "0082 — Пропорции и сегменты Compact"
+            }
+          },
+          {
             "id": "41e6e8fe5bdb85a3",
             "type": "leaf",
             "state": {
@@ -130,7 +144,7 @@
             }
           }
         ],
-        "currentTab": 6
+        "currentTab": 7
       }
     ],
     "direction": "vertical"
@@ -164,7 +178,7 @@
             "state": {
               "type": "search",
               "state": {
-                "query": "",
+                "query": "bub",
                 "matchingCase": false,
                 "explainSearch": false,
                 "collapseAll": false,
@@ -193,7 +207,8 @@
       }
     ],
     "direction": "horizontal",
-    "width": 403.5234375
+    "width": 403.5234375,
+    "collapsed": true
   },
   "right": {
     "id": "43901a2bea0d586c",
@@ -299,8 +314,12 @@
       "bases:Create new base": false
     }
   },
-  "active": "17cc1349027cd935",
+  "active": "76766e6e5a82988f",
   "lastOpenFiles": [
+    "Tools/car-db/data/cars/car0015.json.crswap",
+    "DisDocs/Разработка/0020 — Запись видео (инструмент).md",
+    "DisDocs/Разработка/0090 — Replay v2 и Video Shot.md",
+    "DisDocs/Разработка/0019 — Видео-дейлики-рефералы.md",
     "Tools/car-db/data/cars/car0130.json.crswap",
     "Tools/car-db/data/photos/car0130/side/draft/1.png",
     "Tools/car-db/data/photos/car0130/side/draft",
@@ -314,10 +333,7 @@
     "Tools/car-db/data/photos/car0129",
     "Tools/car-db/data/cars/car0129.json",
     "Tools/car-db/data/photos/car0128/side/draft/1.png",
-    "Tools/car-db/data/photos/car0128/side/draft",
     "Tools/car-db/data/photos/car0127/side/draft/1.png",
-    "DisDocs/Разработка/0020 — Запись видео (инструмент).md",
-    "DisDocs/Разработка/0019 — Видео-дейлики-рефералы.md",
     "DisDocs/Разработка/0018 — Аддресаблы.md",
     "DisDocs/Разработка/0010 — Экран покупки апдейта.md",
     "DisDocs/Разработка/0009 — Статистика.md",
@@ -346,7 +362,6 @@
     "DisDocs/17-scope-версии-2.1.md",
     "DisDocs/Разработка/Сделано/0079 — Автоматические UV кузова.md",
     "DisDocs/Разработка/Backlog/0086 — Несовпадение стекол и окон кузова.md",
-    "DisDocs/Разработка/0075 — 3d models.md",
     "Analytics/reviews/Untitled.canvas"
   ]
 }

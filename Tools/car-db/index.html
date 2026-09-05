@@ -807,9 +807,7 @@ App.UI = (function () {
       // не ломается — только звёздочки всплывают наверх.
       const byFavorite = (a, b) => (b.favorite ? 1 : 0) - (a.favorite ? 1 : 0);
 
-      const noSub = cars.filter(c => !c.substyle).sort(byFavorite);
-      noSub.forEach(car => details.appendChild(carListItem(car)));
-
+      // Подкатегории (подстиль) — сверху внутри категории, машины без подстиля — ниже них.
       const bySub = new Map();
       cars.forEach(c => { if (c.substyle) { if (!bySub.has(c.substyle)) bySub.set(c.substyle, []); bySub.get(c.substyle).push(c); } });
       Array.from(bySub.keys()).sort((a, b) => a.localeCompare(b, 'ru')).forEach(sub => {
@@ -818,6 +816,9 @@ App.UI = (function () {
         subCars.forEach(car => subDetails.appendChild(carListItem(car)));
         details.appendChild(subDetails);
       });
+
+      const noSub = cars.filter(c => !c.substyle).sort(byFavorite);
+      noSub.forEach(car => details.appendChild(carListItem(car)));
 
       wrap.appendChild(details);
     });
