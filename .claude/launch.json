@@ -12,6 +12,12 @@
       "runtimeExecutable": "python3",
       "runtimeArgs": ["-m", "http.server", "8744", "--directory", "Tools/car-db"],
       "port": 8744
+    },
+    {
+      "name": "style-lab",
+      "runtimeExecutable": "python3",
+      "runtimeArgs": ["-m", "http.server", "8745", "--directory", "Tools/style-lab"],
+      "port": 8745
     }
   ]
 }

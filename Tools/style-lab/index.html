@@ -104,14 +104,17 @@ body {
 .thumb-wrap { display: inline-block; height: 150px; }
 .thumb-wrap .thumb-img { height: 150px; width: auto; display: block; border-radius: 6px; background: #eee; }
 .thumb-caption {
-  font-size: 10.5px; color: #777; line-height: 1.25; max-height: 2.5em; overflow: hidden; max-width: 220px;
+  /* Ширина выставляется явно в px через ResizeObserver в ideaCard() (см. JS) — под
+     фактическую ширину фото. width:100% тут не сработал: в этой flex-раскладке
+     (.cards-row/.idea-card) карточка всё равно растягивалась под текст на всю
+     доступную ширину, а не под фото. Не обрезаем по высоте — перенос вместо обрезки. */
+  font-size: 10.5px; color: #777; line-height: 1.3; white-space: pre-wrap; word-break: break-word;
 }
 .idea-text {
-  /* max-width обязателен: карточка теперь авто-ширины (см. .idea-card), и без предела
-     блок текста без переноса растягивает всю карточку под себя — классический CSS-баг
-     shrink-to-fit. Без него длинный текст один раздувал карточку сильнее, чем любые фото. */
-  font-size: 12.5px; color: #333; line-height: 1.4; max-height: 4.2em; overflow: hidden;
-  margin-bottom: 8px; max-width: 320px;
+  /* Ширина — явно в px через ResizeObserver на .idea-thumbs (весь ряд фото), тем же
+     приёмом и по той же причине, что у .thumb-caption выше. */
+  font-size: 12.5px; color: #333; line-height: 1.4; margin-bottom: 8px;
+  white-space: pre-wrap; word-break: break-word;
 }
 .idea-footer { display: flex; align-items: center; justify-content: flex-end; }
 /* Счётчик собранных машин относится ко всей идее, не к конкретному фото — стоит внизу,
@@ -346,11 +349,16 @@ App.FLAGS = [
   { v: '🇦🇺', label: '🇦🇺 Австралия' },
 ];
 
-// Фото в идее хранится как {file, flag, title, caption} — все три опциональны и относятся
-// именно к этому фото (нужно и для «3 ракурса одной машины», и для «3 разных машин»).
+// Фото в идее — либо свой файл {file, flag, title, caption} (все три опциональны и
+// относятся именно к этому фото), либо ссылка на машину car-db {carRef:{carId,viewKey}}
+// без file/flag/title/caption вообще — они не копируются и не хранятся, при каждом
+// рендере подтягиваются заново из базы (см. ideaCard()), поэтому правки в car-db
+// (фото/описание/страна) видны в style-lab сами, без пересохранения идеи.
 // Старые записи могли быть просто строкой с именем файла — приводим к общему виду.
-App.normImg = img => (typeof img === 'string') ? { file: img, flag: '', title: '', caption: '' } : {
-  file: img.file, flag: img.flag || '', title: img.title || '', caption: img.caption || '',
+App.normImg = img => {
+  if (typeof img === 'string') return { file: img, flag: '', title: '', caption: '' };
+  if (img.carRef) return { carRef: img.carRef };
+  return { file: img.file, flag: img.flag || '', title: img.title || '', caption: img.caption || '' };
 };
 
 // ──────────────────────────────────────────────
@@ -517,13 +525,16 @@ App.Data = (function () {
     }
   }
 
-  // pending — [{file:File, flag, title, caption}]. Сначала читаем байты каждого файла
-  // в память (readPending) и только потом трогаем диск — иначе при редактировании,
-  // если сперва стереть старые файлы, а «сохранённое» фото на самом деле было тем же
-  // File-объектом, читать будет уже нечего, запись оборвётся с ошибкой и фото пропадёт.
+  // pending — [{file:File, flag, title, caption}] для своих фото, либо {carRef:{carId,
+  // viewKey}} для фото из car-db — тех не читаем и не пишем на диск вообще, только
+  // саму ссылку. Сначала читаем байты каждого своего файла в память (readPending) и
+  // только потом трогаем диск — иначе при редактировании, если сперва стереть старые
+  // файлы, а «сохранённое» фото на самом деле было тем же File-объектом, читать будет
+  // уже нечего, запись оборвётся с ошибкой и фото пропадёт.
   async function readPending(pending) {
     const out = [];
     for (const p of pending) {
+      if (p.carRef) { out.push({ carRef: p.carRef }); continue; }
       let ext = (p.file.name.split('.').pop() || 'jpg').toLowerCase().replace(/[^a-z0-9]/g, '');
       if (!ext) ext = 'jpg';
       out.push({ ext, bytes: await p.file.arrayBuffer(), flag: p.flag || '', title: p.title || '', caption: p.caption || '' });
@@ -535,6 +546,7 @@ App.Data = (function () {
     const images = [];
     let i = 0;
     for (const b of buffers) {
+      if (b.carRef) { images.push({ carRef: b.carRef }); continue; } // ссылка, файла нет и не будет
       i++;
       const fname = i + '.' + b.ext;
       const fh = await dirHandle.getFileHandle(fname, { create: true });
@@ -654,6 +666,18 @@ App.CarDB = (function () {
     return cars;
   }
 
+  // Прямое чтение одной машины по id — не листает всю папку cars/, нужно для
+  // drag&drop карточки из car-db (см. init(): дропаем на drop-zone, знаем только id).
+  async function getCarById(id) {
+    if (!App.State.carDbRootHandle) return null;
+    const carsDir = await App.FS.getDirOpt(App.State.carDbRootHandle, 'cars');
+    if (!carsDir) return null;
+    try {
+      const fh = await carsDir.getFileHandle(id + '.json');
+      return JSON.parse(await App.FS.readText(fh));
+    } catch (e) { return null; }
+  }
+
   async function getPhotoFile(carId, viewKey, sub, filename) {
     try {
       const photosRoot = await App.FS.getDirOpt(App.State.carDbRootHandle, 'photos'); if (!photosRoot) return null;
@@ -678,7 +702,7 @@ App.CarDB = (function () {
     return out;
   }
 
-  return { listCars, getPhotoFile, availableViews };
+  return { listCars, getPhotoFile, availableViews, getCarById };
 })();
 
 // ──────────────────────────────────────────────
@@ -721,44 +745,67 @@ App.UI = (function () {
     div.className = 'idea-card';
     const thumbs = document.createElement('div');
     thumbs.className = 'idea-thumbs';
+    // head/caption заполняются функцией ниже — либо сразу (свои фото, значения уже
+    // известны), либо асинхронно после чтения car-db (carRef — правки в базе видны тут
+    // сами, при каждой перерисовке карточки, без пересохранения идеи).
+    function fillHeadAndCaption(col, im, flag, title, caption) {
+      im.alt = title || '';
+      if (flag || title) {
+        const head = document.createElement('div');
+        head.className = 'thumb-head';
+        if (flag) {
+          const f = document.createElement('span'); f.className = 'thumb-flag-inline'; f.textContent = flag;
+          head.appendChild(f);
+        }
+        if (title) {
+          const t = document.createElement('span'); t.className = 'thumb-title'; t.textContent = title;
+          head.appendChild(t);
+        }
+        col.insertBefore(head, col.firstChild);
+      }
+      if (caption) {
+        const cap = document.createElement('div');
+        cap.className = 'thumb-caption';
+        cap.textContent = caption;
+        col.appendChild(cap);
+      }
+      // Пин ширины именно КОЛОНКИ (col), не caption и не wrap — .idea-thumb-col это flex-
+      // колонка с дефолтным align-items:stretch, и без явной ширины сама колонка (не фото!)
+      // сайзилась по caption/idea-text (их текст без переноса — самый широкий кандидат),
+      // поэтому подпись/общий текст растягивались шире фото, а не наоборот. im — не
+      // флекс-айтем (лежит внутри wrap), его отрисованная ширина не подвержена stretch —
+      // меряем именно её. Как только col получает явную ширину, cap/head/wrap сами
+      // стягиваются под неё (тот же default align-items:stretch), текст переносится.
+      new ResizeObserver(entries => {
+        const w = entries[0].contentRect.width;
+        if (w > 0) col.style.width = w + 'px';
+      }).observe(im);
+    }
+
     (record.meta.images || []).map(App.normImg).forEach(img => {
       const col = document.createElement('div');
       col.className = 'idea-thumb-col';
-
-      if (img.title || img.flag) {
-        const head = document.createElement('div');
-        head.className = 'thumb-head';
-        if (img.flag) {
-          const flag = document.createElement('span');
-          flag.className = 'thumb-flag-inline';
-          flag.textContent = img.flag;
-          head.appendChild(flag);
-        }
-        if (img.title) {
-          const ttl = document.createElement('span');
-          ttl.className = 'thumb-title';
-          ttl.textContent = img.title;
-          head.appendChild(ttl);
-        }
-        col.appendChild(head);
-      }
 
       const wrap = document.createElement('div');
       wrap.className = 'thumb-wrap';
       const im = document.createElement('img');
       im.className = 'thumb-img';
-      im.alt = img.title || '';
       wrap.appendChild(im);
       col.appendChild(wrap);
+      thumbs.appendChild(col);
 
-      if (img.caption) {
-        const cap = document.createElement('div');
-        cap.className = 'thumb-caption';
-        cap.textContent = img.caption;
-        col.appendChild(cap);
+      if (img.carRef) {
+        App.CarDB.getCarById(img.carRef.carId).then(car => {
+          if (!car) return; // машину в базе удалили/переименовали id — просто пустая карточка
+          const views = App.CarDB.availableViews(car);
+          const v = views.find(vv => vv.key === img.carRef.viewKey) || views[0];
+          fillHeadAndCaption(col, im, car.country || '', car.name || '', car.descShort || car.descHistorical || '');
+          if (v) App.CarDB.getPhotoFile(car.id, v.key, v.sub, v.filename).then(f => { if (f) im.src = URL.createObjectURL(f); });
+        });
+        return;
       }
 
-      thumbs.appendChild(col);
+      fillHeadAndCaption(col, im, img.flag, img.title, img.caption);
       App.Data.getIdeaImageFile(style, record.meta.id, img.file).then(file => {
         if (file) im.src = URL.createObjectURL(file);
       });
@@ -769,6 +816,13 @@ App.UI = (function () {
       text.className = 'idea-text';
       text.textContent = record.meta.text;
       div.appendChild(text);
+      // Общий текст идеи — под всем рядом фото (thumbs), не под одним фото, поэтому
+      // держим ширину синхронной с thumbs целиком (сумма всех фото + отступы), а не
+      // с одной колонкой, как у .thumb-caption выше.
+      new ResizeObserver(entries => {
+        const w = entries[0].contentRect.width;
+        if (w > 0) text.style.width = w + 'px';
+      }).observe(thumbs);
     }
     const footer = document.createElement('div');
     footer.className = 'idea-footer';
@@ -895,8 +949,26 @@ App.Modal = (function () {
   async function open(style, block, record, row) {
     App.State.modal = { mode: record ? 'edit' : 'new', style, block, record, row: row || 0, images: [] };
     if (record) {
+      // Нужно до цикла ниже — иначе carRef-фото не резолвятся, если пикер car-db ещё
+      // ни разу не открывали в этой сессии.
+      if ((record.meta.images || []).some(raw => raw && raw.carRef)) await ensureCarDbConnected();
       for (const raw of record.meta.images || []) {
         const img = App.normImg(raw);
+        if (img.carRef) {
+          // Ссылка на car-db — читаем текущее состояние заново, не то, что было при
+          // сохранении идеи (в meta ничего, кроме carRef, и не лежит).
+          const car = await App.CarDB.getCarById(img.carRef.carId);
+          if (!car) continue; // машину в базе удалили/переименовали id — пропускаем молча
+          const views = App.CarDB.availableViews(car);
+          const v = views.find(vv => vv.key === img.carRef.viewKey) || views[0];
+          const file = v ? await App.CarDB.getPhotoFile(car.id, v.key, v.sub, v.filename) : null;
+          if (!file) continue;
+          App.State.modal.images.push({
+            carRef: img.carRef, file: null, url: URL.createObjectURL(file),
+            flag: car.country || '', title: car.name || '', caption: car.descShort || car.descHistorical || '',
+          });
+          continue;
+        }
         const file = await App.Data.getIdeaImageFile(style, record.meta.id, img.file);
         if (file) App.State.modal.images.push({ file, url: URL.createObjectURL(file), flag: img.flag, title: img.title, caption: img.caption });
       }
@@ -925,6 +997,50 @@ App.Modal = (function () {
     App.State.modal.images.forEach((img, i) => {
       const item = document.createElement('div');
       item.className = 'thumb-item';
+
+      if (img.carRef) {
+        // Ссылка на car-db — не своё фото. Заголовок/флаг/описание не редактируются
+        // здесь: это не хранимые поля, они каждый раз читаются заново из базы (см.
+        // App.normImg/ideaCard), править их можно только в самом car-db.
+        const badge = document.createElement('div');
+        badge.style.cssText = 'font-size:9px;color:#6a5acd;margin-bottom:2px;';
+        badge.textContent = '🔗 ' + img.carRef.carId + ' — из базы Car DB';
+        item.appendChild(badge);
+
+        const titleRo = document.createElement('div');
+        titleRo.className = 'thumb-title-input';
+        titleRo.style.cssText = 'background:#f5f5f0;color:#666;border-style:dashed;';
+        titleRo.textContent = img.title || '(без названия)';
+        titleRo.title = 'Название читается из car-db, поменять можно только там';
+        item.appendChild(titleRo);
+
+        const wrap = document.createElement('div');
+        wrap.className = 'thumb-img-wrap';
+        const im = document.createElement('img');
+        im.src = img.url;
+        const rm = document.createElement('button');
+        rm.className = 'thumb-remove';
+        rm.textContent = '×';
+        rm.title = 'Убрать ссылку из идеи (саму машину в car-db это не трогает)';
+        rm.addEventListener('click', () => { App.State.modal.images.splice(i, 1); renderThumbs(); });
+        wrap.appendChild(im);
+        wrap.appendChild(rm);
+        item.appendChild(wrap);
+
+        const flagRo = document.createElement('div');
+        flagRo.style.cssText = 'text-align:center;font-size:16px;';
+        flagRo.textContent = img.flag || '—';
+        item.appendChild(flagRo);
+
+        const capRo = document.createElement('div');
+        capRo.className = 'thumb-caption-input';
+        capRo.style.cssText = 'background:#f5f5f0;color:#666;border-style:dashed;min-height:1.4em;';
+        capRo.textContent = img.caption || '';
+        item.appendChild(capRo);
+
+        row.appendChild(item);
+        return;
+      }
 
       // Порядок полей повторяет итоговую карточку: заголовок — над фото.
       const titleInput = document.createElement('input');
@@ -1019,7 +1135,16 @@ App.Modal = (function () {
         if (App.State.modal.images.length >= 3) { alert('В идее уже 3 фото — сначала уберите одно.'); return; }
         const f = await App.CarDB.getPhotoFile(car.id, v.key, v.sub, v.filename);
         if (!f) { alert('Не удалось прочитать фото.'); return; }
-        App.State.modal.images.push({ file: f, url: URL.createObjectURL(f), flag: car.country || '', title: car.name || '', caption: car.descShort || '' });
+        // Не копируем фото/описание/страну — сохраняем только ссылку {carId, viewKey}.
+        // flag/title/caption ниже — не для сохранения, только чтобы сразу что-то увидеть
+        // в этом окне редактирования (renderThumbs), реальные данные каждый раз читаются
+        // заново из car-db (см. App.normImg/ideaCard) — правки в базе видны сами, без
+        // пересохранения идеи. url — тоже только превью на время этой сессии редактирования.
+        App.State.modal.images.push({
+          carRef: { carId: car.id, viewKey: v.key },
+          file: null, url: URL.createObjectURL(f),
+          flag: car.country || '', title: car.name || '', caption: car.descShort || car.descHistorical || '',
+        });
         renderThumbs();
         closeCarPicker();
       });
@@ -1052,7 +1177,10 @@ App.Modal = (function () {
       cpCars = [];
     } else {
       el('cp-status').textContent = cpCars.length ? (cpCars.length + ' машин в базе') : 'В базе пока нет ни одной машины.';
-      el('cp-connect').style.display = 'none';
+      // Кнопка остаётся видимой даже при валидной папке — иначе если выбрана не та
+      // (структурно верная, но не та) папка, сменить её было буквально негде.
+      el('cp-connect').style.display = 'block';
+      el('cp-connect').textContent = 'Сменить папку с базой…';
       el('cp-search').style.display = 'block';
     }
     cpRenderList(el('cp-search').value);
@@ -1066,30 +1194,55 @@ App.Modal = (function () {
     } catch (e) { /* отменено пользователем */ }
   }
 
+  // Один раз за сессию тихо пробуем восстановить ранее выбранную папку car-db (без
+  // диалога) — нужно и для открытия пикера, и для отрисовки уже сохранённых carRef-фото
+  // при редактировании идеи (open()), не только по клику на «добавить фото из базы».
+  async function ensureCarDbConnected() {
+    if (App.State.carDbRootHandle || App.State._carDbTried) return;
+    App.State._carDbTried = true;
+    const restored = await App.FS.restoreCarDbFolder();
+    if (restored && !restored.needsPermission) App.State.carDbRootHandle = restored;
+    else if (restored && restored.needsPermission) {
+      const ok = await App.FS.ensureReadPermission(restored.handle);
+      if (ok) App.State.carDbRootHandle = restored.handle;
+    }
+  }
+
   async function openCarPicker() {
     cpBackToList();
     el('cp-search').value = '';
     el('car-picker-modal').style.display = 'flex';
-    // при первом открытии в этой сессии пробуем молча восстановить ранее выбранную папку
-    if (!App.State.carDbRootHandle && !App.State._carDbTried) {
-      App.State._carDbTried = true;
-      const restored = await App.FS.restoreCarDbFolder();
-      if (restored && !restored.needsPermission) App.State.carDbRootHandle = restored;
-      else if (restored && restored.needsPermission) {
-        const ok = await App.FS.ensureReadPermission(restored.handle);
-        if (ok) App.State.carDbRootHandle = restored.handle;
-      }
-    }
+    await ensureCarDbConnected();
     await cpRefresh();
   }
   function closeCarPicker() { el('car-picker-modal').style.display = 'none'; }
+
+  // Открыть пикер сразу на экране ракурсов конкретной машины, минуя список/поиск —
+  // используется при drag&drop карточки из car-db (см. init()), где машина уже известна.
+  async function openCarPickerForCar(car) {
+    el('car-picker-modal').style.display = 'flex';
+    cpShowCar(car);
+  }
 
   function init() {
     const dz = el('drop-zone');
     dz.addEventListener('dragover', e => { e.preventDefault(); dz.classList.add('drag-over'); });
     dz.addEventListener('dragleave', () => dz.classList.remove('drag-over'));
-    dz.addEventListener('drop', e => {
+    dz.addEventListener('drop', async e => {
       e.preventDefault(); dz.classList.remove('drag-over');
+      // Карточка машины, перетащенная из окна car-db (нативный drag работает и между
+      // окнами одного браузера) — кастомный MIME-тип car-db, text/plain как запасной.
+      const carId = (e.dataTransfer.getData('application/x-cardb-car-id') || e.dataTransfer.getData('text/plain') || '').trim();
+      if (carId) {
+        if (!App.State.carDbRootHandle) {
+          alert('Сначала подключи папку с базой Car DB (кнопка «📚 добавить фото из базы Car DB»).');
+          return;
+        }
+        const car = await App.CarDB.getCarById(carId);
+        if (car) { await openCarPickerForCar(car); return; }
+        // Не машина car-db (например текст из другого источника) — падаем обратно
+        // на обычный файловый дроп ниже.
+      }
       addFiles(e.dataTransfer.files);
     });
     dz.addEventListener('click', () => el('file-input-hidden').click());
@@ -1121,7 +1274,8 @@ App.Modal = (function () {
       const text = el('idea-text').value.trim();
       const button = el('idea-button').value.trim() || 'Create';
       const count = parseInt(el('idea-count').value, 10) || 0;
-      const pending = m.images.map(im => ({ file: im.file, flag: im.flag, title: im.title, caption: im.caption }));
+      // Фото из car-db — только ссылка (без file/flag/title/caption, они не хранятся).
+      const pending = m.images.map(im => im.carRef ? { carRef: im.carRef } : { file: im.file, flag: im.flag, title: im.title, caption: im.caption });
       try {
         if (m.mode === 'new') await App.Data.createIdea(m.style, m.block, m.row, text, button, count, pending);
         else await App.Data.updateIdea(m.record, text, button, count, pending);
@@ -1132,7 +1286,7 @@ App.Modal = (function () {
     });
   }
 
-  return { open, close, init };
+  return { open, close, init, ensureCarDbConnected };
 })();
 
 // ──────────────────────────────────────────────
@@ -1142,6 +1296,9 @@ async function loadFolder(handle) {
   App.State.rootHandle = handle;
   document.getElementById('folder-status').textContent = handle.name;
   await App.Data.loadAll();
+  // Молча пробуем восстановить ранее выбранную папку car-db ДО первого рендера — иначе
+  // карточки с carRef-фото на секунду мигнут пустыми, пока их не откроют вручную.
+  await App.Modal.ensureCarDbConnected();
   App.UI.renderAll();
 }
 

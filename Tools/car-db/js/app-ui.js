@@ -18,6 +18,17 @@ App.UI = (function () {
 
     div.addEventListener('click', () => { App.State.activeCarId = car.id; App.State.activeView = 'side'; renderAll(); });
 
+    // Перетаскивание карточки в другое окно браузера (например style-lab) — тот же
+    // нативный drag API работает между окнами одного браузера, не только внутри
+    // страницы. Кастомный MIME-тип — основной канал; text/plain — запасной, если
+    // принимающая сторона его не проверяет отдельно.
+    div.draggable = true;
+    div.addEventListener('dragstart', e => {
+      e.dataTransfer.setData('application/x-cardb-car-id', car.id);
+      e.dataTransfer.setData('text/plain', car.id);
+      e.dataTransfer.effectAllowed = 'copy';
+    });
+
     // Превью — активное фото вида «сбоку» (финал в приоритете, иначе первый драфт).
     // Загружается асинхронно поверх уже отрисованного списка, чтобы не тормозить
     // рендер чтением файлов сразу по всем машинам.

@@ -1,0 +1,31 @@
+{
+  "order": [
+    "style1",
+    "style2",
+    "style3",
+    "style4",
+    "style5"
+  ],
+  "items": {
+    "style1": {
+      "title": "Compact",
+      "description": ""
+    },
+    "style2": {
+      "title": "America",
+      "description": ""
+    },
+    "style3": {
+      "title": "Sport GT",
+      "description": ""
+    },
+    "style4": {
+      "title": "Wedge",
+      "description": ""
+    },
+    "style5": {
+      "title": "Offroad",
+      "description": ""
+    }
+  }
+}
