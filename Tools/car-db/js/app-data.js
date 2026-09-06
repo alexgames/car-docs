@@ -255,6 +255,66 @@ App.Data = (function () {
     return { groupCars: rows.map(r => r.car), count: rows.length, averages };
   }
 
+  // Синтетический набор guide-линий для оверлея на табе «Метрики»: head/trunk (длина)
+  // и ground/bottom (клиренс) — реальные, как у самой машины (это её физическая база,
+  // не подлежит усреднению), всё остальное — пересчитано из средних долей подстиля
+  // (substyleGroupMetrics), растянутых на эту же длину/высоту. Ничего не сохраняется —
+  // объект того же формата, что car.views.side.guides, но только для рендера линий.
+  function averageGuidesFor(car) {
+    const guides = car.views && car.views.side && car.views.side.guides;
+    if (!guides) return null;
+    const group = substyleGroupMetrics(car);
+    if (!group) return null;
+    const avg = group.averages;
+    const v = guides.vertical, h = guides.horizontal, w = guides.wheels;
+    const headX = v.head.offsetX, trunkX = v.trunk.offsetX;
+    const length = trunkX - headX;
+    const groundY = h.ground.offsetY, bottomY = h.bottom.offsetY;
+    const clearance = groundY - bottomY;
+    if (length <= 0 || clearance <= 0) return null;
+    if (!avg.clearanceShareOfHeight || avg.hoodShare == null || avg.rearShare == null) return null;
+    // Высота выводится из реального клиренса (bottom/ground — не усредняются) и средней
+    // доли клиренса от высоты — так top/center встают туда, где были бы у машины со
+    // средними пропорциями, но с этим же клиренсом.
+    const impliedHeight = clearance / avg.clearanceShareOfHeight;
+    const topY = groundY - impliedHeight;
+    const centerHY = topY + (avg.cabinHeightShare || 0) * impliedHeight;
+    const cab1X = headX + (avg.hoodShare || 0) * length;
+    const cab2X = trunkX - (avg.rearShare || 0) * length;
+    const centerVX = headX + (avg.centerFromFront || 0) * length;
+    const frontX = avg.frontOverhangShare != null ? headX + avg.frontOverhangShare * length : w.front.offsetX;
+    const rearX = avg.rearOverhangShare != null ? trunkX - avg.rearOverhangShare * length : w.rear.offsetX;
+    // «high» — та же проверка >5пп, что и в таблице метрик (fmtMetricDelta/isHigh) —
+    // подсвечивает линии, чья позиция у ЭТОЙ машины сильно отличается от средней доли
+    // подстиля. head/trunk/ground/bottom/radius к долям не привязаны — не подсвечиваются.
+    const own = carMetrics(car);
+    const isHigh = key => {
+      const a = avg[key], o = own && own[key];
+      return a != null && o != null && Math.abs((o - a) * 100) > 5;
+    };
+    return {
+      vertical: {
+        head: { offsetX: headX, visible: v.head.visible },
+        cab1: { offsetX: cab1X, visible: v.cab1.visible, high: isHigh('hoodShare') },
+        center: { offsetX: centerVX, visible: v.center.visible, high: isHigh('centerFromFront') },
+        cab2: { offsetX: cab2X, visible: v.cab2.visible, high: isHigh('rearShare') },
+        trunk: { offsetX: trunkX, visible: v.trunk.visible },
+      },
+      horizontal: {
+        ground: { offsetY: groundY, visible: h.ground.visible },
+        bottom: { offsetY: bottomY, visible: h.bottom.visible },
+        center: { offsetY: centerHY, visible: h.center.visible, high: isHigh('cabinHeightShare') },
+        top: { offsetY: topY, visible: h.top.visible, high: isHigh('clearanceShareOfHeight') },
+      },
+      // radius — по доле не считается (метрики её не покрывают), оставляем как у машины.
+      wheels: {
+        front: { offsetX: frontX, visible: w.front.visible, high: isHigh('frontOverhangShare') },
+        rear: { offsetX: rearX, visible: w.rear.visible, high: isHigh('rearOverhangShare') },
+        radius: { offsetX: w.radius.offsetX, visible: w.radius.visible },
+      },
+    };
+  }
+
   function activePhotoMeta(view) {
     const sel = view.activeSel;
     if (sel && sel.kind === 'final' && view.final) return { kind: 'final', meta: view.final };
@@ -321,6 +381,6 @@ App.Data = (function () {
   return {
     loadAll, saveCardSizes, saveCardDefaults, saveCar, createCar, deleteCar, viewDirEnsure, getPhotoFile,
     addDraftPhoto, removeDraftPhoto, setFinalPhoto, removeFinalPhoto, activePhotoMeta, exportView, flipPhotoHorizontal,
-    defaultRulers, carMetrics, substyleGroupMetrics, METRIC_LABELS, METRIC_ORDER, METRIC_IS_RATIO,
+    defaultRulers, carMetrics, substyleGroupMetrics, averageGuidesFor, METRIC_LABELS, METRIC_ORDER, METRIC_IS_RATIO,
   };
 })();

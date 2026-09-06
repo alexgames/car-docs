@@ -165,7 +165,64 @@ App.UI = (function () {
     });
     styleSelect.onchange = () => { car.style = styleSelect.value; App.Data.saveCar(car); renderAll(); };
     grid.appendChild(fieldRow('Стиль', styleSelect));
-    mk('Подстиль', 'substyle', 'Fin Tail');
+
+    // Подстиль — текстовое поле (свободный ввод) + кнопка-дропдаун со ВСЕМИ уже введёнными
+    // подстилями (сперва для текущего стиля, иначе список смешивает несвязанные стили;
+    // если у этого стиля их ещё нет — показываем все). Не datalist: он фильтрует список
+    // браузером по совпадению с уже набранным текстом — поэтому предлагал только сам
+    // текущий подстиль, а не полный список (это и была жалоба).
+    const substyleWrap = document.createElement('div');
+    substyleWrap.style.cssText = 'position:relative;display:flex;gap:4px;';
+    const substyleInput = document.createElement('input');
+    substyleInput.type = 'text'; substyleInput.value = car.substyle || ''; substyleInput.placeholder = 'Fin Tail';
+    substyleInput.style.flex = '1';
+    substyleInput.oninput = () => { car.substyle = substyleInput.value; };
+    substyleInput.onblur = () => { App.Data.saveCar(car); renderCarList(); };
+    const substyleDropBtn = document.createElement('button'); substyleDropBtn.type = 'button';
+    substyleDropBtn.textContent = '▾';
+    substyleDropBtn.title = 'Выбрать из уже введённых подстилей';
+    substyleDropBtn.style.cssText = 'flex:none;padding:0 8px;border-radius:6px;border:1px solid #ccc;background:#fff;color:#888;cursor:pointer;';
+    const substyleMenu = document.createElement('div');
+    substyleMenu.style.cssText = 'display:none;position:absolute;top:100%;left:0;right:0;margin-top:2px;background:#fff;border:1px solid #ddd;border-radius:8px;box-shadow:0 6px 18px rgba(0,0,0,.12);max-height:220px;overflow:auto;z-index:20;';
+    function substyleOptions() {
+      const cur = car.style || '';
+      const set = new Set();
+      App.State.cars.forEach(c => { if (c.substyle && (c.style || '') === cur) set.add(c.substyle); });
+      if (!set.size) App.State.cars.forEach(c => { if (c.substyle) set.add(c.substyle); }); // фоллбек — все подряд
+      return Array.from(set).sort((a, b) => a.localeCompare(b));
+    }
+    function onSubstyleDocClick(e) { if (!substyleWrap.contains(e.target)) closeSubstyleMenu(); }
+    function closeSubstyleMenu() { substyleMenu.style.display = 'none'; document.removeEventListener('mousedown', onSubstyleDocClick); }
+    function openSubstyleMenu() {
+      const opts = substyleOptions();
+      substyleMenu.innerHTML = '';
+      if (!opts.length) {
+        const empty = document.createElement('div'); empty.textContent = 'Пока нет ни одного подстиля';
+        empty.style.cssText = 'padding:7px 10px;font-size:11px;color:#aaa;';
+        substyleMenu.appendChild(empty);
+      } else {
+        opts.forEach(s => {
+          const item = document.createElement('div'); item.textContent = s;
+          item.style.cssText = 'padding:7px 10px;font-size:12px;cursor:pointer;';
+          item.addEventListener('mouseenter', () => { item.style.background = '#f4f2fc'; });
+          item.addEventListener('mouseleave', () => { item.style.background = ''; });
+          item.addEventListener('mousedown', e2 => {
+            e2.preventDefault(); // не отдавать фокус раньше нашего клика, иначе onblur сработает первым
+            substyleInput.value = s; car.substyle = s;
+            App.Data.saveCar(car); renderCarList();
+            closeSubstyleMenu();
+          });
+          substyleMenu.appendChild(item);
+        });
+      }
+      substyleMenu.style.display = 'block';
+      document.addEventListener('mousedown', onSubstyleDocClick);
+    }
+    substyleDropBtn.addEventListener('click', () => {
+      if (substyleMenu.style.display === 'block') closeSubstyleMenu(); else openSubstyleMenu();
+    });
+    substyleWrap.appendChild(substyleInput); substyleWrap.appendChild(substyleDropBtn); substyleWrap.appendChild(substyleMenu);
+    grid.appendChild(fieldRow('Подстиль', substyleWrap));
 
     const countrySelect = document.createElement('select');
     C.COUNTRIES.forEach(c => {
@@ -548,7 +605,11 @@ App.UI = (function () {
     });
 
     if (isSide) {
-      const showHandles = App.State.sideTab === 'proportions'; // на табе «Линейки» — только сами линии, без контролов
+      const showHandles = App.State.sideTab === 'proportions'; // на табе «Линейки»/«Метрики» — только сами линии, без контролов
+      // На табе «Метрики» рисуем не разметку машины, а синтетический оверлей средних
+      // пропорций подстиля (head/trunk/ground/bottom — реальные, остальное усреднено,
+      // см. averageGuidesFor). Нет подстиля/группы — тихо остаёмся на реальной разметке.
+      const metricsOverlay = App.State.sideTab === 'metrics' ? App.Data.averageGuidesFor(car) : null;
 
       // Общая отрисовка группы вертикальных линий (offsetX): «Вертикальные» и «Колёса»
       // используют один и тот же механизм, отличаются только набором ключей/цветами/
@@ -561,13 +622,20 @@ App.UI = (function () {
           const dashed = dashedKeys && dashedKeys.has(key);
           const line = document.createElement('div');
           line.style.left = x + 'px';
+          // Толщина 3x везде (и «Пропорции», и оверлей средних). Цвет — как раньше на
+          // «Пропорциях»; на табе «Метрики» — синий, кроме линий, чья доля у этой машины
+          // отличается от среднего по подстилю больше чем на 5пп — они красные (та же
+          // граница ">5пп", что и в таблице метрик).
+          const lineColor = metricsOverlay ? (g.high ? OVERLAY_RED : OVERLAY_BLUE) : colors[key];
           if (dashed) {
             line.className = 'guide-v-dashed';
             // Штрих 14px, промежуток 12px — крупно, чтобы не сливалось в сплошную при zoom холста.
-            line.style.backgroundImage = 'repeating-linear-gradient(to bottom, ' + colors[key] + ' 0, ' + colors[key] + ' 14px, transparent 14px, transparent 26px)';
+            line.style.backgroundImage = 'repeating-linear-gradient(to bottom, ' + lineColor + ' 0, ' + lineColor + ' 14px, transparent 14px, transparent 26px)';
+            line.style.width = '6px'; line.style.marginLeft = '-3px';
           } else {
             line.className = 'guide-v';
-            line.style.borderColor = colors[key];
+            line.style.borderColor = lineColor;
+            line.style.borderLeftWidth = '3px';
           }
           inner.appendChild(line);
           const label = document.createElement('div'); label.className = 'guide-label'; label.style.left = (x + 8) + 'px'; label.style.top = labelTop + 'px'; label.textContent = labels[key];
@@ -592,15 +660,21 @@ App.UI = (function () {
           inner.appendChild(handle);
         });
       }
-      renderVerticalGroup(C_.VERTICAL_LINES, view.guides.vertical, C_.VERTICAL_LABELS, C_.VERTICAL_COLORS, 'v-', 2);
+      const OVERLAY_BLUE = '#1565c0', OVERLAY_RED = '#e53935';
       const wheels = view.guides.wheels || (view.guides.wheels = (() => { const w = {}; C_.WHEEL_LINES.forEach(k => w[k] = { offsetX: C_.WHEEL_DEFAULTS[k], visible: true }); return w; })());
-      renderVerticalGroup(C_.WHEEL_LINES, wheels, C_.WHEEL_LABELS, C_.WHEEL_COLORS, 'w-', 18, new Set(C_.WHEEL_LINES));
+      const vSource = metricsOverlay ? metricsOverlay.vertical : view.guides.vertical;
+      const hSource = metricsOverlay ? metricsOverlay.horizontal : view.guides.horizontal;
+      const wSource = metricsOverlay ? metricsOverlay.wheels : wheels;
+      renderVerticalGroup(C_.VERTICAL_LINES, vSource, C_.VERTICAL_LABELS, C_.VERTICAL_COLORS, 'v-', 2);
+      renderVerticalGroup(C_.WHEEL_LINES, wSource, C_.WHEEL_LABELS, C_.WHEEL_COLORS, 'w-', 18, new Set(C_.WHEEL_LINES));
 
       C_.HORIZONTAL_LINES.forEach(key => {
-        const g = view.guides.horizontal[key];
+        const g = hSource[key];
         if (!g.visible) return;
         const y = C_.FIXED_GROUND_Y + g.offsetY;
-        const line = document.createElement('div'); line.className = 'guide-h'; line.style.top = y + 'px'; line.style.borderColor = C_.HORIZONTAL_COLORS[key];
+        const line = document.createElement('div'); line.className = 'guide-h'; line.style.top = y + 'px';
+        line.style.borderColor = metricsOverlay ? (g.high ? OVERLAY_RED : OVERLAY_BLUE) : C_.HORIZONTAL_COLORS[key];
+        line.style.borderTopWidth = '3px';
         inner.appendChild(line);
         const label = document.createElement('div'); label.className = 'guide-label'; label.style.left = (C_.FIXED_CENTER_X + 12) + 'px'; label.style.top = (y - 15) + 'px'; label.textContent = C_.HORIZONTAL_LABELS[key];
         label.style.transform = 'scale(' + (1 / App.State.canvasZoom) + ')';

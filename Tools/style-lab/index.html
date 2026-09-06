@@ -92,7 +92,12 @@ body {
    иконка в углу), ниже опционально описание. Так одна карточка покрывает и «3 ракурса
    одной машины» (заголовок/флаг/описание только у первого фото, общий текст карточки —
    master-описание), и «3 машины» (у каждого фото свои заголовок+флаг+описание). */
-.idea-thumbs { display: flex; gap: 10px; margin-bottom: 8px; align-items: flex-start; }
+/* inline-flex, а не flex: обычный блочный flex-контейнер как ребёнок .idea-card (тоже
+   не-flex блок) по умолчанию растягивается на всю ширину родителя, а не сжимается под
+   контент — из-за этого .idea-thumbs казался шире фото (и вся карточка следом за ним,
+   через .idea-text/.idea-footer, которые меряются/растягиваются по .idea-thumbs).
+   inline-flex — как inline-block: сам сжимается под реальную ширину колонок с фото. */
+.idea-thumbs { display: inline-flex; max-width: 100%; gap: 10px; margin-bottom: 8px; align-items: flex-start; }
 .idea-thumb-col { display: flex; flex-direction: column; gap: 4px; }
 /* Заголовок и флаг — одной строкой над фото, не поверх него. */
 .thumb-head { display: flex; align-items: center; gap: 6px; }
