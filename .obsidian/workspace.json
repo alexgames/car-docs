@@ -316,6 +316,10 @@
   },
   "active": "76766e6e5a82988f",
   "lastOpenFiles": [
+    "DisDocs/Разработка/0092 — Камерные проходы и монтажные шаблоны для вертикального видео.md",
+    "DisDocs/Разработка/VideoStudio — recap 2026-09-06.md",
+    "DisDocs/Разработка/0091 — Импорт пропорций Car DB в деформ.md",
+    "Tools/car-db/data/cars/car0031.json.crswap",
     "Tools/car-db/data/cars/car0026.json.crswap",
     "Tools/style-lab/data/ideas/style1/recreate/i0008.json",
     "Tools/style-lab/data/images/style1/i0008",
@@ -335,8 +339,6 @@
     "Design/референсы/новый дизайн",
     "Design/Blueprint_bg/perebivka.psd",
     "Design/car_models/suzuki-carry-blind-van.zip",
-    "Design/car_models/1992-alfa-romeo-155-q4.zip",
-    "Design/car_models/free-1972-datsun-240k-gt.zip",
     "Design/Истории для стилей.md",
     "DisDocs/Разработка/0020 — Запись видео (инструмент).md",
     "DisDocs/Разработка/0090 — Replay v2 и Video Shot.md",
@@ -360,8 +362,6 @@
     "DisDocs/Разработка/0086 — Offroad до появления SUV-модуля.md",
     "DisDocs/Разработка/Backlog/0088 — Material Workbench для деталей.md",
     "DisDocs/Разработка/Backlog/0087 — Автоматическая апертура света фар.md",
-    "DisDocs/17-scope-версии-2.1.md",
-    "DisDocs/Разработка/Сделано/0079 — Автоматические UV кузова.md",
     "Analytics/reviews/Untitled.canvas"
   ]
 }

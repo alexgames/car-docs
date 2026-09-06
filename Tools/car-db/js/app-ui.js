@@ -424,6 +424,15 @@ App.UI = (function () {
     const C_ = App.Const;
     const view = car.views[viewKey];
     const isSide = viewKey === 'side';
+    // Оверлей средних (таб «Метрики») считаем заранее — нужен и для отрисовки линий
+    // ниже, и для автоподгонки зума/отступа (top у среднего обычно выше реальной крыши
+    // машины и иначе просто уезжает за пределы холста, см. metricsTopMargin).
+    const metricsOverlay = isSide && App.State.sideTab === 'metrics' ? App.Data.averageGuidesFor(car) : null;
+    let metricsTopMargin = 0;
+    if (metricsOverlay) {
+      const topY = C_.FIXED_GROUND_Y + metricsOverlay.horizontal.top.offsetY;
+      if (topY < 0) metricsTopMargin = Math.ceil(-topY) + 24; // +запас под подпись линии
+    }
 
     const toolbar = document.createElement('div'); toolbar.className = 'canvas-toolbar';
     const exportBtn = document.createElement('button'); exportBtn.className = 'primary'; exportBtn.textContent = 'Экспортировать';
@@ -469,10 +478,17 @@ App.UI = (function () {
     }).observe(scroll);
     const inner = document.createElement('div'); inner.className = 'canvas-inner';
     inner.style.zoom = App.State.canvasZoom;
+    // Средний «top» на табе «Метрики» обычно выше реальной крыши машины — без этого
+    // отступа он рисуется с отрицательным top (выше .canvas-inner) и физически недоступен
+    // прокруткой (браузер не скроллит «в минус»). Отступ сверху сдвигает вниз весь холст
+    // целиком (фото и линии остаются на тех же местах друг относительно друга), открывая
+    // над ним место, куда как раз попадает такая линия.
+    if (metricsTopMargin) inner.style.marginTop = metricsTopMargin + 'px';
 
-    // Подбираем zoom так, чтобы активное фото по ширине и вся карточка по высоте
-    // влезли в контейнер холста, с запасом (90% доступного места). Общая функция —
-    // и для кнопки «Фит», и для автовызова при открытии карточки / смене фото.
+    // Подбираем zoom так, чтобы активное фото по ширине и вся карточка (плюс отступ под
+    // средний «top» на табе «Метрики», см. metricsTopMargin) по высоте влезли в контейнер
+    // холста, с запасом (90% доступного места). Общая функция — и для кнопки «Фит», и
+    // для автовызова при открытии карточки / смене фото / смене вкладки.
     async function runFit(silent) {
       const a = App.Data.activePhotoMeta(view);
       if (!a) { if (!silent) alert('Нет активного фото — нечего вписывать.'); return; }
@@ -483,7 +499,7 @@ App.UI = (function () {
       const photoW = bmp.width * a.meta.scale;
       const margin = 0.9;
       const zByWidth = (scroll.clientWidth * margin) / photoW;
-      const zByHeight = (scroll.clientHeight * margin) / C_.CANVAS_HEIGHT;
+      const zByHeight = (scroll.clientHeight * margin) / (C_.CANVAS_HEIGHT + metricsTopMargin);
       let z = Math.min(zByWidth, zByHeight);
       z = Math.max(0.15, Math.min(2, Math.round(z * 100) / 100));
       App.State.canvasZoom = z;
@@ -491,13 +507,13 @@ App.UI = (function () {
     }
     fitZoomBtn.addEventListener('click', () => runFit(false));
 
-    // Автофит: как только показанное фото (карточка/ракурс/драфт-или-финал/файл)
-    // отличается от того, под что зум подбирали в прошлый раз — подгоняем заново.
-    // Сравнение по ключу, а не «при каждом рендере», иначе автофит перебивал бы
-    // ручные +/− и слайдер масштаба фото при каждом их клике.
+    // Автофит: как только показанное фото (карточка/ракурс/драфт-или-финал/файл) или
+    // вкладка справа (см. metricsTopMargin — на «Метриках» нужно больше высоты) отличается
+    // от того, под что зум подбирали в прошлый раз — подгоняем заново. Сравнение по ключу,
+    // а не «при каждом рендере», иначе автофит перебивал бы ручные +/− и слайдер масштаба.
     {
       const a = App.Data.activePhotoMeta(view);
-      const fitKey = a ? [car.id, viewKey, a.kind, a.index ?? '', a.meta.file].join('|') : null;
+      const fitKey = a ? [car.id, viewKey, a.kind, a.index ?? '', a.meta.file, metricsTopMargin].join('|') : null;
       if (fitKey !== App.State.lastFitKey) {
         App.State.lastFitKey = fitKey;
         if (fitKey) runFit(true);
@@ -606,10 +622,9 @@ App.UI = (function () {
 
     if (isSide) {
       const showHandles = App.State.sideTab === 'proportions'; // на табе «Линейки»/«Метрики» — только сами линии, без контролов
-      // На табе «Метрики» рисуем не разметку машины, а синтетический оверлей средних
-      // пропорций подстиля (head/trunk/ground/bottom — реальные, остальное усреднено,
-      // см. averageGuidesFor). Нет подстиля/группы — тихо остаёмся на реальной разметке.
-      const metricsOverlay = App.State.sideTab === 'metrics' ? App.Data.averageGuidesFor(car) : null;
+      // metricsOverlay/metricsTopMargin — см. начало renderCanvas: синтетический оверлей
+      // средних пропорций подстиля (head/trunk/ground/bottom — реальные, остальное
+      // усреднено). Нет подстиля/группы — тихо остаёмся на реальной разметке.
 
       // Общая отрисовка группы вертикальных линий (offsetX): «Вертикальные» и «Колёса»
       // используют один и тот же механизм, отличаются только набором ключей/цветами/
